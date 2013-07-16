@@ -1,6 +1,6 @@
 #lang scheme/base
 
 (require rackunit/text-ui)
-(require tests/deinprogramm/signature)
+(require deinprogramm/tests/signature)
 
 (run-tests all-signature-tests)
