@@ -1,17 +1,29 @@
 #lang info
+(define collection 'multi)
 
-(define name "DeinProgramm")
+(define deps '("base"
+               "compatibility-lib"
+               "deinprogramm-signature"
+               "drracket"
+               "drracket-plugin-lib"
+               "errortrace-lib"
+               "gui-lib"
+               "htdp-lib"
+               "pconvert-lib"
+               "scheme-lib"
+               "string-constants-lib"
+               "trace"
+               "wxme-lib"
+               ))
 
-(define tools '("deinprogramm-langs.rkt"))
+(define build-deps '("at-exp-lib"
+                     "htdp-doc"
+                     "racket-doc"
+                     "racket-index"
+                     "rackunit-lib"
+                     "scribble-lib"
+                     ))
 
-(define tool-icons '(("logo-small.png" "deinprogramm")))
-(define tool-names '("DeinProgramm"))
-(define tool-urls '("http://www.deinprogramm.de/dmda/"))
+(define pkg-desc "Teaching languages for _Die Macht der Abstraktion_")
 
-(define compile-omit-paths
-  '("define-record-procedures.scm"
-    "convert-explicit.scm"
-    "line3d.scm"))
-
-(define get-textbook-pls
-  '("textbook-pls-spec.rkt" textbook-pls))
+(define pkg-authors '(sperber))
