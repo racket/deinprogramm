@@ -13,17 +13,17 @@
                "scheme-lib"
                "string-constants-lib"
                "trace"
-               "wxme-lib"
-               ))
+               "wxme-lib"))
 
 (define build-deps '("at-exp-lib"
                      "htdp-doc"
                      "racket-doc"
                      "racket-index"
                      "rackunit-lib"
-                     "scribble-lib"
-                     ))
+                     "scribble-lib"))
 
 (define pkg-desc "Teaching languages for _Die Macht der Abstraktion_")
+
+(define implies '("deinprogramm-signature"))
 
 (define pkg-authors '(sperber))
