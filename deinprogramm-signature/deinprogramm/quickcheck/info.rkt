@@ -6,7 +6,7 @@
       "packages.scm"
       "quickcheck-test.scm"
       "quickcheck.scm"
-      "random.scm")))
-
-
+      "random.scm"))
   
+  (define test-omit-paths
+    compile-omit-paths))
