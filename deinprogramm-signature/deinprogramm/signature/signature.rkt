@@ -124,23 +124,25 @@
 	 ((lambda ?params ?body0 ?body1 ...)
 	  (stepper-syntax-property
 	   ;; remember there's an implicit #%app
-	   #'(apply-signature ?cnt-exp
-			     (make-procedure-to-blame ?val-exp
-						      #'?val-exp))
+	   (syntax/loc #'?val-exp
+		       (apply-signature ?cnt-exp
+					(make-procedure-to-blame ?val-exp
+								 #'?val-exp)))
 	   'stepper-skipto/discard
 	   '(syntax-e cdr syntax-e cdr cdr car
 		      syntax-e cdr syntax-e cdr car)))
 	 ((#%plain-lambda ?params ?body0 ?body1 ...)
 	  (stepper-syntax-property
-	   #'(apply-signature ?cnt-exp
-			     (make-procedure-to-blame ?val-exp
-						      #'?val-exp))
+	   (syntax/loc #'?val-exp
+		       (apply-signature ?cnt-exp
+					(make-procedure-to-blame ?val-exp
+								 #'?val-exp)))
 	   'stepper-skipto/discard
 	   '(syntax-e cdr syntax-e cdr cdr car
 		      syntax-e cdr syntax-e cdr car)))
 	 (_
 	  (stepper-syntax-property
-	   #'(apply-signature ?cnt-exp ?val-exp)
+	   (syntax/loc #'?val-exp (apply-signature ?cnt-exp ?val-exp))
 	   'stepper-skipto/discard
 	   '(syntax-e cdr syntax-e cdr cdr car))))))))
 
