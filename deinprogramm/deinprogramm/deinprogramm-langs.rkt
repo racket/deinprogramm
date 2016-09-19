@@ -38,6 +38,7 @@
 	 lang/private/tp-dialog
 	 (lib "test-display.scm" "test-engine")
 	 deinprogramm/signature/signature
+         lang/htdp-langs-interface
 	 )
 
 
@@ -601,7 +602,10 @@
              (void)])))
       
       (define simple-deinprogramm-language%
-        (class* drscheme:language:simple-module-based-language% (deinprogramm-language<%>)
+        ;; htdp-language<%> interface is here to make
+        ;; the "Racket | Disable Tests" menu item
+        ;; work for these languages
+        (class* drscheme:language:simple-module-based-language% (deinprogramm-language<%> htdp-language<%>)
           (init-field sharing-printing
                       abbreviate-cons-as-list
                       allow-sharing?
