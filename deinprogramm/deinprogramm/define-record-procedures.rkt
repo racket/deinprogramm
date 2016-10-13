@@ -15,6 +15,8 @@
 	 deinprogramm/signature/signature-syntax
 	 (only-in deinprogramm/quickcheck/quickcheck arbitrary-record arbitrary-one-of))
 
+(require "private/explicit-write.rkt")
+
 (require (for-syntax scheme/base)
          (for-syntax deinprogramm/syntax-checkers)
          (for-syntax stepper/private/syntax-property))
