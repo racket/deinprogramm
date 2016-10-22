@@ -131,11 +131,10 @@
 			 (cons prop:print-convert-constructor-name
 			       '?constructor)
 			 (cons prop:custom-write
-			       (make-constructor-style-printer
-				(lambda (obj)
-				  (string->symbol (string-append "record:" (symbol->string '?type-name))))
-				(lambda (obj)
-				  (access-record-fields obj raw-generic-access number-of-fields))))
+			       (lambda (r port write?)
+				 (custom-write-record '?type-name 
+						      (access-record-fields r raw-generic-access number-of-fields)
+						      port write?)))
 			 (cons prop:print-converter
 			       (lambda (r recur)
 				 (list '?constructor
@@ -287,6 +286,64 @@
 		(* factor 33)
 		(+ hash (* factor 
 			   (recur (generic-access r (- field-count i 1))))))))))
+
+#|
+(define-record-procedures :pare kons pare? (kar kdr))
+(kons 1 (kons 2 (kons 3 (kons 5 (kons 6 (kons 7 (kons 8 "asdjkfdshfdsjkf")))))))
+
+prints as:
+
+#<record:pare 1
+              #<record:pare 2
+                            #<record:pare 3
+                                          #<record:pare 5
+                                                        #<record:pare 6
+                                                                      #<record:pare 7 #<record:pare 8 "asdjkfdshfdsjkf">>>>>>>
+
+|#
+
+(define (custom-write-record name field-values port write?)
+  (let ((pp? (and (pretty-printing)
+		  (number? (pretty-print-columns)))))
+
+    (write-string "#<" port)
+    (write-string "record" port)
+    (let ((name (symbol->string name)))
+      (when (not (and (positive? (string-length name))
+		    (char=? #\: (string-ref name 0))))
+	  (write-char #\: port))
+      (write-string name port))
+
+    (let-values (((ref-line ref-column ref-pos)
+		  (if pp?
+		      (port-next-location port)
+		      (values 0 -1 0)))) ; to compensate for space
+      (for-each
+       (if pp?
+	   (lambda (field-value)
+	     (let* ((max-column (- (pretty-print-columns) 1)) ; > terminator
+		    (tentative
+		     (make-tentative-pretty-print-output-port
+		      port
+		      max-column
+		      void)))
+	       (display " " tentative)
+	       ((if write? write display) field-value tentative)
+	       (let-values (((line column pos) (port-next-location tentative)))
+		 (if (< column max-column)
+		     (tentative-pretty-print-port-transfer tentative port)
+		     (begin
+		       (tentative-pretty-print-port-cancel tentative)
+		       (let ((count (pretty-print-newline port max-column)))
+			 (write-string (make-string (max 0 (- (+ ref-column 1) count)) #\space) 
+				       port)
+			 ((if write? write display) field-value port)))))))
+	   (lambda (field-value)
+	       (display " " port)
+	       ((if write? write display) field-value port)))
+       field-values)
+      
+      (write-string ">" port))))
 
 ;; (define-record-procedures :pare kons pare? (kar kdr))
 
