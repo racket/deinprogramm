@@ -24,7 +24,7 @@
 	    ((null? v)
 	     v)
 	    ((not (pair? v))
-	     (recur v))
+	     '()) ; the stepper feeds all kinds of garbage in here
 	    (else
 	     (cons (recur (car v))
 		   (list-recur (cdr v))))))))

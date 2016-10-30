@@ -35,12 +35,15 @@
         (write-string suffix p)))
 
     (define (print-contents p leading-space)
-      (let ([lead (if leading-space (make-string (add1 leading-space) #\space) " ")])
-        (for ([elt (get-contents obj)]) ;; note: generic sequence
-          (when leading-space
-            (pretty-print-newline p (pretty-print-columns)))
-          (write-string lead p)
-          (recur elt p))))
+      (let ([lead (if leading-space (make-string (add1 leading-space) #\space) " ")]
+	    [cnt (get-contents obj)])
+	(if (not (sequence? cnt))
+	    (write-string "<contents not a sequence>" p)
+	    (for ([elt cnt]) ;; note: generic sequence
+		 (when leading-space
+		   (pretty-print-newline p (pretty-print-columns)))
+		 (write-string lead p)
+		 (recur elt p)))))
 
     (define (print/one-line p)
       (print-prefix p)
