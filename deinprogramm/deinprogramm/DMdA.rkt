@@ -12,7 +12,9 @@
 	 (except-in deinprogramm/signature/signature-syntax property))
 
 (require (for-syntax scheme/base)
-	 (for-syntax stepper/private/syntax-property))
+	 (for-syntax stepper/private/syntax-property)
+	 (for-syntax syntax/parse)
+	 syntax/parse)
 
 (require deinprogramm/define-record-procedures)
 
@@ -22,6 +24,9 @@
 
 (require (rename-in deinprogramm/quickcheck/quickcheck
 		    (property quickcheck:property)))
+
+(require (rename-in racket/match
+		    (match match0)))
 
 (provide provide lib planet rename-out require #%datum #%module-begin #%top-interaction) ; so we can use this as a language
 
@@ -38,6 +43,8 @@
 	 unspecific
 	 any
 	 property)
+
+(provide match)
 
 (define-syntax provide/rename
   (syntax-rules ()
@@ -1120,3 +1127,8 @@
 					(or (boolean? x)
 					    (property? x))))))
 
+
+(define-syntax (match stx)
+  (syntax-parse stx
+    [(_ case:expr (pattern body:expr) ...)
+     #'(match0 case (pattern body) ...)]))

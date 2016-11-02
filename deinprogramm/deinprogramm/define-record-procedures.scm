@@ -70,6 +70,17 @@
 				       (syntax-e accessor))))
 		  (syntax->list #'(accessor ...))))
 		((our-accessor ...) (generate-temporaries #'(accessor ...)))
+		(real-constructor
+		 ;; use a different name for the value binding, but
+		 ;; make sure the stepper prints the one from the d-r-p form
+		 (let ((name #`?constructor))
+		   (stepper-syntax-property
+		    (datum->syntax
+		     #f
+		     (string->uninterned-symbol
+		      (symbol->string (syntax-e name))))
+		    'stepper-orig-name
+		    name)))
 		((mutator-proc ...)
 		 (map-with-index
 		  (lambda (i mutator)
@@ -153,7 +164,25 @@
 						    (lambda (r val)
 						      (raw-generic-mutate r number-of-fields val)))))
 			(make-inspector))))
-		  (constructor-def #'(define ?constructor constructor-proc))
+		  (real-constructor-def #'(define real-constructor constructor-proc))
+		  (constructor-def #'(define-syntax ?constructor
+				       (let ()
+					 (define-struct info ()
+					   #:super struct:struct-info
+					   ;; support `signature'
+					   #:property 
+					   prop:procedure
+					   (lambda (_ stx)
+					     (syntax-case stx ()
+					       [(self . args) #'(real-constructor . args)]
+					       [else #'real-constructor])))
+					 (make-info (lambda ()
+						      (list #f
+							    #'real-constructor
+							    #'real-predicate
+							    (reverse (syntax->list #'(our-accessor ...)))
+							    (map (lambda (_) #f) (syntax->list #'(our-accessor ...)))
+							    #f))))))
 		  (predicate-def #'(define-values (?predicate real-predicate)
 				     (values predicate-proc predicate-proc)))
 		  (accessor-defs #'(define-values (accessor ... our-accessor ...)
@@ -175,7 +204,7 @@
 					     #,(if (null? (syntax->list #'(?field-spec ...)))
 						   #'(set-signature-arbitrary-promise!
 						      sig
-						      (delay (arbitrary-one-of equal? (?constructor))))
+						      (delay (arbitrary-one-of equal? (real-constructor))))
 						   #'(begin))
 					     sig))
 				       'stepper-skip-completely 
@@ -202,7 +231,7 @@
 						    (let ((arbs (map signature-arbitrary sigs)))
 						      (when (andmap values arbs)
 							(apply arbitrary-record
-							       ?constructor
+							       real-constructor
 							       (list raw-accessor-proc ...)
 							       arbs)))))
 						 sig)))
@@ -217,8 +246,8 @@
 	       (with-syntax ((struct-type-defs
 			      (stepper-syntax-property
 			       (syntax/loc x struct-type-defs) 'stepper-black-box-expr #'?stx))
-			     (constructor-def
-			      (stepper-syntax-property #'constructor-def 'stepper-skip-completely #t))
+			     (real-constructor-def
+			      (stepper-syntax-property #'real-constructor-def 'stepper-skip-completely #t))
 			     (predicate-def
 			      (stepper-syntax-property #'predicate-def 'stepper-skip-completely #t))
 			     (accessor-defs
@@ -228,7 +257,7 @@
 		 #'(begin
 		     signature-def
 		     ;; the signature might be used in the definitions, hence this ordering
-		     struct-type-defs predicate-def constructor-def accessor-defs mutator-defs))))))
+		     struct-type-defs predicate-def real-constructor-def constructor-def accessor-defs mutator-defs))))))
       ((_ ?type-name
 	  ?signature-constructor-name
 	  ?constructor

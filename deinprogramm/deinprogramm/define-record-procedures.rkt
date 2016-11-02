@@ -19,5 +19,7 @@
 
 (require (for-syntax scheme/base)
          (for-syntax deinprogramm/syntax-checkers)
-         (for-syntax stepper/private/syntax-property))
+         (for-syntax stepper/private/syntax-property)
+	 (for-syntax racket/struct-info)
+         (for-syntax syntax/struct))
 (include "define-record-procedures.scm")
