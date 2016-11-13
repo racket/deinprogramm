@@ -14,6 +14,7 @@
 (require (for-syntax scheme/base)
 	 (for-syntax stepper/private/syntax-property)
 	 (for-syntax syntax/parse)
+	 (for-syntax racket/struct-info)
 	 syntax/parse)
 
 (require deinprogramm/define-record-procedures)
@@ -367,7 +368,7 @@
   (read (-> any)
 	"Externe Repräsentation eines Werts in der REPL einlesen und den zugehörigen Wert liefern")))
 
-(define (make-pair f r)
+(define (real-make-pair f r)
   (when (and (not (null? r))
 	     (not (pair? r)))
     (raise
@@ -376,6 +377,25 @@
        (format "Zweites Argument zu make-pair ist keine Liste, sondern ~e" r))
       (current-continuation-marks))))
   (cons f r))
+
+(define-syntax make-pair
+  (let ()
+    ;; make it work with match
+    (define-struct pair-info ()
+      #:super struct:struct-info
+      #:property
+      prop:procedure
+      (lambda (_ stx)
+	(syntax-case stx ()
+	  ((self . args) (syntax/loc stx (real-make-pair . args)))
+	  (else (syntax/loc stx real-make-pair)))))
+    (make-pair-info (lambda ()
+		      (list #f
+			    #'real-make-pair
+			    #'pair?
+			    (list #'cdr #'car)
+			    '(#f #f)
+			    #f)))))
 
 (define (first l)
   (when (not (pair? l))
@@ -395,10 +415,26 @@
       (current-continuation-marks))))
   (cdr l))
 
-(define empty '())
-
 (define (empty? obj)
+  (display "empty called" (current-error-port)) (newline (current-error-port))
   (null? obj))
+
+(define (make-empty) ; dummy
+  '())
+
+(define-syntax empty
+  (let ()
+    (define-struct empty-info (match-empty)
+      #:property prop:procedure (lambda (_ stx)
+				  (syntax-case stx ()
+				    ((self . args)
+				     (raise-syntax-error
+				      #f
+				      "empty muss ohne Klammern verwendet werden"))
+				    (else 
+				     (syntax/loc stx '()))))
+      #:property prop:match-expander (struct-field-index match-empty))
+    (make-empty-info (lambda (stx) #''()))))
 
 (define (cons? obj)
   (pair? obj))
