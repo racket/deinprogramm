@@ -214,7 +214,8 @@
 						 #'(let ((sig (signature ?type-name (predicate real-predicate))))
 						     (set-signature-arbitrary-promise!
 						      sig
-						      (delay (arbitrary-one-of equal? (real-constructor))))))
+						      (delay (arbitrary-one-of equal? (real-constructor))))
+						     sig))
 						((andmap values maybe-field-signatures) ; monomorphic
 						 #'(let* ((sigs (list field-signature ...))
 							  (sig
