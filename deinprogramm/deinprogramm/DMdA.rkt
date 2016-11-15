@@ -416,7 +416,6 @@
   (cdr l))
 
 (define (empty? obj)
-  (display "empty called" (current-error-port)) (newline (current-error-port))
   (null? obj))
 
 (define (make-empty) ; dummy
