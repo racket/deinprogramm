@@ -26,9 +26,6 @@
 (require (rename-in deinprogramm/quickcheck/quickcheck
 		    (property quickcheck:property)))
 
-(require (rename-in racket/match
-		    (match match0)))
-
 (provide provide lib planet rename-out require #%datum #%module-begin #%top-interaction) ; so we can use this as a language
 
 (provide (all-from-out deinprogramm/define-record-procedures))
@@ -415,25 +412,10 @@
       (current-continuation-marks))))
   (cdr l))
 
+(define empty '())
+
 (define (empty? obj)
   (null? obj))
-
-(define (make-empty) ; dummy
-  '())
-
-(define-syntax empty
-  (let ()
-    (define-struct empty-info (match-empty)
-      #:property prop:procedure (lambda (_ stx)
-				  (syntax-case stx ()
-				    ((self . args)
-				     (raise-syntax-error
-				      #f
-				      "empty muss ohne Klammern verwendet werden"))
-				    (else 
-				     (syntax/loc stx '()))))
-      #:property prop:match-expander (struct-field-index match-empty))
-    (make-empty-info (lambda (stx) #''()))))
 
 (define (cons? obj)
   (pair? obj))
@@ -1165,5 +1147,96 @@
 
 (define-syntax (match stx)
   (syntax-parse stx
-    [(_ case:expr (pattern body:expr) ...)
-     #'(match0 case (pattern body) ...)]))
+    ((_ ?case:expr (?pattern0 ?body0:expr) (?pattern ?body:expr) ...)
+     #'(let* ((val ?case)
+	      (nomatch (lambda () (match val (?pattern ?body) ...))))
+	 (match-helper val ?pattern0 ?body0 (nomatch))))
+    ((_ ?case:expr)
+     (syntax/loc stx (error 'match "keiner der Zweige passte")))))
+
+
+(define (list-length=? lis n)
+  (cond
+   ((zero? n) (null? lis))
+   ((null? lis) #f)
+   (else
+    (list-length=? (cdr lis) (- n 1)))))
+    
+       
+(define-syntax (match-helper stx)
+  (syntax-case stx ()
+    ((_ ?id ?pattern0 ?body0 ?nomatch)
+     (syntax-case #'?pattern0 (empty make-pair list)
+       (empty
+	#'(if (null? ?id)
+	      ?body0
+	      ?nomatch))
+       (?var (identifier? #'?var)
+	     #'(let ((?var ?id))
+		 ?body0))
+       (?lit (let ((d (syntax->datum #'?lit)))
+	       (or (string? d) (number? d) (boolean? d)))
+	     #'(if (equal? ?id ?lit)
+		   ?body0
+		   ?nomatch))
+       ('?lit
+	#'(if (equal? ?id '?lit)
+	      ?body0
+	      ?nomatch))
+       ((make-pair ?pat1 ?pat2)
+	#'(if (pair? ?id)
+	      (let ((f (first ?id))
+		    (r (rest ?id)))
+		(match-helper f ?pat1
+			      (match-helper r ?pat2 ?body0 ?nomatch)
+			      ?nomatch))
+	      ?nomatch))
+       ((list)
+	#'(if (null? ?id)
+	      ?body0
+	      ?nomatch))
+       ((list ?pat0 ?pat ...)
+	(let* ((pats (syntax->list #'(?pat0 ?pat ...)))
+	       (cars (generate-temporaries pats))
+	       (cdrs (generate-temporaries pats)))
+	#`(if (and (pair? ?id)
+		   (list-length=? ?id #,(length pats)))
+	      #,(let recur ((ccdr #'?id)
+			    (pats pats)
+			    (cars cars) (cdrs cdrs))
+		  (if (null? pats)
+		      #'?body0
+		      #`(let ((#,(car cars) (car #,ccdr))
+			      (#,(car cdrs) (cdr #,ccdr)))
+			  (match-helper #,(car cars) #,(car pats)
+					#,(recur (car cdrs) (cdr pats) (cdr cars) (cdr cdrs))
+					?nomatch))))
+	      ?nomatch)))
+       ((?const ?pat0 ?pat ...)
+	(identifier? #'?const)
+	(let* ((fail (lambda ()
+		       (raise-syntax-error #f "Operator in match muss ein Record-Konstruktor sein"
+					   #'?const)))
+	       (v (syntax-local-value #'?const fail)))
+	  (unless (struct-info? v)
+	    (fail))
+
+	  (apply
+	   (lambda (_ _cons pred rev-selectors _mutators ?)
+	     (let* ((pats (syntax->list #'(?pat0 ?pat ...)))
+		    (selectors (reverse rev-selectors))
+		    (field-ids (generate-temporaries pats)))
+	       (unless (= (length rev-selectors) (length pats))
+		 (raise-syntax-error #f "Die Anzahl der Felder im match stimmt nicht" stx))
+	       #`(if (#,pred ?id)
+		     #,(let recur ((pats pats)
+				   (selectors selectors)
+				   (field-ids field-ids))
+			 (if (null? pats)
+			     #'?body0
+			     #`(let ((#,(car field-ids) (#,(car selectors) ?id)))
+				 (match-helper #,(car field-ids) #,(car pats)
+					       #,(recur (cdr pats) (cdr selectors) (cdr field-ids))
+					       ?nomatch))))
+		     ?nomatch)))
+	   (extract-struct-info v))))))))
