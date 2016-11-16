@@ -14,6 +14,10 @@
   gons bare?
   (gar gdr))
 
+(define-record-procedures nullary
+  make-nullary nullary?
+  ())
+
 (define all-match-tests
   (test-suite
    "Tests for DeinProgramm match form."
@@ -84,10 +88,12 @@
       (lambda (x)
 	(match x
 	  ((make-pair foo empty) 'pairfoo)
+	  ((make-nullary) 'nullary)
 	  ((kons a b) (list 'kons a b))
 	  ((gons a b) (list 'gons a b)))))
       
     (check-equal? (foo (make-pair foo empty)) 'pairfoo)
+    (check-equal? (foo (make-nullary)) 'nullary)
     (check-equal? (foo (kons 1 2)) '(kons 1 2))
     (check-equal? (foo (gons 1 2)) '(gons 1 2)))))
 

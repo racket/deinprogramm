@@ -1212,7 +1212,7 @@
 					#,(recur (car cdrs) (cdr pats) (cdr cars) (cdr cdrs))
 					?nomatch))))
 	      ?nomatch)))
-       ((?const ?pat0 ?pat ...)
+       ((?const ?pat ...)
 	(identifier? #'?const)
 	(let* ((fail (lambda ()
 		       (raise-syntax-error #f "Operator in match muss ein Record-Konstruktor sein"
@@ -1223,7 +1223,7 @@
 
 	  (apply
 	   (lambda (_ _cons pred rev-selectors _mutators ?)
-	     (let* ((pats (syntax->list #'(?pat0 ?pat ...)))
+	     (let* ((pats (syntax->list #'(?pat ...)))
 		    (selectors (reverse rev-selectors))
 		    (field-ids (generate-temporaries pats)))
 	       (unless (= (length rev-selectors) (length pats))
