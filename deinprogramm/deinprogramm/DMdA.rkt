@@ -1152,6 +1152,7 @@
        (define (pattern-variables pat)
 	 (syntax-case pat (empty make-pair list quote)
 	   (empty '())
+	   (_ '())
 	   (?var (identifier? #'?var)
 		 (list #'?var))
 	   (?lit (let ((d (syntax->datum #'?lit)))
@@ -1193,11 +1194,12 @@
 (define-syntax (match-helper stx)
   (syntax-case stx ()
     ((_ ?id ?pattern0 ?body0 ?nomatch)
-     (syntax-case #'?pattern0 (empty make-pair list quote)
+     (syntax-case #'?pattern0 (empty make-pair list quote _)
        (empty
 	#'(if (null? ?id)
 	      ?body0
 	      ?nomatch))
+       (_ #'?body0)
        (?var (identifier? #'?var)
 	       #'(let ((?var ?id))
 		   ?body0))

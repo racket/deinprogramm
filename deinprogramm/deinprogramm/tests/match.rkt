@@ -44,7 +44,8 @@
     (check-equal? (foo "bar") 'bar)
     (check-equal? (foo 5) 'five)
     (check-equal? (foo 2) 'two))
-   
+
+
    (test-case
     "variables"
     (define foo
@@ -81,6 +82,20 @@
     (check-equal? (match (list 1) ((list) 'bingo) (foo foo)) (list 1))
     (check-equal? (foo (list 'foo 'bar)) 'listfoobar)
     (check-equal? (foo (list 'bar 'foo)) 'listbarfoo))
+
+   (test-case
+    "anything"
+    (check-equal? (match 5 (_ 7)) 7)
+    (check-equal? (match '(1 2) (_ 7)) 7)
+    (check-equal? (match #f (_ 7)) 7)
+    (check-equal? (match #f
+		    ((kons _ _) 7)
+		    (_ 5))
+		  5)
+    (check-equal? (match (kons 1 2)
+		    ((kons _ _) 7)
+		    (_ 5))
+		  7))
 
    (test-case
     "records"
