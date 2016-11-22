@@ -1152,9 +1152,10 @@
        (define (pattern-variables pat)
 	 (syntax-case pat (empty make-pair list quote)
 	   (empty '())
-	   (_ '())
 	   (?var (identifier? #'?var)
-		 (list #'?var))
+	     (if (eq? (syntax->datum #'?var) '_)
+		 '()
+		 (list #'?var)))
 	   (?lit (let ((d (syntax->datum #'?lit)))
 		   (or (string? d) (number? d) (boolean? d)))
 		 '())
@@ -1194,15 +1195,16 @@
 (define-syntax (match-helper stx)
   (syntax-case stx ()
     ((_ ?id ?pattern0 ?body0 ?nomatch)
-     (syntax-case #'?pattern0 (empty make-pair list quote _)
+     (syntax-case #'?pattern0 (empty make-pair list quote)
        (empty
 	#'(if (null? ?id)
 	      ?body0
 	      ?nomatch))
-       (_ #'?body0)
        (?var (identifier? #'?var)
-	       #'(let ((?var ?id))
-		   ?body0))
+	     (if (eq? (syntax->datum #'?var) '_) ; _ is magic
+		 #'?body0
+		 #'(let ((?var ?id))
+		     ?body0)))
        (?lit (let ((d (syntax->datum #'?lit)))
 	       (or (string? d) (number? d) (boolean? d)))
 	     #'(if (equal? ?id ?lit)

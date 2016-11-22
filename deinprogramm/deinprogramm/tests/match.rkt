@@ -88,6 +88,7 @@
     (check-equal? (match 5 (_ 7)) 7)
     (check-equal? (match '(1 2) (_ 7)) 7)
     (check-equal? (match #f (_ 7)) 7)
+    (check-equal? (let ((_ 5)) (match #f (_ _))) 5)
     (check-equal? (match #f
 		    ((kons _ _) 7)
 		    (_ 5))
@@ -111,9 +112,3 @@
     (check-equal? (foo (make-nullary)) 'nullary)
     (check-equal? (foo (kons 1 2)) '(kons 1 2))
     (check-equal? (foo (gons 1 2)) '(gons 1 2)))))
-
-
-	     
-	      
-       
-	      
