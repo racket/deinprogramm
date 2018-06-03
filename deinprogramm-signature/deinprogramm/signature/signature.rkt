@@ -59,7 +59,7 @@
       (display "#<signature>" port))))
   #:property prop:procedure
   (lambda (self . rest)
-    (raise (make-exn:fail:contract "function call: expected a function after the parenthesis, but received a signature"
+    (raise (make-exn:fail:contract (format "expected a function after the parenthesis, but received ~v" self)
 				   (current-continuation-marks)))))
 
 (define (make-signature name enforcer syntax-promise
