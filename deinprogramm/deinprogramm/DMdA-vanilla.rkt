@@ -3,7 +3,7 @@
 (require syntax/docprovide)
 (provide #%app #%top (rename-out (DMdA-module-begin #%module-begin)) #%datum #%top-interaction
 	 require lib planet provide
-	 define let let* letrec lambda cond if else and or
+	 define let let* letrec lambda λ cond if else and or
 	 define-record-procedures define-record-procedures-parametric
 	 match
 	 .. ... .... ..... ......

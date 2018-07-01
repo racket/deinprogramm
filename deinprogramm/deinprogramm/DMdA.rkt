@@ -56,6 +56,7 @@
  (DMdA-let* let*)
  (DMdA-letrec letrec)
  (DMdA-lambda lambda)
+ (DMdA-lambda λ)
  (DMdA-cond cond)
  (DMdA-if if)
  (DMdA-else else)
@@ -365,15 +366,21 @@
   (read (-> any)
 	"Externe Repräsentation eines Werts in der REPL einlesen und den zugehörigen Wert liefern")))
 
-(define (real-make-pair f r)
-  (when (and (not (null? r))
-	     (not (pair? r)))
-    (raise
-     (make-exn:fail:contract
-      (string->immutable-string
-       (format "Zweites Argument zu make-pair ist keine Liste, sondern ~e" r))
-      (current-continuation-marks))))
-  (cons f r))
+(define real-make-pair
+  (let ()
+    (define make-pair
+      (procedure-rename
+       (lambda (f r)
+         (when (and (not (null? r))
+                    (not (pair? r)))
+           (raise
+            (make-exn:fail:contract
+             (string->immutable-string
+              (format "Zweites Argument zu make-pair ist keine Liste, sondern ~e" r))
+             (current-continuation-marks))))
+         (cons f r))
+       'make-pair))
+    make-pair))
 
 (define-syntax make-pair
   (let ()
