@@ -11,7 +11,6 @@
 	 check-property for-all ==> expect expect-within expect-member-of expect-range
 	 signature contract : define-contract -> mixed one-of predicate combined list-of
 	 number real rational integer natural boolean true false string empty-list any property)
-(provide cons)
 (provide-and-document
  procedures
  (all-from-except vanilla: deinprogramm/DMdA procedures
