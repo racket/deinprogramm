@@ -38,6 +38,7 @@
 	 @#,racket[number]
 	 @#,racket[string]
 	 @#,racket[(lambda (id (... ...)) expr)]
+	 @#,racket[(λ (id (... ...)) expr)]
 	 @#,racket[(code:line id (code:comment @#,seclink["id"]{Bezeichner}))]
 	 @#,racket[(cond (expr expr) (expr expr) (... ...))]
 	 @#,racket[(cond (expr expr) (... ...) (else expr))]

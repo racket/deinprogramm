@@ -61,10 +61,14 @@ Operanden ersetzt wurden.}
 @as-index{@litchar{#t}} ist das Literal für den booleschen Wert "wahr",
 @as-index{@litchar{#f}} das Literal für den booleschen Wert "falsch".
 
-@section{@racket[lambda]}
+@section{@racket[lambda] / @racket[λ]}
 
 @defform[(lambda (id ...) expr)]{
 Ein Lambda-Ausdruck ergibt bei der Auswertung eine neue Prozedur.}
+
+@defform[(λ (id ...) expr)]{
+@racket[λ] ist ein anderer Name für @racket[lambda].
+}
 
 @section[#:tag "id"]{Bezeichner}
 
