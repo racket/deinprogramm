@@ -7,8 +7,8 @@
 @title[#:style 'toc #:tag "DMdA-assignments"]{Die Macht der Abstraktion mit Zuweisungen}
 
 This is documentation for the language level @italic{Die Macht der
-Abstraktion mit Zuweisungen} to go with the German textbook
-@italic{Die Macht der Abstraktion}.
+Abstraktion mit Zuweisungen} to go with the German textbooks
+@italic{Schreibe Dein Programm!} / @italic{Die Macht der Abstraktion}.
 
 @declare-exporting[deinprogramm/DMdA-assignments]
 

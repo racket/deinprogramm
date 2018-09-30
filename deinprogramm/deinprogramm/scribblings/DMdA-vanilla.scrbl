@@ -6,8 +6,8 @@
 @title[#:style 'toc #:tag "DMdA-vanilla"]{Die Macht der Abstraktion}
 
 This is documentation for the language level @italic{Die Macht der
-Abstraktion} to go with the German textbook @italic{Die Macht der
-Abstraktion}.
+Abstraktion} to go with the German textbooks
+@italic{Schreibe Dein Programm!} / @italic{Die Macht der Abstraktion}.
 
 @declare-exporting[deinprogramm/DMdA-vanilla #:use-sources (deinprogramm/DMdA)]
 

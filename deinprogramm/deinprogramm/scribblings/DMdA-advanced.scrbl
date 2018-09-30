@@ -5,8 +5,8 @@
 @title[#:style 'toc #:tag "DMdA-advanced"]{Die Macht der Abstraktion fortgeschritten}
 
 This is documentation for the language level @italic{Die Macht der
-Abstraktion - fortgeschritten} that goes with the German textbook
-@italic{Die Macht der Abstraktion}.
+Abstraktion - fortgeschritten} that goes with the German textbooks
+@italic{Schreibe Dein Programm!} / @italic{Die Macht der Abstraktion}.
 
 @declare-exporting[deinprogramm/DMdA-advanced]
 
