@@ -3,7 +3,7 @@
 @(require scribble/manual
           (for-label scheme))
 
-@title[#:style '(toc) #:tag "deinprogramm"]{Sprachebenen und Material zu @italic{Die Macht der Abstraktion}}
+@title[#:style '(toc) #:tag "deinprogramm"]{Sprachebenen und Material zu @italic{Schreibe Dein Programm!} / @italic{Die Macht der Abstraktion}}
 
 Note: This is documentation for the teachpacks that go with the German
 textbooks
