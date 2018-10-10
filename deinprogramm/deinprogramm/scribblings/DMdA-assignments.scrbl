@@ -22,6 +22,10 @@ Abstraktion mit Zuweisungen} to go with the German textbooks
   [field-spec id (id id)]
 )
 (
+  @#,racket[(let ((id expr) (... ...)) expr)]
+  @#,racket[(letrec ((id expr) (... ...)) expr)]
+  @#,racket[(let* ((id expr) (... ...)) expr) ]
+  @#,racket[(begin expr expr (... ...))]
   (set! id expr)
 )
 (

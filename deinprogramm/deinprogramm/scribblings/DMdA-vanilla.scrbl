@@ -13,7 +13,12 @@ Abstraktion} to go with the German textbooks
 
 @racketgrammar*-DMdA[
 #:literals ()
-() () ()
+() ()
+(
+  @#,racket[(let ((id expr) (... ...)) expr)]
+  @#,racket[(letrec ((id expr) (... ...)) expr)]
+  @#,racket[(let* ((id expr) (... ...)) expr) ]
+)
 (
 @#,racket[empty]
 @#,racket[(make-pair pattern pattern)]

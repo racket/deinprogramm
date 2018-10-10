@@ -27,6 +27,10 @@ Abstraktion - fortgeschritten} that goes with the German textbooks
           @#,elem{@racketvalfont{'}@racket[quoted]}]
 )
 (
+  @#,racket[(let ((id expr) (... ...)) expr)]
+  @#,racket[(letrec ((id expr) (... ...)) expr)]
+  @#,racket[(let* ((id expr) (... ...)) expr) ]
+  @#,racket[(begin expr expr (... ...))]
   quoted
   (set! id expr)
   (code:line @#,elem{@racketvalfont{'}@racket[quoted]} (code:comment @#,seclink["advanced-quote"]{Quote-Literal}))
