@@ -13,9 +13,10 @@
                      #:literals (lit ...)
                      (def-rule ...)
                      (prod ...)
-                     (expr-rule ...))
+                     (expr-rule ...)
+		     (pattern-rule ...))
   (racketgrammar*
-   #:literals (define define-record-procedures lambda cond if and or let letrec let* begin 
+   #:literals (define define-record-procedures lambda cond if and or let letrec let* begin match
 		#;require lib planet
 		check-expect check-within check-error
 		signature :
@@ -49,6 +50,7 @@
 	 @#,racket[(letrec ((id expr) (... ...)) expr)]
 	 @#,racket[(let* ((id expr) (... ...)) expr) ]
 	 @#,racket[(begin expr expr (... ...))]
+	 @#,racket[(match expr (pattern expr) (... ...))]
 	 @#,racket[(signature sig)]
 	 @#,racket[(for-all ((id sig) (... ...)) expr)]
 	 @#,racket[(==> expr expr)]
@@ -58,11 +60,19 @@
 	      @#,racket[(one-of expr (... ...))]
 	      @#,racket[(mixed sig (... ...))]
 	      @#,racket[(code:line (sig (... ...) -> sig) (code:comment @#,seclink["proc-signature"]{Prozedur-Signatur}))]
-	      @#,racket[(list sig)]
+	      @#,racket[(list-of sig)]
 	      @#,racket[(code:line %a %b %c (code:comment @#,seclink["signature-variable"]{Signatur-Variable}))]
 	      @#,racket[(combined sig (... ...))]
 	      @#,racket[signature]
-   ]
+	      ]
+   [pattern @#,racket[#t]
+	    @#,racket[#f]
+	    @#,racket[number]
+	    @#,racket[string]
+	    @#,racket[id]
+	    @#,racket[(constructor pattern (... ...))]
+	    pattern-rule ...]
+	    
    [test-case @#,racket[(check-expect expr expr)]
               @#,racket[(check-within expr expr expr)]
 	      @#,racket[(check-member-of expr expr (... ...))]

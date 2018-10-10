@@ -22,12 +22,19 @@ Abstraktion - fortgeschritten} that goes with the German textbooks
           number
           string
           character
+	  symbol
           (quoted ...)
           @#,elem{@racketvalfont{'}@racket[quoted]}]
 )
 (
+  quoted
   (set! id expr)
   (code:line @#,elem{@racketvalfont{'}@racket[quoted]} (code:comment @#,seclink["advanced-quote"]{Quote-Literal}))
+)
+(
+ @#,racket[(make-pair pattern pattern)]
+ @#,racket[(list pattern ...)]
+ @#,elem{@racketvalfont{'}@racket[quoted]}
 )
 ]
 
@@ -48,6 +55,21 @@ Der Wert eines Quote-Literals hat die gleiche externe Repräsentation wie @racke
 
 @defidform[symbol]{
 Signatur für Symbole.
+}
+
+@section[#:tag "pattern-matching-advanced"]{Pattern-Matching}
+
+@defform/none[(match expr (pattern expr) ...)
+		#:grammar [(pattern
+		                ...
+				@#,elem{@racketvalfont{'}@racket[quoted]}
+				)]]{
+Zu den Patterns kommt noch eins hinzu:
+
+@itemlist[
+@item{Das Pattern @racketvalfont{'}@racket[quoted] paßt auf genau auf Werte, welche
+die gleiche externe Repräsentation wie @racket[quoted] haben.}
+]
 }
 
 @section[#:tag "advanced-prim-op"]{Primitive Operationen}

@@ -13,7 +13,7 @@ Abstraktion - Anfänger} to go with the German textbooks
 
 @racketgrammar*-DMdA[
 #:literals ()
-() () ()
+() () () ()
 ]
 
 @|prim-nonterms|
@@ -95,7 +95,7 @@ Programm mit einer Fehlermeldung abgebrochen.
 
 @defform/none[#:literals (cond else)
               (cond (expr expr) ... (else expr))]{
- Die Form des cond-Ausdrucks ist ähnlich zur vorigen, mit der
+ Die Form des @racket[cond]-Ausdrucks ist ähnlich zur vorigen, mit der
  Ausnahme, daß in dem Fall, in dem kein Test @racket[#t] ergibt, der Wert des
  letzten Ausdruck zum Wert der @racket[cond]-Form wird.
 }
@@ -299,11 +299,50 @@ wurden - wohl aber für Signaturen, die mit dem durch
 @scheme[define-record-procedures-parametric] definierten
 Signaturkonstruktor erzeugt wurden.}
 
+@section{Pattern-Matching}
+
+@defform[(match expr (pattern expr) ...)
+		#:grammar [(pattern
+		                id
+				#t
+				#f
+				string
+				number
+				(constructor pattern ...))]
+					
+]{ Ein @racket[match]- Ausdruck führt eine Verzweigung durch, ähnlich
+wie @racket[cond].  Dazu wertet match zunächst einmal den Ausdruck
+@racket[expr] nach dem match zum Wert @italic{v} aus.  Es prüft dann
+nacheinander jeden Zweig der Form @racket[(pattern expr)] dahingehend,
+ob das Pattern @racket[pattern] darin auf den Wert @italic{v} paßt
+(``matcht'').  Beim ersten passenden Zweig @racket[(pattern expr)]
+macht @racket[match] dann mit der Auswertung voh @racket[expr] weiter.
+
+Ob ein Wert @italic{v} paßt, hängt von @racket[pattern] ab:
+
+@itemlist[
+@item{Ein Pattern, das ein Literal ist (@racket[#t], @racket[#f],
+Zeichenketten @racket[string], Zahlen @racket[number]) paßt nur dann,
+wenn der Wert @italic{v} gleich dem Pattern ist.}
+
+@item{Ein Pattern, das ein Bezeichner @racket[id] ist, paßt auf
+@emph{jeden} Wert.  Der Bezeichner wird dann an diesen Wert gebunden
+und kann in dem Ausdruck des Zweigs benutzt werden.
+}
+
+@item{Ein Pattern @racket[(constructor pattern ...)], bei dem
+@racket[constructor] ein Record-Konstruktor ist (ein
+@italic{Konstruktor-Pattern}), paßt auf @italic{v}, falls @italic{v}
+ein passender Record ist, und dessen Felder auf die entsprechenden
+Patterns passen, die noch im Konstruktor-Pattern stehen.}
+]
+}
+
 @section{Parametrische Record-Typ-Definitionen}
 
 @defform[(define-record-procedures-parametric t cc c p (s1 ...))]{
 
-Die @racket[define-record-procedures-parametric] ist wie
+Die Form @racket[define-record-procedures-parametric] ist wie
 @racket[define-record-procedures].  Zusäzlich wird der Bezeichner
 @racket[cc] an einen Signaturkonstruktor gebunden: Dieser akzeptiert
 für jedes Feld eine Feld-Signatur und liefert eine Signatur, die nur

@@ -24,6 +24,10 @@ Abstraktion mit Zuweisungen} to go with the German textbooks
 (
   (set! id expr)
 )
+(
+ @#,racket[(make-pair pattern pattern)]
+ @#,racket[(list pattern ...)]
+)
 ]
 
 @|prim-nonterms|

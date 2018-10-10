@@ -14,6 +14,11 @@ Abstraktion} to go with the German textbooks
 @racketgrammar*-DMdA[
 #:literals ()
 () () ()
+(
+@#,racket[empty]
+@#,racket[(make-pair pattern pattern)]
+@#,racket[(list pattern ...)]
+)
 ]
 
 @|prim-nonterms|
@@ -71,6 +76,31 @@ aus den Bindungen auf die Namen beziehen dürfen, die jeweils vor dem
 Das Vorkommen von @racket[a] in der Bindung von @racket[b] bezieht
 sich also auf das @racket[a] aus dem @racket[let*]-Ausdruck, nicht das
 @racket[a] aus der globalen Definition.
+}
+
+@section[#:tag "pattern-matching-vanilla"]{Pattern-Matching}
+
+@defform/none[(match expr (pattern expr) ...)
+		#:grammar [(pattern
+		                ...
+				empty
+				(make-pair pattern pattern)
+				(list pattern ...)
+				)]]{
+Zu den Patterns aus der "Anfänger"-Sprache kommen noch drei neue hinzu:
+
+@itemlist[
+@item{Das Pattern @racket[empty] paßt auf die leere Liste.}
+
+@item{Das Pattern @racket[(make-pair pattern pattern)] paßt auf Paare, bei
+  denen die beiden inneren Patterns auf @racket[first] bzw. @racket[rest] passen.}
+
+@item{Das Pattern [(list pattern ...)] paßt auf Listen, die genauso
+viele Elemente haben, wie Teil-Patterns im @racket[list]-Pattern
+stehen und bei denen die inneren Patterns auf die Listenelemente
+passen.
+}
+]
 }
 
 @section[#:tag "vanilla-prim-op"]{Primitive Operationen}
