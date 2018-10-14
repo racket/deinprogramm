@@ -28,7 +28,7 @@
      test-case
      #;library-require]
    [definition @#,racket[(define id expr)]
-     @#,racket[(define-record-procedures id id id (id (... ...)))]
+     @#,racket[(define-record-procedures id id id (field (... ...)))]
      @#,racket[(define-record-procedures-parametric (id id (... ...)) id id (id (... ...)))]
      @#,racket[(: id sig)]
      def-rule ...]
@@ -51,6 +51,7 @@
 	 @#,racket[(for-all ((id sig) (... ...)) expr)]
 	 @#,racket[(==> expr expr)]
 	 expr-rule ...]
+   [field id (id id)]
    [sig  id
 	      @#,racket[(predicate expr)]
 	      @#,racket[(one-of expr (... ...))]

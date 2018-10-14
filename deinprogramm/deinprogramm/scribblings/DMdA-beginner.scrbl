@@ -30,13 +30,25 @@ globalen Namen an den Wert von @racket[exp].}
 
 @section{Record-Typ-Definitionen}
 
-@defform[(define-record-procedures t c p (s1 ...))]{
+@defform[(define-record-procedures t c p (f1 ...))]{
 
 Die @racket[define-record-procedures]-Form ist eine Definition
 für einen neuen Record-Typ.  Dabei ist @racket[t] der Name der Record-Signatur,
-@racket[c] der Name des Konstruktors, @racket[p]
-der Name des Prädikats, und die @racket[si] sind die 
-Namen der Selektoren.}
+@racket[c] der Name des Konstruktors und @racket[p]
+der Name des Prädikats.
+
+Jedes @racket[f]@subscript{i} beschreibt ein @italic{Feld} des
+Record-Typs.  Es hat zwei mögliche Formen:
+
+@itemlist[
+
+@item{Das Feld besteht nur aus einem Namen @racket[sel]: Dann ist
+@racket[sel] der Name des Selektors für das Feld.}
+
+@item{Das Feld hat die Form @racket[(sel sig)]: Dann ist @racket[sel]
+der Name des Selektors für das Feld und @racket[sig] die Signatur des Feldes.}
+]
+}
 
 @section[#:tag "application"]{Prozedurapplikation}
 
