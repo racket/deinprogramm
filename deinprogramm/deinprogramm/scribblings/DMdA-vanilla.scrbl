@@ -20,9 +20,12 @@ Abstraktion} to go with the German textbooks
   @#,racket[(let* ((id expr) (... ...)) expr) ]
 )
 (
-@#,racket[empty]
-@#,racket[(make-pair pattern pattern)]
-@#,racket[(list pattern ...)]
+  @#,racket[(list-of sig)]
+)
+(
+  @#,racket[empty]
+  @#,racket[(make-pair pattern pattern)]
+  @#,racket[(list pattern ...)]
 )
 ]
 
@@ -33,6 +36,7 @@ Abstraktion} to go with the German textbooks
 @section[#:tag "signatures-vanilla"]{Signaturen}
 
 @subsection{@racket[list-of]} 
+
 @defform[(list-of sig)]{
 Diese Signatur ist dann für einen Wert gültig, wenn dieser eine Liste ist,
 für dessen Elemente @racket[sig] gültig ist.

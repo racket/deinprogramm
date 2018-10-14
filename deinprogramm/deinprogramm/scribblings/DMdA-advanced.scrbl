@@ -36,6 +36,9 @@ Abstraktion - fortgeschritten} that goes with the German textbooks
   (code:line @#,elem{@racketvalfont{'}@racket[quoted]} (code:comment @#,seclink["advanced-quote"]{Quote-Literal}))
 )
 (
+  @#,racket[(list-of sig)]
+)
+(
  @#,racket[(make-pair pattern pattern)]
  @#,racket[(list pattern ...)]
  @#,elem{@racketvalfont{'}@racket[quoted]}

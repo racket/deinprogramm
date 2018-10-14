@@ -14,6 +14,7 @@
                      (def-rule ...)
                      (prod ...)
                      (expr-rule ...)
+		     (signature-rule ...)
 		     (pattern-rule ...))
   (racketgrammar*
    #:literals (define define-record-procedures lambda cond if and or let letrec let* begin match
@@ -60,7 +61,7 @@
 	      @#,racket[(list-of sig)]
 	      @#,racket[(code:line %a %b %c (code:comment @#,seclink["signature-variable"]{Signatur-Variable}))]
 	      @#,racket[(combined sig (... ...))]
-	      @#,racket[signature]
+	      signature-rule ...
 	      ]
    [pattern @#,racket[#t]
 	    @#,racket[#f]

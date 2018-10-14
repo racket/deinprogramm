@@ -29,6 +29,9 @@ Abstraktion mit Zuweisungen} to go with the German textbooks
   (set! id expr)
 )
 (
+  @#,racket[(list-of sig)]
+)
+(
  @#,racket[(make-pair pattern pattern)]
  @#,racket[(list pattern ...)]
 )
