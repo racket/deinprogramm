@@ -340,6 +340,8 @@
  ("Symbole"
   (symbol? (any -> boolean)
 	   "feststellen, ob ein Wert ein Symbol ist")
+  (symbol=? (symbol symbol -> boolean)
+	    "Sind zwei Symbole gleich?")
   (symbol->string (symbol -> string)
 		  "Symbol in Zeichenkette umwandeln")
   (string->symbol (string -> symbol)
@@ -866,6 +868,20 @@
 (define (boolean=? a b)
   (verify-boolean a 'boolean=?)
   (verify-boolean b 'boolean=?)
+  (eq? a b))
+
+(define (verify-symbol b where)
+  (if (symbol? b)
+      b
+      (raise
+       (make-exn:fail:contract
+	(string->immutable-string
+	 (format "~a: Wert ist kein Symbol: ~e" where b))
+	(current-continuation-marks)))))
+
+(define (symbol=? a b)
+  (verify-symbol a 'symbol=?)
+  (verify-symbol b 'symbol=?)
   (eq? a b))
 
 (define-syntax (DMdA-app stx)

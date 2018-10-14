@@ -17,6 +17,6 @@
 		  quote eq? equal?
 		  set!
 		  define-record-procedures-2
-		  symbol? string->symbol symbol->string
+		  symbol? symbol=? string->symbol symbol->string
 		  apply))
 
