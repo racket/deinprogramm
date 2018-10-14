@@ -9,7 +9,7 @@
 	 define-record-procedures-parametric define-record-procedures-parametric-2
 	 match
          .. ... .... ..... ......
-	 check-expect check-within check-error check-member-of check-range
+	 check-expect check-within check-error check-member-of check-range check-satisfied
 	 check-property for-all ==> expect expect-within expect-member-of expect-range
 	 signature contract : define-contract -> mixed one-of predicate combined list-of
 	 number real rational integer natural boolean true false string empty-list unspecific any property)

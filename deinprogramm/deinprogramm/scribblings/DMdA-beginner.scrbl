@@ -271,6 +271,20 @@ von der entsprechenden Zahl im zweiten @racket[expr] abweicht.}
 Ähnlich wie @racket[check-expect]: Der Testfall überprüft, daß das Resultat
 des ersten Operanden gleich dem Wert eines der folgenden Operanden ist.}
 
+@defform[(check-satisfied expr pred)]{
+Ähnlich wie @racket[check-expect]: Der Testfall überprüft, ob der Wert
+des Ausdrucks @racket[expr] vom Prädikat @racket[pred] erfüllt wird -
+das bedeutet, daß die Prozedur @racket[pred] den Wert @racket[#t]
+liefert, wenn sie auf den Wert von @racket[expr] angewendet wird.
+
+Der folgende Test wird also bestanden:
+@racketblock[(check-satisfied 1 odd?)]
+
+Der folgende Test hingegen wird hingegen nicht bestanden:
+
+@racketblock[(check-satisfied 1 even?)]
+}
+
 @defform[(check-range expr expr expr)]{
 
 Ähnlich wie @racket[check-expect]: Alle drei Operanden müssen 

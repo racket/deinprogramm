@@ -18,7 +18,7 @@
   (racketgrammar*
    #:literals (define define-record-procedures lambda cond if and or let letrec let* begin match
 		#;require lib planet
-		check-expect check-within check-error
+		check-expect check-within check-error check-satisfied
 		signature :
 		predicate one-of mixed list %a %b %c
 		lit ...)
@@ -72,6 +72,7 @@
    [test-case @#,racket[(check-expect expr expr)]
               @#,racket[(check-within expr expr expr)]
 	      @#,racket[(check-member-of expr expr (... ...))]
+	      @#,racket[(check-satisfied expr expr)]
 	      @#,racket[(check-range expr expr expr)]
               @#,racket[(check-error expr expr)]
 	      @#,racket[(check-property expr)]]
