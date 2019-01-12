@@ -217,7 +217,7 @@
 						      (delay (arbitrary-one-of equal? (real-constructor))))
 						     sig))
 						((andmap values maybe-field-signatures) ; monomorphic
-						 #'(let* ((sigs (list field-signature ...))
+						 #'(let* ((sigs (list (signature field-signature) ...))
 							  (sig
 							   (make-lazy-wrap-signature '?type-name #t
 										     type-descriptor raw-predicate
