@@ -26,7 +26,7 @@ Abstraktion - Anfänger} to go with the German textbooks
 
 @defform[(define id expr)]{
 Diese Form ist eine Definition, und bindet @racket[id] als
-globalen Namen an den Wert von @racket[exp].}
+globalen Namen an den Wert von @racket[expr].}
 
 @section{Record-Typ-Definitionen}
 
