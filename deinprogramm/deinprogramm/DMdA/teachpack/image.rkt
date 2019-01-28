@@ -17,7 +17,7 @@ collects/tests/deinprogramm/image.rkt
            lang/private/imageeq
            htdp/error
 	   deinprogramm/signature/signature-syntax
-	   (only-in deinprogramm/DMdA integer natural))
+	   (only-in deinprogramm/DMdA/private/primitives integer natural))
 
 (provide ; #### -primitives doesn't work for us
          image?

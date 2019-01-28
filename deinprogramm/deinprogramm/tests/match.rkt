@@ -3,8 +3,8 @@
 (provide all-match-tests)
 
 (require rackunit
-	 deinprogramm/define-record-procedures
-	 (only-in deinprogramm/DMdA match empty make-pair))
+	 deinprogramm/DMdA/define-record-procedures
+	 (only-in deinprogramm/DMdA/private/primitives match empty make-pair))
 
 (define-record-procedures pare
   kons pare?

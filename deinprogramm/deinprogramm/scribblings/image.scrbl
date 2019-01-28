@@ -10,7 +10,7 @@ with the German textbook
 @italic{@link["http://www.deinprogramm.de/dmda/"]{Die Macht der
 Abstraktion}}.
 
-@declare-exporting[teachpack/deinprogramm/image #:use-sources (deinprogramm/image)]
+@declare-exporting[teachpack/deinprogramm/image #:use-sources (deinprogramm/DMdA/teachpack/image)]
 
 Dieses Teachpack definiert Prozeduren für die Konstruktion von Bildern.
 Einfache Bilder werden als geometrische Formen oder Bitmaps konstruiert.

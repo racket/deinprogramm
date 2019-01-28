@@ -1,7 +1,7 @@
 #lang scheme
  
 (require mzlib/math
-         (only-in deinprogramm/image rectangle line overlay image-color? image image-color)
+         (only-in deinprogramm/DMdA/teachpack/image rectangle line overlay image-color? image image-color)
          (only-in lang/private/imageeq image?)
          deinprogramm/signature/signature-syntax)
 

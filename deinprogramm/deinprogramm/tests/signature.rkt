@@ -3,7 +3,7 @@
 (provide all-signature-tests)
 
 (require rackunit
-	 deinprogramm/define-record-procedures
+	 deinprogramm/DMdA/define-record-procedures
 	 deinprogramm/signature/signature
 	 deinprogramm/signature/signature-german
 	 deinprogramm/signature/signature-syntax)

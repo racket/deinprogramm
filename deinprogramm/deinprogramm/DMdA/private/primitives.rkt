@@ -17,7 +17,7 @@
 	 (for-syntax racket/struct-info)
 	 syntax/parse)
 
-(require deinprogramm/define-record-procedures)
+(require deinprogramm/DMdA/define-record-procedures)
 
 (require (only-in lang/private/teachprims define-teach teach-equal? beginner-equal~?))
 
@@ -28,7 +28,7 @@
 
 (provide provide lib planet rename-out require #%datum #%module-begin #%top-interaction) ; so we can use this as a language
 
-(provide (all-from-out deinprogramm/define-record-procedures))
+(provide (all-from-out deinprogramm/DMdA/define-record-procedures))
 (provide (all-from-out test-engine/scheme-tests))
 (provide signature define-contract :
 	 contract ; legacy
@@ -477,7 +477,7 @@
 ;; This is copied from collects/lang/private/beginner-funs.rkt
 ;; Test-suite support (require is really an effect
 ;;  to make sure that it's loaded)
-(require "test-suite.rkt")
+(require deinprogramm/test-suite)
 
 (define-for-syntax (binding-in-this-module? b)
   (and (list? b)

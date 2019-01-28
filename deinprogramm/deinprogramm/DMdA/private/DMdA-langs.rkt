@@ -44,7 +44,7 @@
 
   (require mzlib/pconvert-prop)
 
-  (require "convert-explicit.rkt")
+  (require deinprogramm/DMdA/private/convert-explicit)
 
   (require (only-in mrlib/syntax-browser render-syntax/snip))
   
@@ -1148,11 +1148,11 @@
       
       (define (test-covered expr)
         (let* ([ht (or (thread-cell-ref current-test-coverage-info)
-                       (error 'deinprogramm-langs
+                       (error 'DMdA-langs
                               "internal-error: no test-coverage table"))]
                [v (hash-ref ht expr
                     (lambda ()
-                      (error 'deinprogramm-langs
+                      (error 'DMdA-langs
                              "internal-error: expression not found: ~.s"
                              expr)))])
           #; (lambda () (set-box! v #t))

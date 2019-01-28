@@ -3,7 +3,7 @@
 (provide all-image-tests)
 
 (require rackunit
-         deinprogramm/image
+         deinprogramm/DMdA/teachpack/image
          (only-in lang/private/imageeq image=?)
          (except-in mred make-color make-pen)
          mzlib/class

@@ -4,7 +4,7 @@
 (require mzlib/pretty
 	 mzlib/struct)
 
-(require "private/explicit-write.rkt")
+(require deinprogramm/private/explicit-write)
 
 (require deinprogramm/signature/signature-german)
 

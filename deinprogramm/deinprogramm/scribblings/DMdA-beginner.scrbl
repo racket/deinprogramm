@@ -9,7 +9,7 @@ This is documentation for the language level @italic{Die Macht der
 Abstraktion - Anfänger} to go with the German textbooks
 @italic{Schreibe Dein Programm!} / @italic{Die Macht der Abstraktion}.
 
-@declare-exporting[deinprogramm/DMdA-beginner #:use-sources (deinprogramm/DMdA deinprogramm/define-record-procedures)]
+@declare-exporting[deinprogramm/DMdA-beginner #:use-sources (deinprogramm/DMdA/private/primitives deinprogramm/define-record-procedures)]
 
 @racketgrammar*-DMdA[
 #:literals ()

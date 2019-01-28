@@ -1,7 +1,7 @@
 (module line3d mzscheme
   (require "world.rkt"
-           "define-record-procedures.rkt")
-  (require (only "DMdA-vanilla.rkt"
+           deinprogramm/DMdA/define-record-procedures)
+  (require (only deinprogramm/DMdA-vanilla
                  empty make-pair empty?
                  first rest))
   (provide make-vec3

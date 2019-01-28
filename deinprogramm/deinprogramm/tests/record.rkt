@@ -3,7 +3,7 @@
 (provide all-record-tests)
 
 (require rackunit
-	 deinprogramm/define-record-procedures
+	 deinprogramm/DMdA/define-record-procedures
 	 deinprogramm/signature/signature-syntax
 	 racket/match)
 

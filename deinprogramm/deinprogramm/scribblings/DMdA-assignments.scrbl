@@ -43,7 +43,7 @@ Abstraktion mit Zuweisungen} to go with the German textbooks
 
 @section{@racket[define-record-procedures-2]}
 
-@declare-exporting[deinprogramm/DMdA]
+@declare-exporting[deinprogramm/DMdA-assignments]
 
 @defform[(define-record-procedures-2 t c p (field-spec ...))]{
 Die @racket[define-record-procedures-2]-Form ist eine Definition für
@@ -56,7 +56,7 @@ Mutators sein.
 
 @section{@racket[define-record-procedures-parametric-2]}
 
-@declare-exporting[deinprogramm/DMdA]
+@declare-exporting[deinprogramm/DMdA-assignments]
 
 @defform[(define-record-procedures-parametric-2 t cc c p (field-spec1 ...))]{
 Diese Form ist wie @racket[define-record-procedures-2], nur parametrisch 
@@ -68,7 +68,7 @@ Konstruktion überprüft und nicht erst beim Aufruf eines Selektors.
 
 @section{@racket[begin]}
 
-@declare-exporting[deinprogramm/DMdA]
+@declare-exporting[deinprogramm/DMdA-assignments]
 
 @defform[(begin expr expr ...)]{
 Bei der Auswertung eines @racket[begin]-Ausdrucks werden nacheinander
@@ -78,7 +78,7 @@ Wert des @racket[begin]-Ausdrucks.
 
 @section{@racket[set!]}
 
-@declare-exporting[deinprogramm/DMdA]
+@declare-exporting[deinprogramm/DMdA-assignments]
 
 @defform[(set! id expr)]{
 Ein @racket[set!]-Ausdruck ist eine Zuweisung, und ändert den Inhalt
@@ -87,7 +87,7 @@ der Zelle, die an @racket[id] gebunden ist, auf den Wert von @racket[expr].
 
 @section[#:tag "assignments-signatures"]{Signaturen}
 
-@declare-exporting[deinprogramm/DMdA]
+@declare-exporting[deinprogramm/DMdA-assignments]
 
 @defidform[unspecific]{
 Signatur für unspezifische Werte, die unwichtig sind - typischerweise für die 
