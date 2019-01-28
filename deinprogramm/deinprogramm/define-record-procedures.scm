@@ -29,7 +29,7 @@
     (lambda (x)
       (syntax-case x ()
 	((_ ?stx
-	    ?type-name
+	    ?type-spec
 	    ?mutable?
 	    ?signature-constructor-name
 	    ?constructor
@@ -37,7 +37,11 @@
 	    (?field-spec ...))
 
 	 (with-syntax
-	     ((number-of-fields (length (syntax->list (syntax (?field-spec ...)))))
+	     (((?type-name ?type-params ...)
+	       (if (identifier? #'?type-spec)
+		   #'(?type-spec)
+		   #'?type-spec))
+	      (number-of-fields (length (syntax->list (syntax (?field-spec ...)))))
 	      ((accessor ...)
 	       (map (lambda (field-spec)
 		      (syntax-case field-spec ()
@@ -132,7 +136,14 @@
 				     (and #,@(map-with-index (lambda (i field-spec)
 							       #`(equal? (raw-generic-access r1 #,i)
 									 (raw-generic-access r2 #,i)))
-							     (syntax->list #'(?field-spec ...)))))))
+							     (syntax->list #'(?field-spec ...))))))
+		  ((?type-param-bindings ...)
+		   (map (lambda (type-param)
+			  (with-syntax ((?type-param type-param)
+					(?type-var (string->symbol
+						    (string-append "%" (symbol->string (syntax->datum type-param))))))
+			    #'(?type-param (signature ?type-var))))
+			(syntax->list #'(?type-params ...)))))
 
 				 
 	       (with-syntax
@@ -171,9 +182,11 @@
 						      (lambda (r val)
 							(raw-generic-mutate r number-of-fields val)))))
 			  (make-inspector))))
-		    (real-constructor-def #'(define/signature real-constructor
-					      (signature (field-signature ... -> ?type-name))
-					      constructor-proc))
+		    (real-constructor-def
+		     #'(define/signature real-constructor
+			 (let (?type-param-bindings ...)
+			   (signature (field-signature ... -> ?type-spec)))
+			   constructor-proc))
 		    (constructor-def #'(define-syntax ?constructor
 					 (let ()
 					   (define-struct info ()
@@ -208,7 +221,7 @@
 					   (syntax->list #'(?param ...)))))
 			 (with-syntax ((base-signature
 					(stepper-syntax-property
-					 #`(define ?type-name
+					 #`(define ?type-spec
 					     #,(cond
 						((null? maybe-field-signatures)
 						 #'(let ((sig (signature ?type-name (predicate real-predicate))))
@@ -351,21 +364,30 @@
 (define-syntax define-record-procedures
   (lambda (x)
     (syntax-case x ()
-      ((_ ?type-name
+      ((_ ?type-spec
           ?constructor
           (?field-spec ...))
        (syntax
 	(define-record-procedures ?type-name ?constructor dummy-predicate (?field-spec ...))))
       
-      ((_ ?type-name
+      ((_ ?type-spec
           ?constructor
           ?predicate
           (?field-spec ...))
 
-       (begin
+       (with-syntax (((?type-name ?type-params ...)
+		      (if (identifier? #'?type-spec)
+			  #'(?type-spec)
+			  #'?type-spec)))
          (check-for-id!
           (syntax ?type-name)
           "Typ-Name ist kein Bezeichner")
+
+	 (for-each (lambda (type-param)
+		     (check-for-id!
+		      type-param
+		      "Parameter zu Typ-Konstruktor ist kein Bezeichner"))
+		   (syntax->list #'(?type-params ...)))
          
          (check-for-id!
           (syntax ?constructor)
@@ -393,27 +415,27 @@
 			 (syntax->list #'(?field-spec ...))
 			 (generate-temporaries #'(?field-spec ...)))))
            (syntax
-            (define-record-procedures* ?stx ?type-name #f
+            (define-record-procedures* ?stx ?type-spec #f
 	      dummy-signature-constructor-name
               ?constructor
               ?predicate
               field-specs)))))
 
-      ((_ ?type-name
+      ((_ ?type-spec
           ?constructor
           ?predicate
           rest)
        (raise-syntax-error 
         #f 
         "Der vierte Operand ist keine Liste von Selektoren" (syntax rest)))
-      ((_ ?type-name
+      ((_ ?type-spec
           ?constructor
           ?predicate
           rest1 rest2 ... (accessor ...))
        (raise-syntax-error 
         #f 
         "Vor den Selektoren steht eine Form zuviel" #'rest1))
-      ((_ ?type-name
+      ((_ ?type-spec
           ?constructor
           ?predicate
           rest1 rest2 ...)

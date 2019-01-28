@@ -4,6 +4,7 @@
 
 (require rackunit
 	 deinprogramm/define-record-procedures
+	 deinprogramm/signature/signature-syntax
 	 racket/match)
 
 (define-record-procedures pare
@@ -22,9 +23,18 @@
   mkons mpare?
   ((mkar set-mkar!) mkdr))
 
-(define-record-procedures-parametric ppare pkons-of
+(define any (signature any %any))
+
+(define-record-procedures (ppare a)
   pkons pkons?
-  (pkar pkdr))
+  ((pkar a)
+   (pkdr any)))
+
+; (: pkons (%a any -> (pkons %a)))
+
+(define-record-procedures-parametric pppare ppkons-of
+  ppkons ppkons?
+  (ppkar ppkdr))
 
 (define-record-procedures-parametric-2 pmpare pmkons-of
   pmkons pmkons?
@@ -76,6 +86,13 @@
     (check-equal? (t c) '(make-chocolate-cookie 3 4)))
 
    (test-case
+    "parametric"
+    (define p (pkons 1 2))
+
+    (check-equal? (pkar p) 1)
+    (check-equal? (pkdr p) 2))
+   
+   (test-case
     "-2"
     (define p (mkons 1 2))
 
@@ -88,10 +105,10 @@
 
    (test-case
     "-parametric"
-    (define p (pkons 1 2))
+    (define p (ppkons 1 2))
 
-    (check-equal? (pkar p) 1)
-    (check-equal? (pkdr p) 2))
+    (check-equal? (ppkar p) 1)
+    (check-equal? (ppkdr p) 2))
 
    (test-case
     "-parametric-2"
