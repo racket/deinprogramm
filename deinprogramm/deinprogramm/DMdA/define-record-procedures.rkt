@@ -18,7 +18,7 @@
 (require deinprogramm/private/explicit-write)
 
 (require (for-syntax scheme/base)
-         (for-syntax deinprogramm/syntax-checkers)
+         (for-syntax deinprogramm/private/syntax-checkers)
          (for-syntax stepper/private/syntax-property)
 	 (for-syntax racket/struct-info)
          (for-syntax syntax/struct))

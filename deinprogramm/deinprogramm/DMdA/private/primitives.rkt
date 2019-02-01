@@ -21,7 +21,7 @@
 
 (require (only-in lang/private/teachprims define-teach teach-equal? beginner-equal~?))
 
-(require (for-syntax deinprogramm/syntax-checkers))
+(require (for-syntax deinprogramm/private/syntax-checkers))
 
 (require (rename-in deinprogramm/quickcheck/quickcheck
 		    (property quickcheck:property)))
