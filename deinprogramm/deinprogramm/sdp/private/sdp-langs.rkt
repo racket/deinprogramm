@@ -44,7 +44,7 @@
 
   (require mzlib/pconvert-prop)
 
-  (require deinprogramm/DMdA/private/convert-explicit)
+  (require deinprogramm/sdp/private/convert-explicit)
 
   (require (only-in mrlib/syntax-browser render-syntax/snip))
   
@@ -59,7 +59,7 @@
     (procedure-rename void '?))
 
   ;; adapted from collects/drracket/private/main.rkt
-  (preferences:set-default 'drracket:deinprogramm:last-set-teachpacks/multi-lib
+  (preferences:set-default 'drracket:deinprogramm:sdp:last-set-teachpacks/multi-lib
                            '() 
                            (lambda (x)
                              (and (list? x)
@@ -118,7 +118,7 @@
              'none
 	     writing-style
              #f
-	     (preferences:get 'drracket:deinprogramm:last-set-teachpacks/multi-lib)))
+	     (preferences:get 'drracket:deinprogramm:sdp:last-set-teachpacks/multi-lib)))
           
           (define/override (default-settings? s)
             (and (not (drscheme:language:simple-settings-case-sensitive s))
@@ -796,7 +796,7 @@
                                      removed
                                      (append removed (list tp-to-add)))))
 
-	       (preferences:set 'drracket:deinprogramm:last-set-teachpacks/multi-lib new-tps)
+	       (preferences:set 'drracket:deinprogramm:sdp:last-set-teachpacks/multi-lib new-tps)
 	       (make-deinprogramm-lang-settings
 		(drscheme:language:simple-settings-case-sensitive settings)
 		(drscheme:language:simple-settings-printing-style settings)
@@ -810,7 +810,7 @@
              (lambda (settings name) 
                (let ([new-tps (filter (lambda (x) (not (equal? (tp-require->str x) name)))
                                       (deinprogramm-lang-settings-teachpacks settings))])
-                 (preferences:set 'drracket:deinprogramm:last-set-teachpacks/multi-lib new-tps)
+                 (preferences:set 'drracket:deinprogramm:sdp:last-set-teachpacks/multi-lib new-tps)
                  (make-deinprogramm-lang-settings
                   (drscheme:language:simple-settings-case-sensitive settings)
                   (drscheme:language:simple-settings-printing-style settings)
@@ -822,7 +822,7 @@
                   (deinprogramm-lang-settings-tracing? settings)
                   new-tps)))
              (lambda (settings) 
-               (preferences:set 'drracket:deinprogramm:last-set-teachpacks/multi-lib '())
+               (preferences:set 'drracket:deinprogramm:sdp:last-set-teachpacks/multi-lib '())
                (make-deinprogramm-lang-settings
                 (drscheme:language:simple-settings-case-sensitive settings)
                 (drscheme:language:simple-settings-printing-style settings)
@@ -1148,11 +1148,11 @@
       
       (define (test-covered expr)
         (let* ([ht (or (thread-cell-ref current-test-coverage-info)
-                       (error 'DMdA-langs
+                       (error 'sdp-langs
                               "internal-error: no test-coverage table"))]
                [v (hash-ref ht expr
                     (lambda ()
-                      (error 'DMdA-langs
+                      (error 'sdp-langs
                              "internal-error: expression not found: ~.s"
                              expr)))])
           #; (lambda () (set-box! v #t))
@@ -1223,66 +1223,44 @@
 	  
         (add-deinprogramm-language
          (instantiate (make-deinprogramm-language% 'write 'explicit) ()
-	   (module '(lib "deinprogramm/DMdA-beginner.rkt"))
-           (manual #"DMdA-beginner")
+	   (module '(lib "deinprogramm/sdp/beginner.rkt"))
+           (manual #"sdp-beginner")
 	   (language-position (list (string-constant teaching-languages)
-				    "DeinProgramm"
-				    "Die Macht der Abstraktion"
-				    "Die Macht der Abstraktion - Anfänger"))
-	   (language-id "DMdA:beginner")
-           (language-numbers '(-500 -300 300 3))
+				    "DeinProgramm" "Schreibe Dein Programm! - Anfänger"))
+	   (language-id "sdp:beginner")
+           (language-numbers '(-500 -300 3
+				    ))
            (sharing-printing #f)
            (abbreviate-cons-as-list #t)
            (allow-sharing? #f)
-	   (reader-module '(lib "DMdA-beginner-reader.ss" "deinprogramm"))
+	   (reader-module '(lib "beginner-reader.rkt" "deinprogramm" "sdp"))
 	   (stepper:supported #t)))
 	
 	(add-deinprogramm-language
          (instantiate (make-deinprogramm-language% 'write 'explicit) ()
-	   (module '(lib "deinprogramm/DMdA-vanilla.rkt"))
-           (manual #"DMdA-vanilla")
+	   (module '(lib "deinprogramm/sdp/vanilla.rkt"))
+           (manual #"sdp-vanilla")
 	   (language-position (list (string-constant teaching-languages)
-				    "DeinProgramm"
-				    "Die Macht der Abstraktion"
-				    "Die Macht der Abstraktion"))
-	   (language-id "DMdA:vanilla")
-           (language-numbers '(-500 -300 300 4))
+				    "DeinProgramm" "Schreibe Dein Programm!"))
+	   (language-id "sdp:vanilla")
+           (language-numbers '(-500 -300 4))
            (sharing-printing #f)
            (abbreviate-cons-as-list #t)
            (allow-sharing? #f)
-	   (reader-module '(lib "DMdA-vanilla-reader.ss" "deinprogramm"))
+	   (reader-module '(lib "vanilla-reader.rkt" "deinprogramm" "sdp"))
 	   (stepper:supported #t)))
 
         (add-deinprogramm-language
-         (instantiate (make-deinprogramm-language% 'write 'explicit) ()
-	   (module '(lib "deinprogramm/DMdA-assignments.rkt"))
-           (manual #"DMdA-assignments")
-	   (language-position (list (string-constant teaching-languages)
-				    "DeinProgramm"
-				    "Die Macht der Abstraktion"
-				    "Die Macht der Abstraktion mit Zuweisungen"))
-	   (language-id "DMdA:assignments")
-           (language-numbers '(-500 -300 300 5))
-           (sharing-printing #t)
-           (abbreviate-cons-as-list #t)
-           (allow-sharing? #t)
-	   (reader-module '(lib "DMdA-assignments-reader.ss" "deinprogramm"))
-	   (stepper:supported #f)
-	   (debugger:supported #t)))
-
-        (add-deinprogramm-language
          (instantiate (make-deinprogramm-language% 'write 'datum) ()
-	   (module '(lib "deinprogramm/DMdA-advanced.rkt"))
-           (manual #"DMdA-advanced")
+	   (module '(lib "deinprogramm/sdp/advanced.rkt"))
+           (manual #"sdp-advanced")
 	   (language-position (list (string-constant teaching-languages)
-				    "DeinProgramm"
-				    "Die Macht der Abstraktion"
-				    "Die Macht der Abstraktion - fortgeschritten"))
-	   (language-id "DMdA:advanced")
-           (language-numbers '(-500 -300 300 6))
+				    "DeinProgramm" "Schreibe Dein Programm! - fortgeschritten"))
+	   (language-id "sdp:advanced")
+           (language-numbers '(-500 -300 6))
            (sharing-printing #t)
            (abbreviate-cons-as-list #t)
            (allow-sharing? #t)
-	   (reader-module '(lib "DMdA-advanced-reader.ss" "deinprogramm"))
+	   (reader-module '(lib "advanced-reader.rkt" "deinprogramm" "sdp"))
 	   (stepper:supported #f)
 	   (debugger:supported #t))))))
