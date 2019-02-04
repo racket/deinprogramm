@@ -1,17 +1,17 @@
 #lang scribble/doc
 @(require scribblings/htdp-langs/common "std-grammar.rkt" "prim-ops.rkt"
-          (for-label deinprogramm/DMdA-vanilla
-                     (only-in deinprogramm/DMdA-beginner define)))
+          (for-label deinprogramm/sdp/vanilla
+                     (only-in deinprogramm/sdp/beginner define)))
 
-@title[#:style 'toc #:tag "DMdA-vanilla"]{Die Macht der Abstraktion}
+@title[#:style 'toc #:tag "sdp-vanilla"]{Schreibe Dein Programm!}
 
-This is documentation for the language level @italic{Die Macht der
-Abstraktion} to go with the German textbooks
-@italic{Schreibe Dein Programm!} / @italic{Die Macht der Abstraktion}.
+This is documentation for the language level @italic{Schreibe Dein Programm!}
+to go with the German textbooks
+@italic{Schreibe Dein Programm!}.
 
-@declare-exporting[deinprogramm/DMdA-vanilla #:use-sources (deinprogramm/DMdA/private/primitives)]
+@declare-exporting[deinprogramm/sdp/vanilla #:use-sources (deinprogramm/sdp/private/primitives)]
 
-@racketgrammar*-DMdA[
+@racketgrammar*-sdp[
 #:literals ()
 () ()
 (
@@ -31,7 +31,7 @@ Abstraktion} to go with the German textbooks
 
 @|prim-nonterms|
 
-@prim-ops['(lib "DMdA-vanilla.rkt" "deinprogramm") #'here]
+@prim-ops['(lib "vanilla.rkt" "deinprogramm" "sdp") #'here]
 
 @section[#:tag "signatures-vanilla"]{Signaturen}
 
@@ -114,4 +114,4 @@ passen.
 
 @section[#:tag "vanilla-prim-op"]{Primitive Operationen}
 
-@prim-op-defns['(lib "DMdA-vanilla.rkt" "deinprogramm") #'here '()]
+@prim-op-defns['(lib "vanilla.rkt" "deinprogramm" "sdp") #'here '()]

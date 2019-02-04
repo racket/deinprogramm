@@ -1,24 +1,24 @@
 #lang scribble/doc
 @(require scribblings/htdp-langs/common scribble/struct
           "std-grammar.rkt" "prim-ops.rkt"
-          (for-label deinprogramm/DMdA-beginner))
+          (for-label deinprogramm/sdp/beginner))
 
-@title[#:style 'toc #:tag "DMdA-beginner"]{Die Macht der Abstraktion - Anfänger}
+@title[#:style 'toc #:tag "sdp-beginner"]{Schreibe Dein Programm! - Anfänger}
 
-This is documentation for the language level @italic{Die Macht der
-Abstraktion - Anfänger} to go with the German textbooks
-@italic{Schreibe Dein Programm!} / @italic{Die Macht der Abstraktion}.
+This is documentation for the language level @italic{Schreibe Dein Programm!
+- Anfänger} to go with the German textbook
+@italic{Schreibe Dein Programm!}.
 
-@declare-exporting[deinprogramm/DMdA-beginner #:use-sources (deinprogramm/DMdA/private/primitives deinprogramm/define-record-procedures)]
+@declare-exporting[deinprogramm/sdp/beginner #:use-sources (deinprogramm/sdp/private/primitives deinprogramm/record)]
 
-@racketgrammar*-DMdA[
+@racketgrammar*-sdp[
 #:literals ()
 () () () () ()
 ]
 
 @|prim-nonterms|
 
-@prim-ops['(lib "DMdA-beginner.rkt" "deinprogramm") #'here]
+@prim-ops['(lib "beginner.rkt" "deinprogramm" "sdp") #'here]
 
 @; ----------------------------------------------------------------------
 
@@ -510,5 +510,5 @@ Eigenschaft: @racket[(==> c p)] legt fest, daß die Eigenschaft
 
 @section[#:tag "beginner-prim-ops"]{Primitive Operationen}
 
-@declare-exporting[deinprogramm/DMdA-beginner]
-@prim-op-defns['(lib "DMdA-beginner.rkt" "deinprogramm") #'here '()]
+@declare-exporting[deinprogramm/sdp/beginner]
+@prim-op-defns['(lib "beginner.rkt" "deinprogramm" "sdp") #'here '()]

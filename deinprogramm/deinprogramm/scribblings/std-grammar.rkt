@@ -2,14 +2,14 @@
 #lang scheme/base
 (require scribblings/htdp-langs/common
          scribble/decode
-         (for-label deinprogramm/DMdA-beginner))
+         (for-label deinprogramm/sdp/beginner))
 
 (provide prim-nonterms
-         racketgrammar*-DMdA)
+         racketgrammar*-sdp)
 
 (define ex-str "Dies ist eine Zeichenkette, die \" enthält.")
 
-(define-syntax-rule (racketgrammar*-DMdA
+(define-syntax-rule (racketgrammar*-sdp
                      #:literals (lit ...)
                      (def-rule ...)
                      (prod ...)

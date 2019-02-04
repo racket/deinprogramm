@@ -8,8 +8,8 @@
 
 @title{Konstruktionsanleitungen 1 bis 10}
 
-This documents the design recipes of the German textbook @italic{Die
-Macht der Abstraktion}.
+This documents the design recipes of the German textbook @italic{Schreibe
+Dein Programm!}.
 
 @table-of-contents[]
 
