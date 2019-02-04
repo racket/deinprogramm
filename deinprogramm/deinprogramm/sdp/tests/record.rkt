@@ -19,10 +19,6 @@
   make-chocolate-cookie chocolate-cookie?
   (chocolate-cookie-chocolate chocolate-cookie-cookie))
 
-(define-record-procedures-2 mpare
-  mkons mpare?
-  ((mkar set-mkar!) mkdr))
-
 (define any (signature any %any))
 
 (define-record-procedures (ppare a)
@@ -30,16 +26,6 @@
   ((pkar a)
    (pkdr any)))
 
-; (: pkons (%a any -> (pkons %a)))
-
-(define-record-procedures-parametric pppare ppkons-of
-  ppkons ppkons?
-  (ppkar ppkdr))
-
-(define-record-procedures-parametric-2 pmpare pmkons-of
-  pmkons pmkons?
-  ((pmkar set-pmkar!) pmkdr))
- 
 (define all-record-tests
   (test-suite
    "Tests for DeinProgramm records."
@@ -90,33 +76,4 @@
     (define p (pkons 1 2))
 
     (check-equal? (pkar p) 1)
-    (check-equal? (pkdr p) 2))
-   
-   (test-case
-    "-2"
-    (define p (mkons 1 2))
-
-    (check-equal? (mkar p) 1)
-    (check-equal? (mkdr p) 2)
-
-    (set-mkar! p 5)
-
-    (check-equal? (mkar p) 5))
-
-   (test-case
-    "-parametric"
-    (define p (ppkons 1 2))
-
-    (check-equal? (ppkar p) 1)
-    (check-equal? (ppkdr p) 2))
-
-   (test-case
-    "-parametric-2"
-    (define p (pmkons 1 2))
-
-    (check-equal? (pmkar p) 1)
-    (check-equal? (pmkdr p) 2)
-
-    (set-pmkar! p 5)
-
-    (check-equal? (pmkar p) 5))))
+    (check-equal? (pkdr p) 2))))

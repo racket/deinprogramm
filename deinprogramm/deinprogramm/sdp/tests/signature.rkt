@@ -291,7 +291,7 @@
 
    (test-case
     "record-wrap"
-    (define-record-procedures-parametric pare pare-of kons pare? (kar kdr))
+    (define-record-procedures (pare-of a b) kons pare? ((kar a) (kdr b)))
     (define ctr (pare-of integer boolean))
     (let ((obj (apply-signature ctr (kons 1 #t))))
       (check-equal? (kar obj) 1)
@@ -341,7 +341,7 @@
 				    (set! count (+ 1 count))
 				    (integer? obj))
 				  'integer-marker))
-      (define-record-procedures-parametric pare pare-of kons pare? (kar kdr))
+      (define-record-procedures (pare-of a b) kons pare? ((kar a) (kdr b)))
       (define ctr (signature (pare-of counting-integer boolean)))
       (let ((obj (apply-signature ctr (apply-signature ctr (kons 1 #t)))))
 	(check-equal? count 1)
@@ -402,7 +402,7 @@
 				   (integer? obj))
 				 'integer-marker))
 
-      (define-record-procedures-parametric pare pare-of kons pare? (kar kdr))
+      (define-record-procedures (pare-of a b) kons pare? ((kar a) (kdr b)))
       (define ctr (signature (pare-of counting-integer boolean)))
       (let ((obj (apply-signature ctr (apply-signature ctr (kons 1 #t)))))
 	(check-equal? count 1)
@@ -475,7 +475,7 @@
 				   (set! count (+ 1 count))
 				   (integer? obj))
 				 'integer-marker))
-      (define-record-procedures-parametric pare pare-of raw-kons pare? (kar kdr))
+      (define-record-procedures (pare-of a b) raw-kons pare? ((kar a) (kdr b)))
 
       (define empty-list (signature (predicate null?)))
 
@@ -608,7 +608,7 @@
 
    (test-case
     "wrap equality"
-    (define-record-procedures-parametric pare pare-of raw-kons pare? (kar kdr))
+    (define-record-procedures (pare-of a b) raw-kons pare? ((kar a) (kdr b)))
 
     (define empty-list (signature (predicate null?)))
     

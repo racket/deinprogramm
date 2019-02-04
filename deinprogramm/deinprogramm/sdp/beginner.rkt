@@ -4,7 +4,7 @@
 (provide #%app #%top (rename-out (sdp-module-begin #%module-begin)) #%datum #%top-interaction
 	 require lib planet provide
          define lambda λ cond if else and or
-         define-record-procedures define-record-procedures-parametric
+         define-record-procedures
 	 match
          .. ... .... ..... ......
 	 check-expect check-within check-error check-member-of check-range check-satisfied
@@ -14,7 +14,7 @@
 (provide-and-document
  procedures
  (all-from-except beginner: deinprogramm/sdp/private/primitives procedures
-		  set! define-record-procedures-2 eq? equal?
+		  set! eq? equal?
 		  quote
 		  make-pair pair? cons? first rest
 		  length map for-each reverse append list list-ref fold

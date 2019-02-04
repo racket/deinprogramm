@@ -1,9 +1,6 @@
 #lang scheme/base
 
-(provide define-record-procedures
-	 define-record-procedures-parametric
-         define-record-procedures-2
-	 define-record-procedures-parametric-2)
+(provide define-record-procedures)
 
 (require scheme/promise
 	 mzlib/struct
@@ -54,8 +51,6 @@
       (syntax-case x ()
 	((_ ?stx
 	    ?type-spec
-	    ?mutable?
-	    ?signature-constructor-name
 	    ?constructor
 	    ?predicate
 	    (?field-spec ...))
@@ -243,8 +238,7 @@
 					       #'(at ?param (property ?accessor ?param))))
 					   (syntax->list #'(our-accessor ...))
 					   (syntax->list #'(?param ...)))))
-			 (with-syntax ((base-signature
-					(stepper-syntax-property
+			 (stepper-syntax-property
 					 #`(define ?type-spec
 					     #,(cond
 						((null? maybe-field-signatures)
@@ -273,40 +267,7 @@
 						(else
 						 #'(signature ?type-name (predicate real-predicate)))))
 					 'stepper-skip-completely 
-					 #t))
-				       (constructor-signature
-					(stepper-syntax-property
-					 (if (syntax->datum #'?mutable?)
-					     ;; no lazy signatures
-					     #'(define (?signature-constructor-name ?param ...)
-						 (signature
-						  (combined (at ?type-name (predicate real-predicate))
-							    component-signature ...)))
-					     ;; lazy signatures
-					     #'(define (?signature-constructor-name ?param ...)
-						 (let* ((sigs (list ?param ...))
-							(sig
-							 (make-lazy-wrap-signature '?type-name #t
-										   type-descriptor raw-predicate
-										   sigs
-										   #'?type-name)))
-						   (set-signature-arbitrary-promise! 
-						    sig
-						    (delay
-						      (let ((arbs (map signature-arbitrary sigs)))
-							(when (andmap values arbs)
-							  (apply arbitrary-record
-								 real-constructor
-								 (list raw-accessor-proc ...)
-								 arbs)))))
-						   sig)))
-					 'stepper-skip-completely
-					 #t)))
-			   #'(begin
-			       ;; we use real-predicate to avoid infinite recursion if a signature
-			       ;; for ?type-name using ?predicate is inadvertently defined
-			       base-signature
-			       constructor-signature))))))
+					 #t)))))
 		 ;; again, with properties
 		 (with-syntax ((struct-type-defs
 				(stepper-syntax-property
@@ -325,7 +286,6 @@
 		       ;; the signature might be used in the definitions, hence this ordering
 		       predicate-def real-constructor-def constructor-def accessor-defs mutator-defs)))))))
       ((_ ?type-name
-	  ?signature-constructor-name
 	  ?constructor
 	  ?predicate
 	  rest)
@@ -333,7 +293,6 @@
 	#f 
 	"Der vierte Operand ist illegal" (syntax rest)))
       ((_ ?type-name
-	  ?signature-constructor-name
 	  ?constructor
 	  ?predicate
 	  rest1 rest2 ... (?field-spec ...))
@@ -341,7 +300,6 @@
 	#f 
 	"Vor den Selektoren/Mutatoren steht eine Form zuviel" #'rest1))
       ((_ ?type-name
-	  ?signature-constructor-name
 	  ?constructor
 	  ?predicate
 	  rest1 rest2 ...)
@@ -439,8 +397,7 @@
 			 (syntax->list #'(?field-spec ...))
 			 (generate-temporaries #'(?field-spec ...)))))
            (syntax
-            (define-record-procedures* ?stx ?type-spec #f
-	      dummy-signature-constructor-name
+            (define-record-procedures* ?stx ?type-spec
               ?constructor
               ?predicate
               field-specs)))))
@@ -472,202 +429,4 @@
         "Zu wenige Operanden für define-record-procedures" x))
       )))
 
-(define-syntax define-record-procedures-parametric
-  (lambda (x)
-    (syntax-case x ()
-      ((_ ?type-name
-	  ?signature-constructor-name
-          ?constructor
-          ?predicate
-          (accessor  ...))
-
-
-       (begin
-	 (check-for-id!
-	  (syntax ?type-name)
-	  "Record-Name ist kein Bezeichner")
-
-	 (check-for-id!
-	  (syntax ?signature-constructor-name)
-	  "Signaturkonstruktor-Name ist kein Bezeichner")
-
-         (check-for-id!
-          (syntax ?constructor)
-          "Konstruktor ist kein Bezeichner")
-
-	 (check-for-id!
-	  (syntax ?predicate)
-	  "Prädikat ist kein Bezeichner")
-         
-	 (check-for-id-list! 
-	  (syntax->list (syntax (accessor ...)))
-	  "Selektor ist kein Bezeichner")
-
-	 (with-syntax ((?stx x)
-		       ((dummy-mutator ...)
-			(generate-temporaries (syntax (accessor ...)))))
-	   (syntax
-	    (define-record-procedures* ?stx ?type-name #f ?signature-constructor-name
-	      ?constructor
-	      ?predicate
-	      ((accessor dummy-mutator #f) ...))))))
-
-      ((_ ?type-name
-	  ?signature-constructor-name
-	  ?constructor
-	  ?predicate
-	  rest)
-       (raise-syntax-error 
-	#f 
-	"Der vierte Operand ist keine Liste von Selektoren" (syntax rest)))
-      ((_ ?type-name
-	  ?signature-constructor-name
-	  ?constructor
-	  ?predicate
-	  rest1 rest2 ...)
-       (raise-syntax-error 
-	#f 
-	"Zu viele Operanden für define-record-procedures-parametric" x))
-      ((_ arg1 ...)
-       (raise-syntax-error 
-	#f 
-	"Zu wenige Operanden für define-record-procedures-parametric" x))
-      )))
-
-;; (define-record-procedures-2 :pare kons pare? ((kar set-kar!) kdr))
-
-(define-syntax define-record-procedures-2
-  (lambda (x)
-    (syntax-case x ()
-      ((_ ?type-name
-	  ?constructor
-	  ?predicate
-	  (?field-spec ...))
-
-       (begin
-	 (check-for-id!
-	  (syntax ?type-name)
-	  "Record-Name ist kein Bezeichner")
-         
-	 (check-for-id!
-	  (syntax ?constructor)
-	  "Konstruktor ist kein Bezeichner")
-         
-	 (check-for-id!
-	  (syntax ?predicate)
-	  "Prädikat ist kein Bezeichner")
-	 
-	 (with-syntax ((?stx x)
-		       (field-specs
-			(map
-			 (lambda (field-spec dummy-mutator)
-			   (syntax-case field-spec ()
-			     ((accessor mutator signature)
-			      (begin
-				(check-for-id! (syntax accessor)
-					       "Selektor ist kein Bezeichner")
-				#'(accessor mutator signature)))
-			     ((accessor mutator)
-			      (begin
-				(check-for-id! (syntax accessor)
-					       "Selektor ist kein Bezeichner")
-				#'(accessor mutator #f)))
-			     (accessor
-			      (begin
-				(check-for-id! (syntax accessor)
-					       "Selektor ist kein Bezeichner")
-				#`(accessor #,dummy-mutator #f)))))
-			 (syntax->list #'(?field-spec ...))
-			 (generate-temporaries #'(?field-spec ...)))))
-	   #'(define-record-procedures* ?stx ?type-name #t
-	       dummy-signature-constructor-name
-	       ?constructor
-	       ?predicate
-	       field-specs))))
-      ((_ ?type-name
-	  ?constructor
-	  ?predicate
-	  rest)
-       (raise-syntax-error 
-	#f 
-	"Der vierte Operand ist illegal" (syntax rest)))
-      ((_ ?type-name
-	  ?constructor
-	  ?predicate
-	  rest1 rest2 ...)
-       (raise-syntax-error 
-	#f 
-	"Zu viele Operanden für define-record-procedures-2" x))
-      ((_ arg1 ...)
-       (raise-syntax-error 
-	#f 
-	"Zu wenige Operanden für define-record-procedures-2" x)))))
-
-(define-syntax define-record-procedures-parametric-2
-  (lambda (x)
-    (syntax-case x ()
-      ((_ ?type-name
-	  ?signature-constructor-name
-	  ?constructor
-	  ?predicate
-	  (?field-spec ...))
-
-       (begin
-	 (check-for-id!
-	  (syntax ?type-name)
-	  "Record-Name ist kein Bezeichner")
-
-	 (check-for-id!
-	  (syntax ?signature-constructor-name)
-	  "Signaturkonstruktor-Name ist kein Bezeichner")
-
-	 (check-for-id!
-	  (syntax ?constructor)
-	  "Konstruktor ist kein Bezeichner")
-         
-	 (check-for-id!
-	  (syntax ?predicate)
-	  "Prädikat ist kein Bezeichner")
-	 
-	 (with-syntax ((?stx x)
-		       (field-specs
-			(map
-			 (lambda (field-spec dummy-mutator)
-			   (syntax-case field-spec ()
-			     ((accessor mutator)
-			      (begin
-				(check-for-id! (syntax accessor)
-					       "Selektor ist kein Bezeichner")
-				#'(accessor mutator #f)))
-			     (accessor
-			      (begin
-				(check-for-id! (syntax accessor)
-					       "Selektor ist kein Bezeichner")
-				#`(accessor #,dummy-mutator #f)))))
-			 (syntax->list #'(?field-spec ...))
-			 (generate-temporaries #'(?field-spec ...)))))
-	   #'(define-record-procedures* ?stx ?type-name #t ?signature-constructor-name
-	       ?constructor
-	       ?predicate
-	       field-specs))))
-      ((_ ?type-name
-	  ?signature-constructor-name
-	  ?constructor
-	  ?predicate
-	  rest)
-       (raise-syntax-error 
-	#f 
-	"Der vierte Operand ist illegal" (syntax rest)))
-      ((_ ?type-name
-	  ?signature-constructor-name
-	  ?constructor
-	  ?predicate
-	  rest1 rest2 ...)
-       (raise-syntax-error 
-	#f 
-	"Zu viele Operanden für define-record-procedures-parametric-2" x))
-      ((_ arg1 ...)
-       (raise-syntax-error 
-	#f 
-	"Zu wenige Operanden für define-record-procedures-parametric-2" x)))))
 
