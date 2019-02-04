@@ -186,11 +186,12 @@
                  (ensure-drscheme-secrets-declared drs-namespace)
                  (namespace-attach-module drs-namespace ''drscheme-secrets)
                  (error-display-handler teaching-languages-error-display-handler)
-
+		 (error-value->string-handler 
+                  (lambda (x y) (teaching-languages-error-value->string settings x y)))
 		 (current-eval (add-annotation (deinprogramm-lang-settings-tracing? settings) (current-eval)))
 
                  (error-print-source-location #f)
-                 (read-decimal-as-inexact #t)
+                 (read-decimal-as-inexact #f)
                  (read-accept-dot (get-read-accept-dot))
                  (namespace-attach-module drs-namespace scheme-test-module-name)
                  (namespace-require scheme-test-module-name)
@@ -232,13 +233,22 @@
 		     settings
 		     'infinity)))))))
 
+          (define/private (teaching-languages-error-value->string settings v len)
+            (let ([sp (open-output-string)])
+              (set-printing-parameters settings (λ () (print v sp)))
+              (flush-output sp)
+              (let ([s (get-output-string sp)])
+		(cond
+                 [(<= (string-length s) len) s]
+                 [else (string-append (substring s 0 (- len 3)) "...")]))))
+	
 	  ;; set-printing-parameters : settings ( -> TST) -> TST
 	  ;; is implicitly exposed to the stepper.  watch out!  --  john
           (define/public (set-printing-parameters settings thunk)
             (parameterize ([pc:booleans-as-true/false #f]
                            [pc:abbreviate-cons-as-list (get-abbreviate-cons-as-list)]
-                           [pretty-print-show-inexactness #f]
-                           [pretty-print-exact-as-decimal #f]
+                           [pretty-print-show-inexactness #t]
+                           [pretty-print-exact-as-decimal #t]
                            [pc:use-named/undefined-handler
                             (lambda (x)
                               (and (get-use-function-output-syntax?)
@@ -938,7 +948,7 @@
             (class* % (stepper-language<%>)
               (init-field stepper:supported)
               (define/override (stepper:supported?) stepper:supported)
-              (define/override (stepper:show-inexactness?) #f)
+              (define/override (stepper:show-inexactness?) #t)
 	      (define/override (stepper:print-boolean-long-form?) #f)
               (define/override (stepper:show-consumed-and/or-clauses?) #f)
               (define/override (stepper:render-to-sexp val settings language-level)
