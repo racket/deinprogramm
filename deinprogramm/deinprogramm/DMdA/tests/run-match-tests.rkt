@@ -1,6 +1,6 @@
 #lang racket/base
 
 (require rackunit/text-ui)
-(require deinprogramm/tests/match)
+(require deinprogramm/DMdA/tests/match)
 
 (run-tests all-match-tests)
