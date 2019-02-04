@@ -296,18 +296,6 @@
   (computer-hard-drive (computer -> rational)
 		       "Festplattenkapazität aus Computer extrahieren"))
 
- ("Schokokekse"
-  (chocolate-cookie signature
-		    "Signatur für Schokokekse")
-  (make-chocolate-cookie (number number -> chocolate-cookie)
-			 "Schokokeks aus Schoko- und Keks-Anteil konstruieren")
-  (chocolate-cookie? (any -> boolean)
-		     "feststellen, ob ein Wert ein Schokokeks ist")
-  (chocolate-cookie-chocolate (chocolate-cookie -> number)
-			      "Schoko-Anteil eines Schokokekses extrahieren")
-  (chocolate-cookie-cookie (chocolate-cookie -> number)
-			   "Keks-Anteil eines Schokokekses extrahieren"))
-
  ;; #### Zeichen sollten noch dazu, Vektoren wahrscheinlich auch
 
  ("Zeichenketten"
@@ -930,10 +918,6 @@
 
 (define (write-newline)
   (newline))
-
-(define-record-procedures chocolate-cookie
-  make-chocolate-cookie chocolate-cookie?
-  (chocolate-cookie-chocolate chocolate-cookie-cookie))
 
 (define-record-procedures computer
   make-computer computer?
