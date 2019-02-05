@@ -7,24 +7,32 @@
 	 deinprogramm/signature/signature-syntax
 	 racket/match)
 
+(define any (signature any %any))
+(define rational (signature (predicate rational?)))
+(define string (signature (predicate string?)))
+
 (define-record-procedures pare
   kons pare?
-  (kar kdr))
+  (kar any)
+  (kdr any))
 
 (define-record-procedures paire
   koins
-  (kair kdir))
+  (kair any)
+  (kdir any))
 
 (define-record-procedures chocolate-cookie
   make-chocolate-cookie chocolate-cookie?
-  (chocolate-cookie-chocolate chocolate-cookie-cookie))
-
-(define any (signature any %any))
+  (chocolate-cookie-chocolate rational)
+  (chocolate-cookie-cookie    rational))
 
 (define-record-procedures (ppare a)
   pkons pkons?
-  ((pkar a)
-   (pkdr any)))
+  (pkar a)
+  (pkdr any))
+
+(define-record-procedures nullary
+  make-nullary nullary?)
 
 (define all-record-tests
   (test-suite

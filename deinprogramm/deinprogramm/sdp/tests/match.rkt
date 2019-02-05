@@ -4,19 +4,23 @@
 
 (require rackunit
 	 deinprogramm/sdp/record
+	 deinprogramm/signature/signature-syntax
 	 (only-in deinprogramm/sdp/private/primitives match empty make-pair))
+
+(define any (signature any %any))
 
 (define-record-procedures pare
   kons pare?
-  (kar kdr))
+  (kar any)
+  (kdr any))
 
 (define-record-procedures bare
   gons bare?
-  (gar gdr))
+  (gar any)
+  (gdr any))
 
 (define-record-procedures nullary
-  make-nullary nullary?
-  ())
+  make-nullary nullary?)
 
 (define all-match-tests
   (test-suite
@@ -107,7 +111,7 @@
 	  ((make-nullary) 'nullary)
 	  ((kons a b) (list 'kons a b))
 	  ((gons a b) (list 'gons a b)))))
-      
+
     (check-equal? (foo (make-pair foo empty)) 'pairfoo)
     (check-equal? (foo (make-nullary)) 'nullary)
     (check-equal? (foo (kons 1 2)) '(kons 1 2))

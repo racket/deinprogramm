@@ -921,9 +921,9 @@
 
 (define-record-procedures computer
   make-computer computer?
-  (computer-processor
-   computer-ram
-   computer-hard-drive))
+  (computer-processor  string)
+  (computer-ram        rational)
+  (computer-hard-drive rational))
 
 (define (violation text)
   (error text))
