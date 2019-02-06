@@ -646,7 +646,7 @@
           (define/public (get-deinprogramm-style-delta) style-delta)
           
           (super-instantiate ()
-            (language-url "http://www.deinprogramm.de/dmda/"))))
+            (language-url "http://www.deinprogramm.de/sdp/"))))
       
       (define (language-extension %)
         (class %
