@@ -11,27 +11,27 @@
 (define rational (signature (predicate rational?)))
 (define string (signature (predicate string?)))
 
-(define-record-procedures pare
+(define-record-functions pare
   kons pare?
   (kar any)
   (kdr any))
 
-(define-record-procedures paire
+(define-record-functions paire
   koins
   (kair any)
   (kdir any))
 
-(define-record-procedures chocolate-cookie
+(define-record-functions chocolate-cookie
   make-chocolate-cookie chocolate-cookie?
   (chocolate-cookie-chocolate rational)
   (chocolate-cookie-cookie    rational))
 
-(define-record-procedures (ppare a)
+(define-record-functions (ppare a)
   pkons pkons?
   (pkar a)
   (pkdr any))
 
-(define-record-procedures nullary
+(define-record-functions nullary
   make-nullary nullary?)
 
 (define all-record-tests

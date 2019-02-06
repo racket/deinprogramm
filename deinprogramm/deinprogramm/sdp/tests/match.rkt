@@ -9,17 +9,17 @@
 
 (define any (signature any %any))
 
-(define-record-procedures pare
+(define-record-functions pare
   kons pare?
   (kar any)
   (kdr any))
 
-(define-record-procedures bare
+(define-record-functions bare
   gons bare?
   (gar any)
   (gdr any))
 
-(define-record-procedures nullary
+(define-record-functions nullary
   make-nullary nullary?)
 
 (define all-match-tests

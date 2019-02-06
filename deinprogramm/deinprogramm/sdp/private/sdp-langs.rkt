@@ -364,6 +364,13 @@
                     (newline port)]))
                settings
                width))))
+
+      (define (procedure-output proc)
+	(cond
+	 ((object-name proc)
+	  => (lambda (name)
+	       (string-append "#<function:" (symbol->string name) ">")))
+	 (else "#<function>")))
       
       ;; setup-printing-parameters : (-> void) -> void
       (define (setup-printing-parameters thunk settings width)
@@ -388,6 +395,7 @@
                           (lambda (value display? port)
                             (cond
 			      [(not (port-writes-special? port)) #f]
+			      [(procedure? value) (string-length (procedure-output value))]
                               [(is-a? value snip%) 1]
                               [(use-number-snip? value) 1]
                               [(syntax? value) 1]
@@ -396,6 +404,8 @@
                          [pretty-print-print-hook
                           (lambda (value display? port)
                             (cond
+			      [(procedure? value)
+			       (write-special (procedure-output value) port)]
                               [(is-a? value snip%)
                                (write-special value port)
                                1]
@@ -1062,7 +1072,7 @@
 				     (and mark
 					  (or (and (path? (car mark))
 						   ;; exclude paths that result from macro expansion,
-						   ;; specifically define-record-procedures
+						   ;; specifically define-record-functions
 						   ;; see racket/drracket#157
 						   (not (deinprogramm-path? (car mark))))
 					      (symbol? (car mark)))))

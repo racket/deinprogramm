@@ -348,11 +348,11 @@
 	     "Programmm mit Fehlermeldung abbrechen")
 
   (map ((%a -> %b) (list %a) -> (list %b))
-       "Prozedur auf alle Elemente einer Liste anwenden, Liste der Resultate berechnen")
+       "Funktion auf alle Elemente einer Liste anwenden, Liste der Resultate berechnen")
   (for-each ((%a -> %b) (list %a) -> unspecific)
-	    "Prozedur von vorn nach hinten auf alle Elemente einer Liste anwenden")
-  (apply (procedure (list %a) -> %b)
-	 "Prozedur auf Liste ihrer Argumente anwenden")
+	    "Funktion von vorn nach hinten auf alle Elemente einer Liste anwenden")
+  (apply (function (list %a) -> %b)
+	 "Funktion auf Liste ihrer Argumente anwenden")
   (read (-> any)
 	"Externe Repräsentation eines Werts in der REPL einlesen und den zugehörigen Wert liefern")))
 
@@ -499,7 +499,7 @@
 		stx)
 	       (raise-syntax-error
 		#f
-		"Dieser Name gehört einer eingebauten Prozedur und kann nicht erneut definiert werden" (syntax var)))))
+		"Dieser Name gehört einer eingebauten Funktion und kann nicht erneut definiert werden" (syntax var)))))
        (if mutable?
 	   (with-syntax
 	       ((dummy-def (stepper-syntax-property
@@ -919,7 +919,7 @@
 (define (write-newline)
   (newline))
 
-(define-record-procedures computer
+(define-record-functions computer
   make-computer computer?
   (computer-processor  string)
   (computer-ram        rational)

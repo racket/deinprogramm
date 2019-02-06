@@ -12,11 +12,28 @@
 		       (lambda (obj) (:list-elements obj)))))
   (make-inspector))
 
+; we wrap procedures in this so we can print them as #<function:...>
+(struct :function (func)
+ #:property prop:custom-write
+ (lambda (r port write?)
+   (cond
+    ((object-name (:function-func r))
+     => (lambda (n)
+	  (write-string "#<function:" port)
+	  (write-string (symbol->string n) port)
+	  (write-string ">" port)))
+    (else
+     (write-string "#<function>"))))
+ #:property prop:procedure (struct-field-index func)
+ #:inspector (make-inspector))
+
 (define (convert-explicit v)
   (let ((hash (make-hasheq)))
     (let recur ((v v))
       (cond
        ((null? v) (make-:empty-list)) ; prevent silly printing of sharing
+       ((procedure? v)
+	(:function v))
        ((pair? v)
 	(make-:list
 	 (let list-recur ((v v))

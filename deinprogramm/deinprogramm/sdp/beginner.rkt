@@ -4,7 +4,7 @@
 (provide #%app #%top (rename-out (sdp-module-begin #%module-begin)) #%datum #%top-interaction
 	 require lib planet provide
          define lambda λ cond if else and or
-         define-record-procedures
+         define-record-functions
 	 match
          .. ... .... ..... ......
 	 check-expect check-within check-error check-member-of check-range check-satisfied
