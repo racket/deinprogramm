@@ -30,25 +30,17 @@ globalen Namen an den Wert von @racket[expr].}
 
 @section{Record-Typ-Definitionen}
 
-@defform*[((define-record-procedures t c p (f1 ...))
-           (define-record-procedures t c (f1 ...)))]{
+@defform*[((define-record-functions t c p (sel sig) ...)
+           (define-record-functions t c (sel sig) ...))]{
 
-Die @racket[define-record-procedures]-Form ist eine Definition
+Die @racket[define-record-functions]-Form ist eine Definition
 für einen neuen Record-Typ.  Dabei ist @racket[t] der Name der Record-Signatur,
 @racket[c] der Name des Konstruktors und @racket[p]
 der (optionale) Name des Prädikats.
 
-Jedes @racket[f]@subscript{i} beschreibt ein @italic{Feld} des
-Record-Typs.  Es hat zwei mögliche Formen:
-
-@itemlist[
-
-@item{Das Feld besteht nur aus einem Namen @racket[sel]: Dann ist
-@racket[sel] der Name des Selektors für das Feld.}
-
-@item{Das Feld hat die Form @racket[(sel sig)]: Dann ist @racket[sel]
-der Name des Selektors für das Feld und @racket[sig] die Signatur des Feldes.}
-]
+Jedes @racket[(sel sig)] beschreibt ein @italic{Feld} des
+Record-Typs, wobei  @racket[sel]
+der Name des Selektors für das Feld und @racket[sig] die Signatur des Feldes ist.
 }
 
 @section[#:tag "application"]{Prozedurapplikation}
@@ -321,9 +313,9 @@ Dieser Testfall überprüft experimentell, ob die @tech{Eigenschaft}
 Eigenschaften, bei denen aus den Signaturen sinnvoll Werte generiert
 werden können.  Dies ist für die meisten eingebauten Signaturen der
 Fall, aber nicht für Signaturvariablen und Signaturen, die mit
-@scheme[predicate] oder @scheme[define-record-procedures] definiert
+@scheme[predicate] oder @scheme[define-record-functions] definiert
 wurden - wohl aber für Signaturen, die mit dem durch
-@scheme[define-record-procedures-parametric] definierten
+@scheme[define-record-functions-parametric] definierten
 Signaturkonstruktor erzeugt wurden.}
 
 @section{Pattern-Matching}
@@ -363,33 +355,6 @@ und kann in dem Ausdruck des Zweigs benutzt werden.
 ein passender Record ist, und dessen Felder auf die entsprechenden
 Patterns passen, die noch im Konstruktor-Pattern stehen.}
 ]
-}
-
-@section{Parametrische Record-Typ-Definitionen}
-
-@defform[(define-record-procedures-parametric t cc c p (s1 ...))]{
-
-Die Form @racket[define-record-procedures-parametric] ist wie
-@racket[define-record-procedures].  Zusäzlich wird der Bezeichner
-@racket[cc] an einen Signaturkonstruktor gebunden: Dieser akzeptiert
-für jedes Feld eine Feld-Signatur und liefert eine Signatur, die nur
-Records des Record-Typs @racket[t] erfüllen, bei dem die Feldinhalte
-die Feld-Signaturen erfüllen.
-
-Beispiel:
-
-@racketblock[
-(define-record-procedures-parametric pare pare-of
-  make-pare pare?
-  (pare-one pare-two))
-]
-
-Dann ist @racket[(pare-of integer string)] die Signatur für
-@racket[pare]-Records, bei dem die Feldinhalte die Signaturen
-@racket[integer] bzw. @racket[string] erfüllen müssen.
-
-Die Signaturen für die Feldinhalte werden erst überprüft, wenn ein
-Selektor aufgerufen wird.
 }
 
 @; ----------------------------------------------------------------------

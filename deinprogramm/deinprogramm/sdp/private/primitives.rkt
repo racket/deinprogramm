@@ -571,15 +571,22 @@
 
 (define-syntax (sdp-lambda stx)
   (syntax-case stx ()
-    ((sdp-lambda (var ...) body)
+    ((sdp-lambda (var ...) body0 ... body)
      (begin
        (check-for-id-list!
 	(syntax->list (syntax (var ...)))
 	"Kein Bezeichner als Parameter der Lambda-Abstraktion")
-       (syntax/loc stx (lambda (var ...) body))))
-    ((sdp-lambda (var ...) body1 body2 ...)
-     (raise-syntax-error
-      #f "Lambda-Abstraktion hat mehr als einen Ausdruck als Rumpf" stx))
+
+       (for-each (lambda (body)
+		   (syntax-case body (sdp-define)
+		     ((sdp-define id exp)
+		      (check-for-id-list! #'id
+					  "Kein Bezeichner nach define"))
+		     (something-else
+		      (raise-syntax-error
+		       #f "Im Rumpf eines lambda darf nur ein Ausdruck stehen" body))))
+		 (syntax->list #'(body0 ...)))
+       (syntax/loc stx (lambda (var ...) body0 ... body))))
     ((sdp-lambda var body ...)
      (identifier? (syntax var))
      (raise-syntax-error
