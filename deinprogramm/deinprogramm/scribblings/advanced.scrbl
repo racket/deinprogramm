@@ -75,6 +75,28 @@ die gleiche externe Repräsentation wie @racket[quoted] haben.}
 ]
 }
 
+@section[#:tag "advanced-definitions"]{Definitionen}
+@declare-exporting[deinprogramm/sdp/deflam]
+
+@defform[(define id expr)]{Diese Form ist wie in den unteren
+Sprachebenen.}
+
+@section[#:tag "advanced-lambda"]{@racket[lambda] / @racket[λ]}
+@declare-exporting[deinprogramm/sdp/deflam]
+
+@defform[(lambda (id id ... . id) expr)]{
+Bei @racket[lambda] ist in
+dieser Sprachebene in einer Form zulässig, die es erlaubt, eine
+Prozedur mit einer variablen Anzahl von Paramern zu erzeugen: Alle
+Parameter vor dem Punkt funktionieren wie gewohnt und werden jeweils
+an die entsprechenden Argumente gebunden.  Alle restlichen Argumente
+werden in eine Liste verpackt und an den Parameter nach dem Punkt
+gebunden.}
+
+@defform[(λ (id id ... . id) expr)]{
+@racket[λ] ist ein anderer Name für @racket[lambda].
+}
+
 @section[#:tag "advanced-prim-op"]{Primitive Operationen}
 
 @prim-op-defns['(lib "advanced.rkt" "deinprogramm" "sdp") #'here '()]
