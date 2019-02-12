@@ -483,9 +483,6 @@
 	 (and (not path) (not base)))))
 
 (define-for-syntax (transform-sdp-define stx mutable?)
-  (unless (memq (syntax-local-context) '(module top-level))
-    (raise-sdp-syntax-error
-     #f "Define muss ganz außen stehen" stx))
   (syntax-case stx ()
     ((sdp-define)
      (raise-sdp-syntax-error
@@ -589,11 +586,10 @@
        (for-each (lambda (body)
 		   (syntax-case body (sdp-define)
 		     ((sdp-define id exp)
-		      (check-for-id-list! #'id
-					  "Kein Bezeichner nach define"))
+		      (check-for-id! #'id "Kein Bezeichner nach define"))
 		     (something-else
 		      (raise-sdp-syntax-error
-		       #f "Im Rumpf eines lambda darf nur ein Ausdruck stehen" body))))
+		       #f "Im Rumpf eines lambda darf nur ein einziger Ausdruck stehen" body))))
 		 (syntax->list #'(body0 ...)))
        (syntax/loc stx (lambda (var ...) body0 ... body))))
     ((sdp-lambda var body ...)
@@ -612,18 +608,24 @@
 	(syntax->list (syntax (var ...)))
 	"Kein Bezeichner als Parameter der Lambda-Abstraktion")
        (syntax/loc stx (lambda (var ...) body))))
-    ((sdp-lambda (var ... . rest) body)
+    ((sdp-lambda (var ... . rest) body0 ... body)
      (begin
        (check-for-id-list!
 	(syntax->list (syntax (var ...)))
 	"Kein Bezeichner als Parameter der Lambda-Abstraktion")
-       (check-for-id! 
-	(syntax rest)
-	"Kein Bezeichner als Restlisten-Parameter der Lambda-Abstraktion")
-       (syntax/loc stx (lambda (var ... . rest) body))))
-    ((sdp-lambda (var ...) body1 body2 ...)
-     (raise-sdp-syntax-error
-      #f "Lambda-Abstraktion hat mehr als einen Ausdruck als Rumpf" stx))
+       (unless (null? (syntax->datum #'rest))
+	 (check-for-id! 
+	  (syntax rest)
+	  "Kein Bezeichner als Restlisten-Parameter der Lambda-Abstraktion"))
+       (for-each (lambda (body)
+		   (syntax-case body (sdp-advanced-define)
+		     ((sdp-advanced-define id exp)
+		      (check-for-id! #'id "Kein Bezeichner nach define"))
+		     (something-else
+		      (raise-sdp-syntax-error
+		       #f "Im Rumpf eines lambda darf nur ein einziger Ausdruck stehen" body))))
+		 (syntax->list #'(body0 ...)))
+       (syntax/loc stx (lambda (var ... . rest) body0 ... body))))
     ((sdp-lambda var ...)
      (raise-sdp-syntax-error
       #f "Fehlerhafte Lambda-Abstraktion" stx))))
