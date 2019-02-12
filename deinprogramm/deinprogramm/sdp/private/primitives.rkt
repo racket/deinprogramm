@@ -444,7 +444,8 @@
 	  (loop (cdr args)
 		(cons arg seen-rev)))))
   
-  (apply append args)))
+
+    (apply append args)))
 
 (define fold
   (lambda (unit combine lis)
@@ -467,6 +468,14 @@
 ;;  to make sure that it's loaded)
 (require deinprogramm/test-suite)
 
+(define-for-syntax (raise-sdp-syntax-error form msg . exprs)
+  (raise
+   (exn:fail:syntax (if form
+			(string-append (format "~a" form) ": " msg)
+			msg)
+		    (current-continuation-marks)
+		    exprs)))
+
 (define-for-syntax (binding-in-this-module? b)
   (and (list? b)
        (module-path-index? (car b))
@@ -475,14 +484,14 @@
 
 (define-for-syntax (transform-sdp-define stx mutable?)
   (unless (memq (syntax-local-context) '(module top-level))
-    (raise-syntax-error
+    (raise-sdp-syntax-error
      #f "Define muss ganz außen stehen" stx))
   (syntax-case stx ()
     ((sdp-define)
-     (raise-syntax-error
+     (raise-sdp-syntax-error
       #f "Definition ohne Operanden" stx))
     ((sdp-define v)
-     (raise-syntax-error
+     (raise-sdp-syntax-error
       #f "Define erwartet zwei Operanden, nicht einen" stx))
     ((sdp-define var expr)
      (begin
@@ -493,11 +502,11 @@
        (let ((binding (identifier-binding (syntax var))))
 	 (when binding
 	   (if (binding-in-this-module? binding)
-	       (raise-syntax-error
+	       (raise-sdp-syntax-error
 		#f
 		"Zweite Definition für denselben Namen"
 		stx)
-	       (raise-syntax-error
+	       (raise-sdp-syntax-error
 		#f
 		"Dieser Name gehört einer eingebauten Funktion und kann nicht erneut definiert werden" (syntax var)))))
        (if mutable?
@@ -512,7 +521,7 @@
 			   (define var expr))))
 	   (syntax/loc stx (define var expr)))))
     ((sdp-define v e1 e2 e3 ...)
-     (raise-syntax-error
+     (raise-sdp-syntax-error
       #f "Definition mit mehr als zwei Operanden" stx))))
 
 (define-syntax (sdp-define stx)
@@ -532,10 +541,10 @@
 	"Kein Bezeichner in Let-Bindung")
        (syntax/loc stx ((lambda (var ...) body) expr ...))))
     ((sdp-let ((var expr) ...) body1 body2 ...)
-     (raise-syntax-error
+     (raise-sdp-syntax-error
       #f "Let-Ausdruck hat mehr als einen Ausdruck als Rumpf" stx))
     ((sdp-let expr ...)
-     (raise-syntax-error
+     (raise-sdp-syntax-error
       #f "Let-Ausdruck erwartet eine Liste von Bindungen (Paare aus Name und Ausdruck) und einen Rumpf" stx))))
 
 (define-syntax (sdp-let* stx)
@@ -551,10 +560,10 @@
 			  (sdp-let* ((var2 expr2) ...) body))
 			expr1))))
     ((sdp-let* ((var expr) ...) body1 body2 ...)
-     (raise-syntax-error
+     (raise-sdp-syntax-error
       #f "Let*-Ausdruck hat mehr als einen Ausdruck als Rumpf" stx))
     ((sdp-let* expr ...)
-     (raise-syntax-error
+     (raise-sdp-syntax-error
       #f "Let*-Ausdruck erwartet eine Liste von Bindungen (Paare aus Name und Ausdruck) und einen Rumpf" stx))))
 
 (define-syntax (sdp-letrec stx)
@@ -566,7 +575,7 @@
 	"Kein Bezeichner in letrec-Bindung")
        (syntax/loc stx (letrec ((var expr) ...) body))))
     ((sdp-letrec ((var expr) ...) body1 body2 ...)
-     (raise-syntax-error
+     (raise-sdp-syntax-error
       #f "Letrec hat mehr als einen Ausdruck als Rumpf" stx))))
 
 (define-syntax (sdp-lambda stx)
@@ -583,16 +592,16 @@
 		      (check-for-id-list! #'id
 					  "Kein Bezeichner nach define"))
 		     (something-else
-		      (raise-syntax-error
+		      (raise-sdp-syntax-error
 		       #f "Im Rumpf eines lambda darf nur ein Ausdruck stehen" body))))
 		 (syntax->list #'(body0 ...)))
        (syntax/loc stx (lambda (var ...) body0 ... body))))
     ((sdp-lambda var body ...)
      (identifier? (syntax var))
-     (raise-syntax-error
+     (raise-sdp-syntax-error
       #f "Um die Parameter einer Lambda-Abstraktion gehören Klammern" (syntax var)))
     ((sdp-lambda var ...)
-     (raise-syntax-error
+     (raise-sdp-syntax-error
       #f "Fehlerhafte Lambda-Abstraktion" stx))))
 
 (define-syntax (sdp-advanced-lambda stx)
@@ -613,16 +622,16 @@
 	"Kein Bezeichner als Restlisten-Parameter der Lambda-Abstraktion")
        (syntax/loc stx (lambda (var ... . rest) body))))
     ((sdp-lambda (var ...) body1 body2 ...)
-     (raise-syntax-error
+     (raise-sdp-syntax-error
       #f "Lambda-Abstraktion hat mehr als einen Ausdruck als Rumpf" stx))
     ((sdp-lambda var ...)
-     (raise-syntax-error
+     (raise-sdp-syntax-error
       #f "Fehlerhafte Lambda-Abstraktion" stx))))
 
 (define-syntax (sdp-begin stx)
   (syntax-case stx ()
     ((sdp-begin)
-     (raise-syntax-error
+     (raise-sdp-syntax-error
       #f "Begin-Ausdruck braucht mindestens einen Operanden" stx))
     ((sdp-begin expr1 expr2 ...)
      (syntax/loc stx (begin expr1 expr2 ...)))))
@@ -649,8 +658,8 @@
 		  #f)] ; extract name from stx
 	[msg (apply format msg args)])
     (if detail
-	(raise-syntax-error form msg stx detail)
-	(raise-syntax-error form msg stx))))
+	(raise-sdp-syntax-error form msg stx detail)
+	(raise-sdp-syntax-error form msg stx))))
 
 ;; The syntax error when a form's name doesn't follow a "("
 (define-for-syntax (bad-use-error name stx)
@@ -882,7 +891,7 @@
 (define-syntax (sdp-app stx)
   (syntax-case stx ()
     ((_)
-     (raise-syntax-error
+     (raise-sdp-syntax-error
       #f "Zusammengesetzte Form ohne Operator" (syntax/loc stx ())))
     ((_ datum1 datum2 ...)
      (let ((scm-datum (syntax->datum (syntax datum1))))
@@ -890,7 +899,7 @@
 	   (boolean? scm-datum)
 	   (string? scm-datum)
 	   (char? scm-datum)))
-     (raise-syntax-error #f "Operator darf kein Literal sein" (syntax datum1)))
+     (raise-sdp-syntax-error #f "Operator darf kein Literal sein" (syntax datum1)))
     ((_ datum1 datum2 ...)
      (syntax/loc stx (#%app datum1 datum2 ...)))))
 
@@ -912,7 +921,7 @@
     [(_ id)
      ;; If there's still no binding, it's an "unknown name" error.
      (if (not (identifier-binding #'id))
-	 (raise-syntax-error #f "Ungebundene Variable" (syntax/loc stx id))
+	 (raise-sdp-syntax-error #f "Ungebundene Variable" (syntax/loc stx id))
 	 ;; Don't use #%top here; id might have become bound to something
 	 ;;  that isn't a value.
 	 #'id)]))
@@ -1014,7 +1023,7 @@
 			(if (set!-transformer? (syntax-local-value (syntax id)))
 			    void  ;; no lex check wanted
 			    (lambda ()
-			      (raise-syntax-error
+			      (raise-sdp-syntax-error
 			       #f
 			       "Nach set! wird eine gebundene Variable erwartet, aber da ist ein Schlüsselwort."
 			       stx)))))
@@ -1025,27 +1034,27 @@
 		     (when continuing?
 		       (when (and (not (identifier-binding #'id))
 				  (syntax-source-module #'id))
-			 (raise-syntax-error #f "Ungebundene Variable" #'id)))
+			 (raise-sdp-syntax-error #f "Ungebundene Variable" #'id)))
 		     (if continuing?
 			 (syntax/loc stx (set! id expr))
 			 (stepper-ignore-checker (syntax/loc stx (#%app values (sdp-set!-continue id expr)))))))
 		  ((_ id expr)
-		   (raise-syntax-error
+		   (raise-sdp-syntax-error
 		    #f
 		    "Nach set! wird eine Variable aber da ist etwas anderes."
 		    #'id))
 		  ((_ id)
-		   (raise-syntax-error
+		   (raise-sdp-syntax-error
 		    #f
 		    "Nach set! wird eine Variable und ein Ausdruck erwartet - der Ausdruck fehlt."
 		    stx))
 		  ((_)
-		   (raise-syntax-error
+		   (raise-sdp-syntax-error
 		    #f
 		    "Nach set! wird eine Variable und ein Ausdruck erwartet, aber da ist nichts."
 		    stx))
 		  (_else 
-		   (raise-syntax-error
+		   (raise-sdp-syntax-error
 		    #f
 		    "Inkorrekter set!-Ausdruck."
 		    stx)))))))))
@@ -1068,8 +1077,8 @@
 				   (or (signature-arbitrary (signature ?signature))
 				       ?error-call))))
 			     (_
-			      (raise-syntax-error #f "inkorrekte `for-all'-Klausel - sollte die Form (id contr) haben"
-						  pr))))
+			      (raise-sdp-syntax-error #f "inkorrekte `for-all'-Klausel - sollte die Form (id contr) haben"
+						      pr))))
 			 (syntax->list #'(?clause ...)))))
 
        (stepper-syntax-property #'(quickcheck:property 
@@ -1077,15 +1086,15 @@
 				'stepper-skip-completely
 				#t)))
     ((_ ?something ?body)
-     (raise-syntax-error #f "keine Klauseln der Form (id contr)"
-			 stx))
+     (raise-sdp-syntax-error #f "keine Klauseln der Form (id contr)"
+			     stx))
     ((_ ?thing1 ?thing2 ?thing3 ?things ...)
-     (raise-syntax-error #f "zuviele Operanden"
-			 stx))))
+     (raise-sdp-syntax-error #f "zuviele Operanden"
+			     stx))))
 
 (define-syntax (check-property stx)
   (unless (memq (syntax-local-context) '(module top-level))
-    (raise-syntax-error
+    (raise-sdp-syntax-error
      #f "`check-property' muss ganz außen stehen" stx))
   (syntax-case stx ()
     ((_ ?prop)
@@ -1094,8 +1103,8 @@
 			  'comes-from-check-property)
       'stepper-replace
       #'#t))
-    (_ (raise-syntax-error #f "`check-property' erwartet einen einzelnen Operanden"
-			   stx))))
+    (_ (raise-sdp-syntax-error #f "`check-property' erwartet einen einzelnen Operanden"
+			       stx))))
 
 (define (check-property-error test src-info test-info)
   (let ((info (send test-info get-info)))
@@ -1188,8 +1197,8 @@
 	       (when (memf (lambda (other-var)
 			     (free-identifier=? var other-var))
 			   (cdr vars))
-		 (raise-syntax-error #f "Variable in match-Zweig kommt doppelt vor"
-				     var))
+		 (raise-sdp-syntax-error #f "Variable in match-Zweig kommt doppelt vor"
+					 var))
 	       (loop (cdr vars))))))
        (for-each check (syntax->list #'(?pattern0 ?pattern ...)))
        #'(let* ((val ?case)
@@ -1260,8 +1269,8 @@
        ((?const ?pat ...)
 	(identifier? #'?const)
 	(let* ((fail (lambda ()
-		       (raise-syntax-error #f "Operator in match muss ein Record-Konstruktor sein"
-					   #'?const)))
+		       (raise-sdp-syntax-error #f "Operator in match muss ein Record-Konstruktor sein"
+					       #'?const)))
 	       (v (syntax-local-value #'?const fail)))
 	  (unless (struct-info? v)
 	    (fail))
@@ -1272,7 +1281,7 @@
 		    (selectors (reverse rev-selectors))
 		    (field-ids (generate-temporaries pats)))
 	       (unless (= (length rev-selectors) (length pats))
-		 (raise-syntax-error #f "Die Anzahl der Felder im match stimmt nicht" stx))
+		 (raise-sdp-syntax-error #f "Die Anzahl der Felder im match stimmt nicht" stx))
 	       #`(if (#,pred ?id)
 		     #,(let recur ((pats pats)
 				   (selectors selectors)
