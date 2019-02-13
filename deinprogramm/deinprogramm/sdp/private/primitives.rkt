@@ -468,14 +468,30 @@
 ;;  to make sure that it's loaded)
 (require deinprogramm/test-suite)
 
-(define-for-syntax (raise-sdp-syntax-error form msg . exprs)
-  (raise
-   (exn:fail:syntax (if form
-			(string-append (format "~a" form) ": " msg)
-			msg)
-		    (current-continuation-marks)
-		    exprs)))
 
+(define-for-syntax (raise-sdp-syntax-error form msg . exprs)
+
+  (define (expr->form expr)
+    (let ((sexpr (syntax->datum expr)))
+      (cond
+       ((identifier? expr) sexpr)
+       ((syntax->list expr)
+	=> (lambda (lis)
+	     (expr->form (car lis))))
+       (else #f))))
+  
+  (let ((form
+	 (or form
+	     (if (pair? exprs)
+		 (expr->form (car exprs))
+		 #f))))
+    (raise
+     (exn:fail:syntax (if form
+			  (string-append (format "~a" form) ": " msg)
+			  msg)
+		      (current-continuation-marks)
+		      exprs))))
+  
 (define-for-syntax (binding-in-this-module? b)
   (and (list? b)
        (module-path-index? (car b))
