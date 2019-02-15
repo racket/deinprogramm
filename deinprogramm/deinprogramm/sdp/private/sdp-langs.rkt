@@ -693,7 +693,7 @@
 	  (define/private (tp-require->str tp)
             (match tp
               [`(lib ,x) 
-               (define m (regexp-match #rx"teachpack/deinprogramm/(.*)$" x))
+               (define m (regexp-match #rx"teachpack/deinprogramm/sdp/(.*)$" x))
                (if m
                    (list-ref m 1)
                    (format "~s" tp))]
@@ -805,9 +805,9 @@
                (map (lambda (x) (tp-require->str x)) (deinprogramm-lang-settings-teachpacks settings)))
              (lambda (settings parent) 
                (define old-tps (deinprogramm-lang-settings-teachpacks settings))
-	       (define tp-dirs (list "deinprogramm"))
+	       (define tp-dirs (list "deinprogramm/sdp"))
 	       (define labels (list (string-constant teachpack-pre-installed)))
-	       (define tp-syms '(deinprogramm-teachpacks))
+	       (define tp-syms '(deinprogramm-sdp-teachpacks))
                (define-values (tp-to-remove tp-to-add) (get-teachpack-from-user parent tp-dirs labels tp-syms old-tps))
                (define new-tps (let ([removed (if tp-to-remove
                                                   (remove tp-to-remove old-tps)
