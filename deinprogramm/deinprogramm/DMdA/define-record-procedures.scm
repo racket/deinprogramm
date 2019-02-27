@@ -368,7 +368,7 @@
           ?constructor
           (?field-spec ...))
        (syntax
-	(define-record-procedures ?type-name ?constructor dummy-predicate (?field-spec ...))))
+	(define-record-procedures ?type-spec ?constructor dummy-predicate (?field-spec ...))))
       
       ((_ ?type-spec
           ?constructor

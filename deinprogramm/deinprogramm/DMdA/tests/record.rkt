@@ -5,6 +5,7 @@
 (require rackunit
 	 deinprogramm/DMdA/define-record-procedures
 	 deinprogramm/signature/signature-syntax
+	 (only-in deinprogramm/signature/signature signature?)
 	 racket/match)
 
 (define-record-procedures pare
@@ -69,7 +70,9 @@
     (check-equal? (kair p1) 1)
     (check-equal? (kdir p1) 2)
     (check-equal? (kair p2) 3)
-    (check-equal? (kdir p2) 4))
+    (check-equal? (kdir p2) 4)
+
+    (check-true (signature? paire)))
 
    (test-case
     "matching"

@@ -277,7 +277,7 @@
       ((_ ?type-spec
           ?constructor
           (?accessor ?signature) ?field-spec ...)
-       #'(define-record-functions ?type-name ?constructor dummy-predicate (?accessor ?signature) ?field-spec ...))
+       #'(define-record-functions ?type-spec ?constructor dummy-predicate (?accessor ?signature) ?field-spec ...))
       
       ((_ ?type-spec
           ?constructor
