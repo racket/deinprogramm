@@ -6,13 +6,28 @@
 
 (require deinprogramm/private/explicit-write)
 
-(require deinprogramm/signature/signature-german)
+(require deinprogramm/signature/signature-german
+	 (only-in deinprogramm/signature/signature
+		  signature? signature-name))
 
 ; I HATE DEFINE-STRUCT!
 (define-struct/properties :empty-list ()
   ((prop:custom-write
     (lambda (r port write?)
       (write-string "#<empty-list>" port))))
+  (make-inspector))
+
+(define-struct/properties :signature (sig)
+  ((prop:custom-write
+    (lambda (r port write?)
+      (cond
+       ((signature-name (:signature-sig r))
+	=> (lambda (n)
+	     (write-string "#<signature:" port)
+	     (write-string (symbol->string n) port)
+	     (write-string ">" port)))
+    (else
+     (write-string "#<signature>"))))))
   (make-inspector))
 
 ;; might be improper
@@ -42,8 +57,8 @@
     (let recur ((v v))
       (cond
        ((null? v) (make-:empty-list)) ; prevent silly printing of sharing
-       ((procedure? v)
-	(:function v))
+       ((signature? v) (make-:signature v))
+       ((procedure? v) (:function v))
        ((pair? v)
 	(make-:list
 	 (let list-recur ((v v))
