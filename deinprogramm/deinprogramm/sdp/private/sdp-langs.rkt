@@ -371,6 +371,13 @@
 	  => (lambda (name)
 	       (string-append "#<function:" (symbol->string name) ">")))
 	 (else "#<function>")))
+
+      (define (signature-output proc)
+	(cond
+	 ((signature-name proc)
+	  => (lambda (name)
+	       (string-append "#<signature:" (symbol->string name) ">")))
+	 (else "#<signature>")))
       
       ;; setup-printing-parameters : (-> void) -> void
       (define (setup-printing-parameters thunk settings width)
@@ -395,6 +402,7 @@
                           (lambda (value display? port)
                             (cond
 			      [(not (port-writes-special? port)) #f]
+			      [(signature? value) (string-length (signature-output value))]
 			      [(procedure? value) (string-length (procedure-output value))]
                               [(is-a? value snip%) 1]
                               [(use-number-snip? value) 1]
@@ -404,6 +412,8 @@
                          [pretty-print-print-hook
                           (lambda (value display? port)
                             (cond
+			      [(signature? value)
+			       (write-special (signature-output value) port)]
 			      [(procedure? value)
 			       (write-special (procedure-output value) port)]
                               [(is-a? value snip%)
