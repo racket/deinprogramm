@@ -979,18 +979,18 @@
       ""
       (string-append (car l) (strings-list->string (cdr l)))))
 
-(define integer (signature/arbitrary arbitrary-integer (predicate integer?)))
-(define number (signature/arbitrary arbitrary-real (predicate number?)))
-(define rational (signature/arbitrary arbitrary-rational (predicate rational?)))
-(define real (signature/arbitrary arbitrary-real (predicate real?)))
+(define integer (signature/arbitrary arbitrary-integer integer (predicate integer?)))
+(define number (signature/arbitrary arbitrary-real number (predicate number?)))
+(define rational (signature/arbitrary arbitrary-rational rational (predicate rational?)))
+(define real (signature/arbitrary arbitrary-real real (predicate real?)))
 
 (define (natural? x)
   (and (integer? x)
        (not (negative? x))))
 
-(define natural (signature/arbitrary arbitrary-natural (predicate natural?)))
+(define natural (signature/arbitrary arbitrary-natural natural (predicate natural?)))
 
-(define boolean (signature/arbitrary arbitrary-boolean (predicate boolean?)))
+(define boolean (signature/arbitrary arbitrary-boolean boolean (predicate boolean?)))
 
 (define (true? x)
   (eq? x #t))
@@ -998,12 +998,12 @@
 (define (false? x)
   (eq? x #f))
 
-(define true (signature (one-of #t)))
-(define false (signature (one-of #f)))
+(define true (signature truen (one-of #t)))
+(define false (signature false (one-of #f)))
 
-(define string (signature/arbitrary arbitrary-printable-ascii-string (predicate string?)))
-(define symbol (signature/arbitrary arbitrary-symbol (predicate symbol?)))
-(define empty-list (signature (one-of empty)))
+(define string (signature/arbitrary arbitrary-printable-ascii-string string (predicate string?)))
+(define symbol (signature/arbitrary arbitrary-symbol symbol (predicate symbol?)))
+(define empty-list (signature empty-list (one-of empty)))
 
 (define unspecific (signature unspecific %unspecific))
 (define any (signature any %any))
