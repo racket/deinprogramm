@@ -31,7 +31,7 @@
 	 lang/debugger-language-interface
 	 lang/run-teaching-program
 	 lang/private/continuation-mark-key
-         lang/private/rewrite-error-message
+         deinprogramm/sdp/private/rewrite-error-message
 	 
 	 (only-in test-engine/scheme-gui make-formatter)
 	 test-engine/scheme-tests
