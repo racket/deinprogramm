@@ -10,15 +10,14 @@
 (provide rewrite-contract-error-message
          reraise-rewriten-lookup-error-message
          get-rewriten-error-message
-         plural
          raise-not-bound-error
          argcount-error-message)
 
 (define (reraise-rewriten-lookup-error-message e id was-in-app-position)
-  (let ([var-or-function (if was-in-app-position "function" "variable")])
+  (let ([var-or-function (if was-in-app-position "Funktion" "Variable")])
     (raise-syntax-error
      #f
-     (format "this ~a is not defined" var-or-function)
+     (format "~a ist nicht definiert" var-or-function)
      id)))
 
 (define (exn-needs-rewriting? exn)
@@ -27,31 +26,31 @@
 (define (ensure-number n-or-str)
   (if (string? n-or-str) (string->number n-or-str) n-or-str))
 
-(define (plural n)
-  (if (> (ensure-number n) 1) "s" ""))
+(define (plural-e n)
+  (if (> (ensure-number n) 1) "e" ""))
 
 (define (raise-not-bound-error id)
   (if (syntax-property id 'was-in-app-position)
       (raise-syntax-error
        #f
-       "this function is not defined"
+       "Funktion ist nicht definiert"
        id)
       (raise-syntax-error
        #f
-       "this variable is not defined"
+       "Variable ist nicht deifniert"
        id)))
 
 (define (argcount-error-message name arity found [at-least #f])
   (define arity:n (ensure-number arity))
   (define found:n (ensure-number found))
   (define fn-is-large (> arity:n found:n))
-  (format "~a~aexpects ~a~a~a argument~a, but found ~a~a"
+  (format "~a erwartet ~a~a~a~a Argument~a, aber ~a~a gefunden"
           (or name "") (if name ": " "")
-          (if at-least "at least " "")
-          (if (or (= arity:n 0) fn-is-large) "" "only ")
-          (if (= arity:n 0) "no" arity:n) (plural arity:n)
-          (if (and (not (= found:n 0)) fn-is-large) "only " "")
-          (if (= found:n 0) "none" found:n)))
+          (if at-least "mindestens " "")
+          (if (or (= arity:n 0) fn-is-large) "" "nur ")
+          (if (= arity:n 0) "kein" arity:n) (plural-e arity:n)
+          (if (and (not (= found:n 0)) fn-is-large) "nur " "")
+          (if (= found:n 0) "keins" found:n)))
 
 (define (format-enum conj l)
   (if (= (length l) 2)
@@ -70,53 +69,72 @@
     (define s (read (open-input-string ctc)))
     (let loop ([s s])
       (cond
-       [(not s) "false"]
+       [(not s) "#f"]
        [(and (symbol? s) (regexp-match? #rx"[?]$" (symbol->string s)))
-        (define str (symbol->string s))
-        (format "a~a ~a"
-                (if (and ((string-length str) . > . 0)
-                         (memv (string-ref str 0) '(#\a #\e #\i #\o #\u)))
-                    "n"
-                    "")
-                (substring str 0 (sub1 (string-length str))))]
-       [(null? s) "an impossible value"]
+	(case s
+	  ((number?) "Zahl")
+	  ((string?) "Zeichenkette")
+	  (else
+           (define str (symbol->string s))
+	   (substring str 0 (sub1 (string-length str)))))]
+       [(null? s) "einen unmöglicher Wert"]
        [(not (list? s)) ctc] ;; ???
        [(eq? 'or/c (car s))
-        (format-enum "or" (map loop (cdr s)))]
+        (format-enum "oder" (map loop (cdr s)))]
        [(eq? 'and/c (car s))
-        (string-append "a value that is " (format-enum "and" (map loop (cdr s))))]
+        (string-append "einen Wert der " (format-enum "und" (map loop (cdr s))))]
        [(eq? 'not/c (car s))
-        (format "a value that is not ~a" (loop (cadr s)))]
+        (format "ein Wert der nicht ~a" (loop (cadr s)))]
        [(and (eq? '>/c (car s)) (zero? (cadr s)))
-        "a positive number"]
+        "eine positive Zahl"]
        [(and (eq? '</c (car s)) (zero? (cadr s)))
-        "a negative number"]
+        "eine negative Zahl"]
        [(and (eq? '>=/c (car s)) (zero? (cadr s)))
-        "a non-negative number"]
+        "eine nicht-negative Zahl"]
        [else ctc]))))
 
+(define (translate-pos pos)
+  (cond
+   ((string=? pos "1st") "erstes")
+   ((string=? pos "2nd") "zweites")
+   ((string=? pos "3rd") "drittes")
+   ((string=? pos "4th") "viertes")
+   ((string=? pos "5th") "fünftes")
+   ((string=? pos "6th") "sechstes")
+   ((string=? pos "7th") "siebtes")
+   ((string=? pos "8th") "achtes")
+   ((string=? pos "9th") "neuntes")
+   ((string=? pos "10th") "zehntes")
+   ((string=? pos "11th") "zehntes")
+   ((regexp-match #rx"^([0-9]+)th" pos)
+    => (lambda (lis)
+	 (string-append (cadr lis) ".")))
+   (else pos)))
+   
 (define (contract-error-message ctc given pos)
   (define d (contract-to-desc ctc))
-  (format "expects ~a~a~a~a, given ~a"
+  (format "~a~a~a~a erwartet, ~a bekommen"
           d
-          (if pos " as " "")
-          (or pos "")
-          (if pos " argument" "")
+          (if pos " als " "")
+          (if  pos
+	       (translate-pos pos)
+	       "")
+          (if pos " Argument" "")
           given))
+
+(define (expects-a all one two)
+  (format "~a erwartet" two))
 
 (define (rewrite-contract-error-message msg)
   (define replacements
     (list (list #rx"application: not a procedure;\n [^\n]*?\n  given: ([^\n]*)(?:\n  arguments[.][.][.]:(?: [[]none[]]|(?:\n   [^\n]*)*))?"
                 (lambda (all one)
-                  (format "function call: expected a function after the open parenthesis, but received ~a" one)))
+                  (format "Applikation: Funktion nach der öffnenden Klammer erwartet, aber ~a bekommen" one)))
           (list #rx"([^\n]*): undefined;\n cannot reference an identifier before its definition"
-                (lambda (all one) (format "~a is used here before its definition" one)))
-          (list #rx"expects argument of type (<([^>]+)>)"
-                (lambda (all one two) (format "expects a ~a" two)))
-          (list #rx"expected argument of type (<([^>]+)>)"
-                (lambda (all one two) (format "expects a ~a" two)))
-          (list #rx"expects type (<([^>]+)>)"
-                (lambda (all one two) (format "expects a ~a" two)))
+                (lambda (all one) (format "~a ist vor der Definition benutzt worden" one)))
+          (list #rx"expects argument of type (<([^>]+)>)" expects-a)
+          (list #rx"expected argument of type (<([^>]+)>)" expects-a)
+          (list #rx"expects type (<([^>]+)>)" expects-a)
           (list #px"([^\n]*): arity mismatch;\n[^\n]*\n  expected[^:]*: at least (\\d+)\n  given[^:]*: (\\d+)(?:\n  arguments[.][.][.]:(?:\n   [^\n]*)*)?"
                 (lambda (all one two three) (argcount-error-message one two three #t)))
           (list #px"([^\n]*): arity mismatch;\n[^\n]*\n  expected[^:]*: (\\d+)\n  given[^:]*: (\\d+)(?:\n  arguments[.][.][.]:(?:\n   [^\n]*)*)?"
@@ -126,26 +144,26 @@
           (list #rx"^procedure "
                 (lambda (all) ""))
           (list #rx", given: "
-                (lambda (all) ", given "))
+                (lambda (all) ", bekommen "))
           (list #rx"; other arguments were:.*"
                 (lambda (all) ""))
           (list #px"(?:\n  other arguments[.][.][.]:(?:\n   [^\n]*)*)"
                 (lambda (all) ""))
           (list #rx"expects a (struct:)"
-                (lambda (all one) "expects a "))
+                (lambda (all one) "erwartet "))
           (list #rx"list or cyclic list"
-                (lambda (all) "list"))
+                (lambda (all) "Liste"))
           (list #rx"assignment disallowed;\n cannot set variable before its definition\n  variable:"
-                (lambda (all) "cannot set variable before its definition:"))
+                (lambda (all) "Kann Variable nicht vor der Definition setzen:"))
           (list #rx"^(.*): undefined;\n cannot use before initialization"
-                (λ (all one) (format "local variable used before its definition: ~a" one)))
+                (λ (all one) (format "Lokale Variable vor ihrer Definition benutzt: ~a" one)))
           ;; When do these show up? I see only `#<image>' errors, currently.
           (list (regexp-quote "#(struct:object:image% ...)")
-                (lambda (all) "an image"))
+                (lambda (all) "ein Bild"))
           (list (regexp-quote "#(struct:object:image-snip% ...)")
-                (lambda (all) "an image"))
+                (lambda (all) "ein Bild"))
           (list (regexp-quote "#(struct:object:cache-image-snip% ...)")
-                (lambda (all) "an image"))))
+                (lambda (all) "ein Bild"))))
   (for/fold ([msg msg]) ([repl. replacements])
     (regexp-replace* (first repl.) msg (second repl.))))
 
