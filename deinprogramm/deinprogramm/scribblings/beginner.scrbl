@@ -9,7 +9,7 @@ This is documentation for the language level @italic{Schreibe Dein Programm!
 - Anfänger} to go with the German textbook
 @italic{Schreibe Dein Programm!}.
 
-@declare-exporting[deinprogramm/sdp/beginner #:use-sources (deinprogramm/sdp/private/primitives deinprogramm/record)]
+@declare-exporting[deinprogramm/sdp/beginner #:use-sources (deinprogramm/sdp/private/primitives deinprogramm/sdp/record)]
 
 @racketgrammar*-sdp[
 #:literals ()
