@@ -37,7 +37,7 @@
        id)
       (raise-syntax-error
        #f
-       "Variable ist nicht deifniert"
+       "Variable ist nicht definiert"
        id)))
 
 (define (argcount-error-message name arity found [at-least #f])
