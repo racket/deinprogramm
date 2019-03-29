@@ -35,7 +35,9 @@ to go with the German textbooks
 
 @section[#:tag "signatures-vanilla"]{Signaturen}
 
-@subsection{@racket[list-of]} 
+@defidform[empty-list]{
+Signatur für die leere Liste.
+}
 
 @defform[(list-of sig)]{
 Diese Signatur ist dann für einen Wert gültig, wenn dieser eine Liste ist,

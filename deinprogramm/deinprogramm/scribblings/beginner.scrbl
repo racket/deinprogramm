@@ -198,10 +198,6 @@ Signatur für \scheme[#f].
 Signatur für Zeichenketten.
 }
 
-@defidform[empty-list]{
-Signatur für die leere Liste.
-}
-
 @defidform[any]{
 Signatur, die auf alle Werte gültig ist.}
 
