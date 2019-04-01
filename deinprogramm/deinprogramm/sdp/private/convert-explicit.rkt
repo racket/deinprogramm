@@ -27,7 +27,7 @@
 	     (write-string (symbol->string n) port)
 	     (write-string ">" port)))
     (else
-     (write-string "#<signature>"))))))
+     (write-string "#<signature>" port))))))
   (make-inspector))
 
 ;; might be improper
