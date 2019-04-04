@@ -263,6 +263,27 @@
 		(+ hash (* factor 
 			   (recur (generic-access r (- field-count i 1))))))))))
 
+;; FIXME: duplicate from primitives.rkt
+(define-for-syntax (binding-in-this-module? b)
+  (and (list? b)
+       (module-path-index? (car b))
+       (let-values (((path base) (module-path-index-split (car b))))
+	 (and (not path) (not base)))))
+
+(define-for-syntax (check-id-unbound! id)
+  (cond
+   ((identifier-binding id)
+    => (lambda (binding)
+	 (if (binding-in-this-module? binding)
+	     (raise-syntax-error
+	      #f
+	      "Es gibt schon eine Definition für den Namen"
+	      id)
+	     (raise-syntax-error
+	      #f
+	      "Dieser Name gehört einer eingebauten Funktion"
+	      id))))))
+
 ;; (define-record-functions :pare kons pare? (kar integer) (kdr list-of-integers))
 
 (define-syntax define-record-functions
@@ -272,7 +293,7 @@
        (raise-syntax-error 
         #f 
         "Zu wenige Operanden für define-record-functions" x))
-      ((_ ?type-spec ?constructor) ; nullary case
+      ((_ ?type-spec ?constructor)	; nullary case
        #'(define-record-functions ?type-spec ?constructor dummy-predicate))
       ((_ ?type-spec
           ?constructor
@@ -288,6 +309,7 @@
 		      (if (identifier? #'?type-spec)
 			  #'(?type-spec)
 			  #'?type-spec)))
+
          (check-for-id!
           (syntax ?type-name)
           "Typ ist kein Name")
@@ -306,14 +328,21 @@
           (syntax ?predicate)
           "Prädikat ist kein Name")
 
+	 (check-id-unbound! #'?type-name)
+	 (check-id-unbound! #'?constructor)
+	 (check-id-unbound! #'?predicate)
+	 
 	 (for-each
 	  (lambda (field-spec)
 	    (syntax-case field-spec ()
 	      ((?accessor ?selector)
-	       (check-for-id! #'?accessor "Selektor ist kein Name"))
+	       (begin
+		 (check-for-id! #'?accessor "Selektor ist kein Name")
+		 (check-id-unbound! #'?accessor)))
 	      (?stuff
 	       (raise-syntax-error #f "Feld hat nicht die Form (Selektor Signatur)" #'?stuff))))
 	  (syntax->list #'(?field-spec ...)))
+
 	 
          (with-syntax ((?stx x))
            #'(define-record-functions* ?stx ?type-spec
