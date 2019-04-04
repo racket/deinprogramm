@@ -273,7 +273,7 @@
         #f 
         "Zu wenige Operanden für define-record-functions" x))
       ((_ ?type-spec ?constructor) ; nullary case
-       #'(define-record-functions ?type-name ?constructor dummy-predicate))
+       #'(define-record-functions ?type-spec ?constructor dummy-predicate))
       ((_ ?type-spec
           ?constructor
           (?accessor ?signature) ?field-spec ...)
