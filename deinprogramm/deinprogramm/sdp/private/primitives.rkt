@@ -248,21 +248,17 @@
 
  ("Listen"
   (empty list "die leere Liste")
-  (make-pair (%a (list-of %a) -> (list-of %a))
-	     "erzeuge ein Paar aus Element und Liste")
   ((sdp-cons cons) (%a (list-of %a) -> (list-of %a))
-	     "erzeuge ein Paar aus Element und Liste")
-  (pair? (any -> boolean)
-	 "feststellen, ob ein Wert ein Paar ist")
+	     "erzeuge ein Cons aus Element und Liste")
   (cons? (any -> boolean)
-	 "feststellen, ob ein Wert ein Paar ist")
+	 "feststellen, ob ein Wert ein Cons ist")
   (empty? (any -> boolean)
 	  "feststellen, ob ein Wert die leere Liste ist")
   
   (first ((list-of %a) -> %a)
-	 "erstes Element eines Paars extrahieren")
+	 "erstes Element eines Cons extrahieren")
   (rest ((list-of %a) -> (list-of %a))
-	"Rest eines Paars extrahieren")
+	"Rest eines Cons extrahieren")
 
   (list (%a ... -> (list-of %a))
 	"Liste aus den Argumenten konstruieren")
@@ -356,37 +352,34 @@
   (read (-> any)
 	"Externe Repräsentation eines Werts in der REPL einlesen und den zugehörigen Wert liefern")))
 
-(define real-make-pair
-  (let ()
-    (define make-pair
-      (procedure-rename
-       (lambda (f r)
-         (when (and (not (null? r))
-                    (not (pair? r)))
-           (raise
-            (make-exn:fail:contract
-             (string->immutable-string
-              (format "Zweites Argument zu make-pair ist keine Liste, sondern ~e" r))
-             (current-continuation-marks))))
-         (cons f r))
-       'make-pair))
-    make-pair))
+(define real-cons
+  (procedure-rename
+   (lambda (f r)
+     (when (and (not (null? r))
+                (not (pair? r)))
+       (raise
+        (make-exn:fail:contract
+         (string->immutable-string
+          (format "Zweites Argument zu cons ist keine Liste, sondern ~e" r))
+         (current-continuation-marks))))
+     (cons f r))
+   'cons))
 
-(define-syntax make-pair
+(define-syntax sdp-cons
   (let ()
     ;; make it work with match
-    (define-struct pair-info ()
+    (define-struct cons-info ()
       #:super struct:struct-info
       #:property
       prop:procedure
       (lambda (_ stx)
 	(syntax-case stx ()
-	  ((self . args) (syntax/loc stx (real-make-pair . args)))
-	  (else (syntax/loc stx real-make-pair)))))
-    (make-pair-info (lambda ()
+	  ((self . args) (syntax/loc stx (real-cons . args)))
+	  (else (syntax/loc stx real-cons)))))
+    (make-cons-info (lambda ()
 		      (list #f
-			    #'real-make-pair
-			    #'pair?
+			    #'real-cons
+			    #'cons?
 			    (list #'cdr #'car)
 			    '(#f #f)
 			    #f)))))
@@ -396,7 +389,7 @@
     (raise
      (make-exn:fail:contract
       (string->immutable-string
-       (format "Argument zu first kein Paar, sondern ~e" l))
+       (format "Argument zu first kein Cons, sondern ~e" l))
       (current-continuation-marks))))
   (car l))
 
@@ -405,7 +398,7 @@
     (raise
      (make-exn:fail:contract
       (string->immutable-string
-       (format "Argument zu rest kein Paar, sondern ~e" l))
+       (format "Argument zu rest kein Cons, sondern ~e" l))
       (current-continuation-marks))))
   (cdr l))
 
@@ -416,10 +409,6 @@
 
 (define (cons? obj)
   (pair? obj))
-
-(define-teach sdp cons
-  (lambda (f r)
-    (make-pair f r)))
 
 (define-teach sdp append
   (lambda args
@@ -1200,7 +1189,7 @@
     ((_ ?case:expr (?pattern0 ?body0:expr) (?pattern ?body:expr) ...)
      (let ()
        (define (pattern-variables pat)
-	 (syntax-case pat (empty make-pair list quote)
+	 (syntax-case pat (empty sdp-cons list quote)
 	   (empty '())
 	   (?var (identifier? #'?var)
 	     (if (eq? (syntax->datum #'?var) '_)
@@ -1210,7 +1199,7 @@
 		   (or (string? d) (number? d) (boolean? d)))
 		 '())
 	   ('?lit '())
-	   ((make-pair ?pat1 ?pat2)
+	   ((sdp-cons ?pat1 ?pat2)
 	    (append (pattern-variables #'?pat1) (pattern-variables #'?pat2)))
 	   ((list) '())
 	   ((list ?pat0 ?pat ...)
@@ -1245,7 +1234,7 @@
 (define-syntax (match-helper stx)
   (syntax-case stx ()
     ((_ ?id ?pattern0 ?body0 ?nomatch)
-     (syntax-case #'?pattern0 (empty make-pair list quote)
+     (syntax-case #'?pattern0 (empty cons list quote)
        (empty
 	#'(if (null? ?id)
 	      ?body0
@@ -1264,7 +1253,7 @@
 	#'(if (equal? ?id '?lit)
 	      ?body0
 	      ?nomatch))
-       ((make-pair ?pat1 ?pat2)
+       ((cons ?pat1 ?pat2)
 	#'(if (pair? ?id)
 	      (let ((f (first ?id))
 		    (r (rest ?id)))

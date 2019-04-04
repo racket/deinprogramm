@@ -5,7 +5,7 @@
 (require rackunit
 	 deinprogramm/sdp/record
 	 deinprogramm/signature/signature-syntax
-	 (only-in deinprogramm/sdp/private/primitives match empty make-pair))
+	 (only-in deinprogramm/sdp/private/primitives match empty cons))
 
 (define any (signature any %any))
 
@@ -66,22 +66,22 @@
       (lambda (x)
 	(match x
 	  (empty 'empty)
-	  ((make-pair 'foo empty) 'fooempty)
+	  ((cons 'foo empty) 'fooempty)
 	  ((list 'foo 'bar) 'listfoobar)
 	  ((list 'bar 'foo) 'listbarfoo)
 	  ((list a b c) (list 'list a b c))
-	  ((make-pair 5 b) (list 'make-pair5 b))
-	  ((make-pair a (make-pair b c)) (list 'make-pair a b c))
-	  ((make-pair a b) (list 'make-pair a b))
+	  ((cons 5 b) (list 'cons5 b))
+	  ((cons a (cons b c)) (list 'cons a b c))
+	  ((cons a b) (list 'cons a b))
 	  (x (list 'x x)))))
 
     (check-equal? (foo empty) 'empty)
     (check-equal? (foo "empty") '(x "empty"))
     (check-equal? (foo (list 1 2 3)) '(list 1 2 3))
-    (check-equal? (foo (make-pair 'foo empty)) 'fooempty)
-    (check-equal? (foo (make-pair 1 empty)) '(make-pair 1 ()))
-    (check-equal? (foo (make-pair 5 empty)) '(make-pair5 ()))
-    (check-equal? (foo (list 1 2)) '(make-pair 1 2 ()))
+    (check-equal? (foo (cons 'foo empty)) 'fooempty)
+    (check-equal? (foo (cons 1 empty)) '(cons 1 ()))
+    (check-equal? (foo (cons 5 empty)) '(cons5 ()))
+    (check-equal? (foo (list 1 2)) '(cons 1 2 ()))
     (check-equal? (match empty ((list) 'bingo)) 'bingo)
     (check-equal? (match (list 1) ((list) 'bingo) (foo foo)) (list 1))
     (check-equal? (foo (list 'foo 'bar)) 'listfoobar)
@@ -107,12 +107,12 @@
     (define foo
       (lambda (x)
 	(match x
-	  ((make-pair foo empty) 'pairfoo)
+	  ((cons foo empty) 'pairfoo)
 	  ((make-nullary) 'nullary)
 	  ((kons a b) (list 'kons a b))
 	  ((gons a b) (list 'gons a b)))))
 
-    (check-equal? (foo (make-pair foo empty)) 'pairfoo)
+    (check-equal? (foo (cons foo empty)) 'pairfoo)
     (check-equal? (foo (make-nullary)) 'nullary)
     (check-equal? (foo (kons 1 2)) '(kons 1 2))
     (check-equal? (foo (gons 1 2)) '(gons 1 2)))))

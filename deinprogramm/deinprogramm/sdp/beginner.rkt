@@ -16,7 +16,7 @@
  (all-from-except beginner: deinprogramm/sdp/private/primitives procedures
 		  set! eq? equal?
 		  quote
-		  empty make-pair pair? cons? first rest
+		  empty cons cons? first rest
 		  length map for-each reverse append list list-ref fold
 		  symbol? symbol=? string->symbol symbol->string
 		  apply))
