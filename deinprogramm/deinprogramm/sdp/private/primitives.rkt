@@ -266,9 +266,13 @@
   (length ((list-of %a) -> natural)
 	  "Länge einer Liste berechnen")
 
+  (filter ((%a -> boolean) (list-of %a) -> (list-of %a))
+	 "Alle Elemente einer Liste extrahieren, für welche die Funktion #t liefert.")
+
   (fold (%b (%a %b -> %b) (list-of %a) -> %b)
 	 "Liste einfalten.")
-  
+
+
   ((sdp-append append) ((list-of %a) ... -> (list-of %a))
    "mehrere Listen aneinanderhängen")
 
@@ -421,7 +425,7 @@
 	    (raise
 	     (make-exn:fail:contract
 	      (string->immutable-string
-	       (format "Argument zu append keine Liste, sondern ~e; restliche Argumente:~a"
+	       (format "Erstes Argument zu append keine Liste, sondern ~e; restliche Argumente:~a"
 		       arg
 		       (apply string-append
 			      (map (lambda (arg)
@@ -447,10 +451,33 @@
        (raise
 	(make-exn:fail:contract
 	 (string->immutable-string
-	  (format "Argument zu fold keine Liste, sondern ~e; andere Argumente: ~e ~e"
+	  (format "Drittes Argument zu fold keine Liste, sondern ~e; andere Argumente: ~e ~e"
 		  lis
 		  unit combine))
 	 (current-continuation-marks)))))))
+
+(define filter
+  (lambda (p? lis)
+    (when (not (procedure? p?))
+      (raise
+       (make-exn:fail:contract
+	(string->immutable-string
+	 (format "Erstes Argument zu filter keine Funktion, sondern ~e" p?))
+	(current-continuation-marks))))
+    (cond
+     ((empty? lis) '())
+     ((pair? lis)
+      (if (p? (first lis))
+	  (cons (first lis)
+		(filter p? (rest lis)))
+	  (filter p? (rest lis))))
+     (else
+      (raise
+       (make-exn:fail:contract
+	(string->immutable-string
+	 (format "Zweites Argument zu filter keine Liste, sondern ~e"
+		 lis))
+	(current-continuation-marks)))))))
 
 ;; This is copied from collects/lang/private/beginner-funs.rkt
 ;; Test-suite support (require is really an effect
