@@ -282,20 +282,6 @@
   (reverse ((list-of %a)  -> (list-of %a))
 	   "Liste in umgekehrte Reihenfolge bringen"))
 
- ("Computer"
-  (computer signature
-	    "Signatur für Computer")
-  (make-computer (string rational rational -> computer)
-		 "Computer aus Prozessorname, Arbeitsspeicher und Festplattenkapazität konstruieren")
-  (computer? (any -> boolean)
-	     "feststellen, ob Wert ein Computer ist")
-  (computer-processor (computer -> string)
-		      "Prozessorname aus Computer extrahieren")
-  (computer-ram (computer -> rational)
-		"Arbeitsspeicher aus Computer extrahieren")
-  (computer-hard-drive (computer -> rational)
-		       "Festplattenkapazität aus Computer extrahieren"))
-
  ;; #### Zeichen sollten noch dazu, Vektoren wahrscheinlich auch
 
  ("Zeichenketten"
@@ -977,12 +963,6 @@
 
 (define (write-newline)
   (newline))
-
-(define-record-functions computer
-  make-computer computer?
-  (computer-processor  string)
-  (computer-ram        rational)
-  (computer-hard-drive rational))
 
 (define (violation text)
   (error text))
