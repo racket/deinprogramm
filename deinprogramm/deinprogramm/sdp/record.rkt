@@ -290,27 +290,27 @@
 			  #'?type-spec)))
          (check-for-id!
           (syntax ?type-name)
-          "Typ-Name ist kein Bezeichner")
+          "Typ ist kein Name")
 
 	 (for-each (lambda (type-param)
 		     (check-for-id!
 		      type-param
-		      "Parameter zu Typ-Konstruktor ist kein Bezeichner"))
+		      "Parameter zu Typ-Konstruktor ist kein Name"))
 		   (syntax->list #'(?type-params ...)))
          
          (check-for-id!
           (syntax ?constructor)
-          "Konstruktor ist kein Bezeichner")
+          "Konstruktor ist kein Name")
          
          (check-for-id!
           (syntax ?predicate)
-          "Prädikat ist kein Bezeichner")
+          "Prädikat ist kein Name")
 
 	 (for-each
 	  (lambda (field-spec)
 	    (syntax-case field-spec ()
 	      ((?accessor ?selector)
-	       (check-for-id! #'?accessor "Selektor ist kein Bezeichner"))
+	       (check-for-id! #'?accessor "Selektor ist kein Name"))
 	      (?stuff
 	       (raise-syntax-error #f "Feld hat nicht die Form (Selektor Signatur)" #'?stuff))))
 	  (syntax->list #'(?field-spec ...)))

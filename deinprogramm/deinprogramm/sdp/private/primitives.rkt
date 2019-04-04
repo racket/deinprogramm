@@ -510,7 +510,7 @@
      (begin
        (check-for-id!
 	(syntax var)
-	"Der erste Operand der Definition ist kein Bezeichner")
+	"Der erste Operand der Definition ist kein Name")
        
        (let ((binding (identifier-binding (syntax var))))
 	 (when binding
@@ -551,7 +551,7 @@
      (begin
        (check-for-id-list!
 	(syntax->list (syntax (var ...)))
-	"Kein Bezeichner in Let-Bindung")
+	"Kein Name in Let-Bindung")
        (syntax/loc stx ((lambda (var ...) body) expr ...))))
     ((sdp-let ((var expr) ...) body1 body2 ...)
      (raise-sdp-syntax-error
@@ -568,7 +568,7 @@
      (begin
        (check-for-id!
 	(syntax var1)
-	"Kein Bezeichner in Let*-Bindung")
+	"Kein Name in Let*-Bindung")
        (syntax/loc stx ((lambda (var1)
 			  (sdp-let* ((var2 expr2) ...) body))
 			expr1))))
@@ -585,7 +585,7 @@
      (begin
        (check-for-id-list!
 	(syntax->list (syntax (var ...)))
-	"Kein Bezeichner in letrec-Bindung")
+	"Kein Name in letrec-Bindung")
        (syntax/loc stx (letrec ((var expr) ...) body))))
     ((sdp-letrec ((var expr) ...) body1 body2 ...)
      (raise-sdp-syntax-error
@@ -597,12 +597,12 @@
      (begin
        (check-for-id-list!
 	(syntax->list (syntax (var ...)))
-	"Kein Bezeichner als Parameter der Lambda-Abstraktion")
+	"Kein Name als Parameter der Lambda-Abstraktion")
 
        (for-each (lambda (body)
 		   (syntax-case body (sdp-define)
 		     ((sdp-define id exp)
-		      (check-for-id! #'id "Kein Bezeichner nach define"))
+		      (check-for-id! #'id "Kein Name nach define"))
 		     (something-else
 		      (raise-sdp-syntax-error
 		       #f "Im Rumpf eines lambda darf nur ein einziger Ausdruck stehen" body))))
@@ -622,21 +622,21 @@
      (begin
        (check-for-id-list!
 	(syntax->list (syntax (var ...)))
-	"Kein Bezeichner als Parameter der Lambda-Abstraktion")
+	"Kein Name als Parameter der Lambda-Abstraktion")
        (syntax/loc stx (lambda (var ...) body))))
     ((sdp-lambda (var ... . rest) body0 ... body)
      (begin
        (check-for-id-list!
 	(syntax->list (syntax (var ...)))
-	"Kein Bezeichner als Parameter der Lambda-Abstraktion")
+	"Kein Name als Parameter der Lambda-Abstraktion")
        (unless (null? (syntax->datum #'rest))
 	 (check-for-id! 
 	  (syntax rest)
-	  "Kein Bezeichner als Restlisten-Parameter der Lambda-Abstraktion"))
+	  "Kein Name als Restlisten-Parameter der Lambda-Abstraktion"))
        (for-each (lambda (body)
 		   (syntax-case body (sdp-advanced-define)
 		     ((sdp-advanced-define id exp)
-		      (check-for-id! #'id "Kein Bezeichner nach define"))
+		      (check-for-id! #'id "Kein Name nach define"))
 		     (something-else
 		      (raise-sdp-syntax-error
 		       #f "Im Rumpf eines lambda darf nur ein einziger Ausdruck stehen" body))))

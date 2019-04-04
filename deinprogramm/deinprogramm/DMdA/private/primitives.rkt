@@ -500,7 +500,7 @@
      (begin
        (check-for-id!
 	(syntax var)
-	"Der erste Operand der Definition ist kein Bezeichner")
+	"Der erste Operand der Definition ist kein Name")
        
        (let ((binding (identifier-binding (syntax var))))
 	 (when binding
@@ -541,7 +541,7 @@
      (begin
        (check-for-id-list!
 	(syntax->list (syntax (var ...)))
-	"Kein Bezeichner in Let-Bindung")
+	"Kein Name in Let-Bindung")
        (syntax/loc stx ((lambda (var ...) body) expr ...))))
     ((DMdA-let ((var expr) ...) body1 body2 ...)
      (raise-syntax-error
@@ -558,7 +558,7 @@
      (begin
        (check-for-id!
 	(syntax var1)
-	"Kein Bezeichner in Let*-Bindung")
+	"Kein Name in Let*-Bindung")
        (syntax/loc stx ((lambda (var1)
 			  (DMdA-let* ((var2 expr2) ...) body))
 			expr1))))
@@ -575,7 +575,7 @@
      (begin
        (check-for-id-list!
 	(syntax->list (syntax (var ...)))
-	"Kein Bezeichner in letrec-Bindung")
+	"Kein Name in letrec-Bindung")
        (syntax/loc stx (letrec ((var expr) ...) body))))
     ((DMdA-letrec ((var expr) ...) body1 body2 ...)
      (raise-syntax-error
@@ -587,7 +587,7 @@
      (begin
        (check-for-id-list!
 	(syntax->list (syntax (var ...)))
-	"Kein Bezeichner als Parameter der Lambda-Abstraktion")
+	"Kein Name als Parameter der Lambda-Abstraktion")
        (syntax/loc stx (lambda (var ...) body))))
     ((DMdA-lambda (var ...) body1 body2 ...)
      (raise-syntax-error
@@ -606,16 +606,16 @@
      (begin
        (check-for-id-list!
 	(syntax->list (syntax (var ...)))
-	"Kein Bezeichner als Parameter der Lambda-Abstraktion")
+	"Kein Name als Parameter der Lambda-Abstraktion")
        (syntax/loc stx (lambda (var ...) body))))
     ((DMdA-lambda (var ... . rest) body)
      (begin
        (check-for-id-list!
 	(syntax->list (syntax (var ...)))
-	"Kein Bezeichner als Parameter der Lambda-Abstraktion")
+	"Kein Name als Parameter der Lambda-Abstraktion")
        (check-for-id! 
 	(syntax rest)
-	"Kein Bezeichner als Restlisten-Parameter der Lambda-Abstraktion")
+	"Kein Name als Restlisten-Parameter der Lambda-Abstraktion")
        (syntax/loc stx (lambda (var ... . rest) body))))
     ((DMdA-lambda (var ...) body1 body2 ...)
      (raise-syntax-error

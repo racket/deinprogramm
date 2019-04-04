@@ -15,6 +15,6 @@
          => (lambda (dup)
               (raise-syntax-error 
                #f 
-               "Bezeichner doppelt gebunden"
+               "Name doppelt gebunden"
                args dup)))
         (else #t)))
