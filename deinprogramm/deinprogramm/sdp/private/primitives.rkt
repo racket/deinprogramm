@@ -545,54 +545,59 @@
 (define-syntax (sdp-advanced-define stx)
   (transform-sdp-define stx #t))
 
+(define-for-syntax (check-body-definitions! bodies)
+  (for-each (lambda (body)
+	      (syntax-case body (sdp-define)
+		((sdp-define id exp)
+		 (check-for-id! #'id "Kein Name nach define"))
+		(something-else
+		 (raise-sdp-syntax-error
+		  #f "In einem Rumpf darf nur ein einziger Ausdruck stehen" body))))
+	    bodies))
+
 (define-syntax (sdp-let stx)
   (syntax-case stx ()
-    ((sdp-let () body)
-     (syntax/loc stx body))
-    ((sdp-let ((var expr) ...) body)
+    ((sdp-let ((var expr) ...) body0 ... body)
      (begin
        (check-for-id-list!
 	(syntax->list (syntax (var ...)))
-	"Kein Name in `lLet-Bindung")
-       (syntax/loc stx ((lambda (var ...) body) expr ...))))
-    ((sdp-let ((var expr) ...) body1 body2 ...)
-     (raise-sdp-syntax-error
-      #f "`let'-Ausdruck hat mehr als einen Ausdruck als Rumpf" stx))
+	"Kein Name in `let-Bindung")
+       (check-body-definitions! (syntax->list #'(body0 ...)))
+       (syntax/loc stx ((lambda (var ...) body0 ... body) expr ...))))
     ((sdp-let expr ...)
      (raise-sdp-syntax-error
       #f "`let'-Ausdruck erwartet eine Liste von Bindungen (Paare aus Name und Ausdruck) und einen Rumpf" stx))))
 
 (define-syntax (sdp-let* stx)
   (syntax-case stx ()
-    ((sdp-let* () body)
-     (syntax/loc stx body))
-    ((sdp-let* ((var1 expr1) (var2 expr2) ...) body)
+    ((sdp-let* () body0 ... body)
+     (syntax/loc stx (let () body0 ... body)))
+    ((sdp-let* ((var1 expr1) (var2 expr2) ...) body0 ... body)
      (begin
        (check-for-id!
 	(syntax var1)
 	"Kein Name in `let*'-Bindung")
+       (check-body-definitions! (syntax->list #'(body0 ...)))
        (syntax/loc stx ((lambda (var1)
-			  (sdp-let* ((var2 expr2) ...) body))
+			  (sdp-let* ((var2 expr2) ...) body0 ... body))
 			expr1))))
-    ((sdp-let* ((var expr) ...) body1 body2 ...)
-     (raise-sdp-syntax-error
-      #f "`let*'-Ausdruck hat mehr als einen Ausdruck als Rumpf" stx))
     ((sdp-let* expr ...)
      (raise-sdp-syntax-error
       #f "`let*'-Ausdruck erwartet eine Liste von Bindungen (Paare aus Name und Ausdruck) und einen Rumpf" stx))))
 
 (define-syntax (sdp-letrec stx)
   (syntax-case stx ()
-    ((sdp-letrec ((var expr) ...) body)
+    ((sdp-letrec ((var expr) ...) body0 ... body)
      (begin
        (check-for-id-list!
 	(syntax->list (syntax (var ...)))
 	"Kein Name in letrec-Bindung")
-       (syntax/loc stx (letrec ((var expr) ...) body))))
-    ((sdp-letrec ((var expr) ...) body1 body2 ...)
+       (check-body-definitions! (syntax->list #'(body0 ...)))
+       (syntax/loc stx (letrec ((var expr) ...) body0 ... body))))
+    ((sdp-letrec expr ...)
      (raise-sdp-syntax-error
-      #f "`letrec' hat mehr als einen Ausdruck als Rumpf" stx))))
-
+      #f "`letrec''-Ausdruck erwartet eine Liste von Bindungen (Paare aus Name und Ausdruck) und einen Rumpf" stx))))
+	    
 (define-syntax (sdp-lambda stx)
   (syntax-case stx ()
     ((sdp-lambda (var ...) body0 ... body)
@@ -601,14 +606,7 @@
 	(syntax->list (syntax (var ...)))
 	"Kein Name als Parameter der Abstraktion")
 
-       (for-each (lambda (body)
-		   (syntax-case body (sdp-define)
-		     ((sdp-define id exp)
-		      (check-for-id! #'id "Kein Name nach define"))
-		     (something-else
-		      (raise-sdp-syntax-error
-		       #f "Im Rumpf einer Abstraktion darf nur ein einziger Ausdruck stehen" body))))
-		 (syntax->list #'(body0 ...)))
+       (check-body-definitions! (syntax->list #'(body0 ...)))
        (syntax/loc stx (lambda (var ...) body0 ... body))))
     ((sdp-lambda var body ...)
      (identifier? (syntax var))
@@ -635,14 +633,8 @@
 	 (check-for-id! 
 	  (syntax rest)
 	  "Kein Name als Restlisten-Parameter der Abstraktion"))
-       (for-each (lambda (body)
-		   (syntax-case body (sdp-advanced-define)
-		     ((sdp-advanced-define id exp)
-		      (check-for-id! #'id "Kein Name nach define"))
-		     (something-else
-		      (raise-sdp-syntax-error
-		       #f "Im Rumpf eines lambda darf nur ein einziger Ausdruck stehen" body))))
-		 (syntax->list #'(body0 ...)))
+       
+       (check-body-definitions! (syntax->list #'(body0 ...)))
        (syntax/loc stx (lambda (var ... . rest) body0 ... body))))
     ((sdp-lambda var ...)
      (raise-sdp-syntax-error
@@ -721,18 +713,18 @@
 				(if (eq? clause stop-before)
 				    (k #t)
 				    (syntax-case clause ()
-				      [(question answer)
+				      [(question body0 ... answer)
 				       (begin
 					 (unless (and (identifier? (syntax question))
 						      (free-identifier=? (syntax question) #'sdp-else))
 					   (local-expand-for-error (syntax question) 'expression null))
-					 (local-expand-for-error (syntax answer) 'expression null))])))
+					 (local-expand-for-error #'(let () body0 ... answer) 'expression null))])))
 			      clauses)))])
 	  (let ([checked-clauses
 		 (map
 		  (lambda (clause)
 		    (syntax-case clause (sdp-else)
-		      [(sdp-else answer)
+		      [(sdp-else body0 ... answer)
 		       (let ([lpos (memq clause clauses)])
 			 (when (not (null? (cdr lpos)))
 			   (teach-syntax-error
@@ -740,11 +732,14 @@
 			    stx
 			    clause
 			    "`else'-Bedingung gefunden, die nicht am Ende des `cond'-Ausdrucks steht"))
+			 (check-body-definitions! (syntax->list #'(body0 ...)))
 			 (with-syntax ([new-test (stepper-syntax-property (syntax #t) 'stepper-else #t)])
-			   (syntax/loc clause (new-test answer))))]
-		      [(question answer)
-		       (with-syntax ([verified (stepper-ignore-checker (syntax (verify-boolean question 'cond)))])
-			 (syntax/loc clause (verified answer)))]
+			   (syntax/loc clause (new-test body0 ... answer))))]
+		      [(question body0 ... answer)
+		       (begin
+			 (check-body-definitions! (syntax->list #'(body0 ...)))
+			 (with-syntax ([verified (stepper-ignore-checker (syntax (verify-boolean question 'cond)))])
+			   (syntax/loc clause (verified body0 ... answer))))]
 		      [()
 		       (check-preceding-exprs clause)
 		       (teach-syntax-error
@@ -759,23 +754,6 @@
 			stx
 			clause
 			"Zweig mit Bedingung und Ausdruck erwartet, aber Zweig enthält nur eine Form")]
-		      [(question? answer? ...)
-		       (check-preceding-exprs clause)
-		       (let ([parts (syntax->list clause)])
-			 ;; to ensure the illusion of left-to-right checking, make sure 
-			 ;; the question and first answer (if any) are ok:
-			 (unless (and (identifier? (car parts))
-				      (free-identifier=? (car parts) #'sdp-else))
-			   (local-expand-for-error (car parts) 'expression null))
-			 (unless (null? (cdr parts))
-			   (local-expand-for-error (cadr parts) 'expression null))
-			 ;; question and answer (if any) are ok, raise a count-based exception:
-			 (teach-syntax-error
-			  'cond
-			  stx
-			  clause
-			  "Zweig mit Bedingung und Ausdruck erwartet, aber Zweig enthält ~a Formen"
-			  (length parts)))]
 		      [_else
 		       (teach-syntax-error
 			'cond
