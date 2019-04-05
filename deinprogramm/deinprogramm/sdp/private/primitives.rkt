@@ -507,7 +507,7 @@
       #f "Definition ohne Operanden" stx))
     ((sdp-define v)
      (raise-sdp-syntax-error
-      #f "Define erwartet zwei Operanden, nicht einen" stx))
+      #f "Definition erwartet zwei Operanden, nicht einen" stx))
     ((sdp-define var expr)
      (begin
        (check-for-id!
