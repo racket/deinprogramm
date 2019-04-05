@@ -157,6 +157,8 @@
                 (lambda (all) "Kann Variable nicht vor der Definition setzen:"))
           (list #rx"^(.*): undefined;\n cannot use before initialization"
                 (λ (all one) (format "Lokale Variable vor ihrer Definition benutzt: ~a" one)))
+	  (list #rx"division by zero"
+		(lambda (all) "durch 0 geteilt"))
           ;; When do these show up? I see only `#<image>' errors, currently.
           (list (regexp-quote "#(struct:object:image% ...)")
                 (lambda (all) "ein Bild"))
