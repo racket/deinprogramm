@@ -553,7 +553,7 @@
      (begin
        (check-for-id-list!
 	(syntax->list (syntax (var ...)))
-	"Kein Name in Let-Bindung")
+	"Kein Name in `lLet-Bindung")
        (syntax/loc stx ((lambda (var ...) body) expr ...))))
     ((sdp-let ((var expr) ...) body1 body2 ...)
      (raise-sdp-syntax-error
@@ -711,7 +711,7 @@
 	 'cond
 	 stx
 	 #f
-	 "Frage und eine Antwort nach `cond' erwartet, aber da ist nichts")]
+	 "Bedingung und ein Ausdruck nach `cond' erwartet, aber da ist nichts")]
        [(_ clause ...)
 	(let* ([clauses (syntax->list (syntax (clause ...)))]
 	       [check-preceding-exprs
@@ -739,7 +739,7 @@
 			    'cond
 			    stx
 			    clause
-			    "`else'-Test gefunden, der nicht am Ende des `cond'-Ausdrucks steht"))
+			    "`else'-Bedingung gefunden, die nicht am Ende des `cond'-Ausdrucks steht"))
 			 (with-syntax ([new-test (stepper-syntax-property (syntax #t) 'stepper-else #t)])
 			   (syntax/loc clause (new-test answer))))]
 		      [(question answer)
@@ -751,14 +751,14 @@
 			'cond
 			stx
 			clause
-			"Test und Ausdruck in Zweig erwartet, aber Zweig leer")]
+			"Bedingung und Ausdruck in Zweig erwartet, aber Zweig leer")]
 		      [(question?)
 		       (check-preceding-exprs clause)
 		       (teach-syntax-error
 			'cond
 			stx
 			clause
-			"Zweig mit Test und Ausdruck erwartet, aber Zweig enthält nur eine Form")]
+			"Zweig mit Bedingung und Ausdruck erwartet, aber Zweig enthält nur eine Form")]
 		      [(question? answer? ...)
 		       (check-preceding-exprs clause)
 		       (let ([parts (syntax->list clause)])
@@ -774,20 +774,20 @@
 			  'cond
 			  stx
 			  clause
-			  "Zweig mit Test und Ausdruck erwartet, aber Zweig enthält ~a Formen"
+			  "Zweig mit Bedingung und Ausdruck erwartet, aber Zweig enthält ~a Formen"
 			  (length parts)))]
 		      [_else
 		       (teach-syntax-error
 			'cond
 			stx
 			clause
-			"Zweig mit Test und Ausdruck erwartet, aber ~a gefunden"
+			"Zweig mit Bedingung und Ausdruck erwartet, aber ~a gefunden"
 			(something-else clause))]))
 		  clauses)])
 	    ;; Add `else' clause for error (always):
 	    (let ([clauses (append checked-clauses 
 				   (list 
-				    (with-syntax ([error-call (syntax/loc stx (error 'cond "alle Tests ergaben #f"))])
+				    (with-syntax ([error-call (syntax/loc stx (error 'cond "alle Bedingungen ergaben #f"))])
 				      (syntax [else error-call]))))])
 	      (with-syntax ([clauses clauses])
 		(syntax/loc stx (cond . clauses))))))]
@@ -801,7 +801,7 @@
 	'else
 	expr
 	#f
-	"hier nicht erlaubt, weil kein Test in `cond'-Zweig"))
+	"hier nicht erlaubt, weil kein Bedingung in `cond'-Zweig"))
      (syntax-case stx (set! x)
        [(set! e expr) (bad #'e)]
        [(e . expr) (bad #'e)]
@@ -828,7 +828,7 @@
 	   'if
 	   stx
 	   #f
-	   "Test und zwei Ausdrücke erwartet, aber ~a Form~a gefunden"
+	   "Bedingung und zwei Ausdrücke erwartet, aber ~a Form~a gefunden"
 	   (if (zero? n) "keine" n)
 	   (if (= n 1) "" "en")))]
        [_else (bad-use-error 'if stx)]))))
