@@ -607,7 +607,7 @@
 		      (check-for-id! #'id "Kein Name nach define"))
 		     (something-else
 		      (raise-sdp-syntax-error
-		       #f "Im Rumpf eines lambda darf nur ein einziger Ausdruck stehen" body))))
+		       #f "Im Rumpf einer Abstraktion darf nur ein einziger Ausdruck stehen" body))))
 		 (syntax->list #'(body0 ...)))
        (syntax/loc stx (lambda (var ...) body0 ... body))))
     ((sdp-lambda var body ...)
