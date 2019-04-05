@@ -169,7 +169,15 @@
   (for/fold ([msg msg]) ([repl. replacements])
     (regexp-replace* (first repl.) msg (second repl.))))
 
+(define (rewrite-misc-error-message msg)
+  (define replacements
+    (list
+     (list #rx"expected a `\\)` to close `\\(`"
+	   (lambda (all) "zur offenen Klammer fehlt die geschlossene"))))
+  (for/fold ([msg msg]) ([repl. replacements])
+    (regexp-replace* (first repl.) msg (second repl.))))
+
 (define (get-rewriten-error-message exn)
-  (if (exn-needs-rewriting? exn)
+  (if (exn:fail:contract? exn)
       (rewrite-contract-error-message (exn-message exn))
-      (exn-message exn)))
+      (rewrite-misc-error-message (exn-message exn))))
