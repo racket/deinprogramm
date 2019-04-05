@@ -557,10 +557,10 @@
        (syntax/loc stx ((lambda (var ...) body) expr ...))))
     ((sdp-let ((var expr) ...) body1 body2 ...)
      (raise-sdp-syntax-error
-      #f "Let-Ausdruck hat mehr als einen Ausdruck als Rumpf" stx))
+      #f "`let'-Ausdruck hat mehr als einen Ausdruck als Rumpf" stx))
     ((sdp-let expr ...)
      (raise-sdp-syntax-error
-      #f "Let-Ausdruck erwartet eine Liste von Bindungen (Paare aus Name und Ausdruck) und einen Rumpf" stx))))
+      #f "`let'-Ausdruck erwartet eine Liste von Bindungen (Paare aus Name und Ausdruck) und einen Rumpf" stx))))
 
 (define-syntax (sdp-let* stx)
   (syntax-case stx ()
@@ -570,16 +570,16 @@
      (begin
        (check-for-id!
 	(syntax var1)
-	"Kein Name in Let*-Bindung")
+	"Kein Name in `let*'-Bindung")
        (syntax/loc stx ((lambda (var1)
 			  (sdp-let* ((var2 expr2) ...) body))
 			expr1))))
     ((sdp-let* ((var expr) ...) body1 body2 ...)
      (raise-sdp-syntax-error
-      #f "Let*-Ausdruck hat mehr als einen Ausdruck als Rumpf" stx))
+      #f "`let*'-Ausdruck hat mehr als einen Ausdruck als Rumpf" stx))
     ((sdp-let* expr ...)
      (raise-sdp-syntax-error
-      #f "Let*-Ausdruck erwartet eine Liste von Bindungen (Paare aus Name und Ausdruck) und einen Rumpf" stx))))
+      #f "`let*'-Ausdruck erwartet eine Liste von Bindungen (Paare aus Name und Ausdruck) und einen Rumpf" stx))))
 
 (define-syntax (sdp-letrec stx)
   (syntax-case stx ()
@@ -591,7 +591,7 @@
        (syntax/loc stx (letrec ((var expr) ...) body))))
     ((sdp-letrec ((var expr) ...) body1 body2 ...)
      (raise-sdp-syntax-error
-      #f "Letrec hat mehr als einen Ausdruck als Rumpf" stx))))
+      #f "`letrec' hat mehr als einen Ausdruck als Rumpf" stx))))
 
 (define-syntax (sdp-lambda stx)
   (syntax-case stx ()
@@ -599,7 +599,7 @@
      (begin
        (check-for-id-list!
 	(syntax->list (syntax (var ...)))
-	"Kein Name als Parameter der Lambda-Abstraktion")
+	"Kein Name als Parameter der Abstraktion")
 
        (for-each (lambda (body)
 		   (syntax-case body (sdp-define)
@@ -613,10 +613,10 @@
     ((sdp-lambda var body ...)
      (identifier? (syntax var))
      (raise-sdp-syntax-error
-      #f "Um die Parameter einer Lambda-Abstraktion gehören Klammern" (syntax var)))
+      #f "Um die Parameter einer Abstraktion gehören Klammern" (syntax var)))
     ((sdp-lambda var ...)
      (raise-sdp-syntax-error
-      #f "Fehlerhafte Lambda-Abstraktion" stx))))
+      #f "Fehlerhafte Abstraktion" stx))))
 
 (define-syntax (sdp-advanced-lambda stx)
   (syntax-case stx ()
@@ -624,17 +624,17 @@
      (begin
        (check-for-id-list!
 	(syntax->list (syntax (var ...)))
-	"Kein Name als Parameter der Lambda-Abstraktion")
+	"Kein Name als Parameter der Abstraktion")
        (syntax/loc stx (lambda (var ...) body))))
     ((sdp-lambda (var ... . rest) body0 ... body)
      (begin
        (check-for-id-list!
 	(syntax->list (syntax (var ...)))
-	"Kein Name als Parameter der Lambda-Abstraktion")
+	"Kein Name als Parameter der Abstraktion")
        (unless (null? (syntax->datum #'rest))
 	 (check-for-id! 
 	  (syntax rest)
-	  "Kein Name als Restlisten-Parameter der Lambda-Abstraktion"))
+	  "Kein Name als Restlisten-Parameter der Abstraktion"))
        (for-each (lambda (body)
 		   (syntax-case body (sdp-advanced-define)
 		     ((sdp-advanced-define id exp)
@@ -646,13 +646,13 @@
        (syntax/loc stx (lambda (var ... . rest) body0 ... body))))
     ((sdp-lambda var ...)
      (raise-sdp-syntax-error
-      #f "Fehlerhafte Lambda-Abstraktion" stx))))
+      #f "Fehlerhafte Abstraktion" stx))))
 
 (define-syntax (sdp-begin stx)
   (syntax-case stx ()
     ((sdp-begin)
      (raise-sdp-syntax-error
-      #f "Begin-Ausdruck braucht mindestens einen Operanden" stx))
+      #f "`begin`-Ausdruck braucht mindestens einen Operanden" stx))
     ((sdp-begin expr1 expr2 ...)
      (syntax/loc stx (begin expr1 expr2 ...)))))
 
