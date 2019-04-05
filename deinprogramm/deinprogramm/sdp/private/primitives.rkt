@@ -23,6 +23,9 @@
 
 (require (for-syntax deinprogramm/private/syntax-checkers))
 
+(require (for-syntax "rewrite-error-message.rkt"))
+(require "rewrite-error-message.rkt")
+	  
 (require (rename-in deinprogramm/quickcheck/quickcheck
 		    (property quickcheck:property)))
 
@@ -910,17 +913,25 @@
     ((_ datum1 datum2 ...)
      (syntax/loc stx (#%app datum1 datum2 ...)))))
 
+(define (top/check-defined id)
+  (namespace-variable-value (syntax-e id) #t (lambda () (raise-not-bound-error id))))
+
 (define-syntax (sdp-top stx)
   (syntax-case stx ()
     ((_ . id)
      ;; If we're in a module, we'll need to check that the name
      ;;  is bound....
-     (if (and (not (identifier-binding #'id))
-	      (syntax-source-module #'id))
-	 ;; ... but it might be defined later in the module, so
-	 ;; delay the check.
-	 (stepper-ignore-checker 
-	  (syntax/loc stx (#%app values (sdp-top-continue id))))
+     (if (not (identifier-binding #'id))
+	 (if (syntax-source-module #'id)
+	     ;; ... but it might be defined later in the module, so
+	     ;; delay the check.
+	     (stepper-ignore-checker 
+	      (syntax/loc stx (#%app values (sdp-top-continue id))))
+             ;; identifier-finding only returns useful information when inside a module. 
+             ;; At the top-level we need to  do the check at runtime. Also, note that at 
+             ;; the top level there is no need for stepper annotations
+             (syntax/loc stx (#%app top/check-defined #'id)))
+
 	 (syntax/loc stx (#%top . id))))))
 
 (define-syntax (sdp-top-continue stx)
@@ -928,7 +939,9 @@
     [(_ id)
      ;; If there's still no binding, it's an "unknown name" error.
      (if (not (identifier-binding #'id))
-	 (raise-sdp-syntax-error #f "Ungebundene Variable" (syntax/loc stx id))
+           ;; If there's still no binding, it's an "unknown name" error.
+           (raise-not-bound-error #'id)
+
 	 ;; Don't use #%top here; id might have become bound to something
 	 ;;  that isn't a value.
 	 #'id)]))
