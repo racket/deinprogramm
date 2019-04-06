@@ -55,6 +55,18 @@
 	       integer))
 
    (test-case
+    "nonempty list"
+    (define integer-list (make-nonempty-list-signature 'integer-list integer #f))
+    (check-equal? (say-no (apply-signature integer-list '(1 2 3)))
+		  '(1 2 3))
+    (check-equal? (say-no (apply-signature integer-list '#f))
+		  'no)
+    (check-equal? (say-no (apply-signature integer-list '()))
+		  'no)
+    (check-eq? (failed-signature (apply-signature integer-list '(1 #f 3)))
+	       integer))
+
+   (test-case
     "list-cached"
     (define integer-list (make-list-signature 'integer-list integer #f))
     (define boolean-list (make-list-signature 'integer-list boolean #f))

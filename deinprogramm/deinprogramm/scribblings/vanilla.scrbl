@@ -21,6 +21,7 @@ to go with the German textbooks
 )
 (
   @#,racket[(list-of sig)]
+  @#,racket[(nonempty-list-of sig)]
 )
 (
   @#,racket[empty]
@@ -41,6 +42,11 @@ Signatur für die leere Liste.
 
 @defform[(list-of sig)]{
 Diese Signatur ist dann für einen Wert gültig, wenn dieser eine Liste ist,
+für dessen Elemente @racket[sig] gültig ist.
+}
+
+@defform[(nonempty-list-of sig)]{
+Diese Signatur ist dann für einen Wert gültig, wenn dieser eine nichtleere Liste ist,
 für dessen Elemente @racket[sig] gültig ist.
 }
 
