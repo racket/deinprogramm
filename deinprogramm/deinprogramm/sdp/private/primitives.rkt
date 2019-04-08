@@ -548,16 +548,42 @@
 (define-syntax (sdp-advanced-define stx)
   (transform-sdp-define stx #t))
 
-(define-for-syntax (check-body-definitions! bodies)
-  (for-each (lambda (body)
-	      (syntax-case body (sdp-define)
-		((sdp-define id exp)
-		 (check-for-id! #'id "Kein Name nach define"))
-		(something-else
+(define-for-syntax (check-body-definitions bodies)
+  (let ((pairs
+	 (map (lambda (stx)
+		;; want to be able to shadow global definitions
+		(syntax-case stx (sdp-define)
+		  ((sdp-define)
+		   (raise-sdp-syntax-error
+		    #f "Definition ohne Operanden" stx))
+		  ((sdp-define v)
+		   (raise-sdp-syntax-error
+		    #f "Definition erwartet zwei Operanden, nicht einen" stx))
+		  ((sdp-define var expr)
+		   (begin
+		     (check-for-id!
+		      (syntax var)
+		      "Der erste Operand der Definition ist kein Name")
+		     (cons #'var (syntax/loc stx (define var expr)))))
+		  ((sdp-define v e1 e2 e3 ...)
+		   (raise-sdp-syntax-error
+		    #f "Definition mit mehr als zwei Operanden" stx))))
+	      bodies)))
+    (let loop ((pairs pairs))
+      (when (pair? pairs)
+	(let ((id (caar pairs)))
+	  (cond
+	   ((memf (lambda (p)
+		    (bound-identifier=? id (car p)))
+		  (cdr pairs))
+	    => (lambda (rest)
 		 (raise-sdp-syntax-error
-		  #f "In einem Rumpf darf nur ein einziger Ausdruck stehen" body))))
-	    bodies))
-
+		  #f
+		  "Zweite Definition für denselben Namen"
+		  (cdar rest)))))
+	  (loop (cdr pairs)))))
+    (map cdr pairs)))
+	
 (define-syntax (sdp-let stx)
   (syntax-case stx ()
     ((sdp-let ((var expr) ...) body0 ... body)
@@ -565,8 +591,8 @@
        (check-for-id-list!
 	(syntax->list (syntax (var ...)))
 	"Kein Name in `let-Bindung")
-       (check-body-definitions! (syntax->list #'(body0 ...)))
-       (syntax/loc stx ((lambda (var ...) body0 ... body) expr ...))))
+       (with-syntax (((body0 ...) (check-body-definitions (syntax->list #'(body0 ...)))))
+	 (syntax/loc stx ((lambda (var ...) body0 ... body) expr ...)))))
     ((sdp-let expr ...)
      (raise-sdp-syntax-error
       #f "`let'-Ausdruck erwartet eine Liste von Bindungen (Paare aus Name und Ausdruck) und einen Rumpf" stx))))
@@ -580,10 +606,10 @@
        (check-for-id!
 	(syntax var1)
 	"Kein Name in `let*'-Bindung")
-       (check-body-definitions! (syntax->list #'(body0 ...)))
-       (syntax/loc stx ((lambda (var1)
-			  (sdp-let* ((var2 expr2) ...) body0 ... body))
-			expr1))))
+       (with-syntax (((body0 ...) (check-body-definitions (syntax->list #'(body0 ...)))))
+	 (syntax/loc stx ((lambda (var1)
+			    (sdp-let* ((var2 expr2) ...) body0 ... body))
+			  expr1)))))
     ((sdp-let* expr ...)
      (raise-sdp-syntax-error
       #f "`let*'-Ausdruck erwartet eine Liste von Bindungen (Paare aus Name und Ausdruck) und einen Rumpf" stx))))
@@ -595,8 +621,8 @@
        (check-for-id-list!
 	(syntax->list (syntax (var ...)))
 	"Kein Name in letrec-Bindung")
-       (check-body-definitions! (syntax->list #'(body0 ...)))
-       (syntax/loc stx (letrec ((var expr) ...) body0 ... body))))
+       (with-syntax (((body0 ...) (check-body-definitions (syntax->list #'(body0 ...)))))
+	 (syntax/loc stx (letrec ((var expr) ...) body0 ... body)))))
     ((sdp-letrec expr ...)
      (raise-sdp-syntax-error
       #f "`letrec''-Ausdruck erwartet eine Liste von Bindungen (Paare aus Name und Ausdruck) und einen Rumpf" stx))))
@@ -608,9 +634,8 @@
        (check-for-id-list!
 	(syntax->list (syntax (var ...)))
 	"Kein Name als Parameter der Abstraktion")
-
-       (check-body-definitions! (syntax->list #'(body0 ...)))
-       (syntax/loc stx (lambda (var ...) body0 ... body))))
+       (with-syntax (((body0 ...) (check-body-definitions (syntax->list #'(body0 ...)))))
+	 (syntax/loc stx (lambda (var ...) body0 ... body)))))
     ((sdp-lambda var body ...)
      (identifier? (syntax var))
      (raise-sdp-syntax-error
@@ -636,9 +661,8 @@
 	 (check-for-id! 
 	  (syntax rest)
 	  "Kein Name als Restlisten-Parameter der Abstraktion"))
-       
-       (check-body-definitions! (syntax->list #'(body0 ...)))
-       (syntax/loc stx (lambda (var ... . rest) body0 ... body))))
+       (with-syntax (((body0 ...) (check-body-definitions (syntax->list #'(body0 ...)))))
+	 (syntax/loc stx (lambda (var ... . rest) body0 ... body)))))
     ((sdp-lambda var ...)
      (raise-sdp-syntax-error
       #f "Fehlerhafte Abstraktion" stx))))
@@ -735,13 +759,13 @@
 			    stx
 			    clause
 			    "`else'-Bedingung gefunden, die nicht am Ende des `cond'-Ausdrucks steht"))
-			 (check-body-definitions! (syntax->list #'(body0 ...)))
-			 (with-syntax ([new-test (stepper-syntax-property (syntax #t) 'stepper-else #t)])
+			 (with-syntax ([(body0 ...) (check-body-definitions (syntax->list #'(body0 ...)))]
+				       [new-test (stepper-syntax-property (syntax #t) 'stepper-else #t)])
 			   (syntax/loc clause (new-test body0 ... answer))))]
 		      [(question body0 ... answer)
 		       (begin
-			 (check-body-definitions! (syntax->list #'(body0 ...)))
-			 (with-syntax ([verified (stepper-ignore-checker (syntax (verify-boolean question 'cond)))])
+			 (with-syntax ([(body0 ...) (check-body-definitions (syntax->list #'(body0 ...)))]
+				       [verified (stepper-ignore-checker (syntax (verify-boolean question 'cond)))])
 			   (syntax/loc clause (verified body0 ... answer))))]
 		      [()
 		       (check-preceding-exprs clause)
