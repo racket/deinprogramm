@@ -216,8 +216,8 @@ Die Signatur ist dann für einen Wert gültig, wenn das Prädikat, darauf angewe
 @racket[#t] ergibt.
 }
 
-@subsection{@racket[one-of]}
-@defform[(one-of expr ...)]{
+@subsection{@racket[enum]}
+@defform[(enum expr ...)]{
 Diese Signatur ist für einen Wert gültig, wenn er gleich dem Wert eines
 der @racket[expr] ist.
 }
