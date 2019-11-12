@@ -239,7 +239,7 @@ Daten akzeptiert, kannst Du folgendermaßen konstruieren:
 
 @itemize[
 @item{Schreibe Tests für jeden der Fälle.}
-@item{Schreibe eine racket[cond]-Verzweigung als Rumpf in die
+@item{Schreibe eine @racket[cond]-Verzweigung als Rumpf in die
   Schablone, die genau @italic{n} Zweige hat - also genau soviele Zweige,
   wie es Fälle in der Datendefinition beziehungsweise der Signatur gibt.}
 @item{Schreibe für jeden Zweig eine Bedingung, der den entsprechenden
