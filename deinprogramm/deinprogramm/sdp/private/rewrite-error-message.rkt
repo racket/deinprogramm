@@ -44,8 +44,8 @@
   (define arity:n (ensure-number arity))
   (define found:n (ensure-number found))
   (define fn-is-large (> arity:n found:n))
-  (format "~a erwartet ~a~a~a~a Argument~a, aber ~a~a gefunden"
-          (or name "") (if name ": " "")
+  (format "~a~a erwartet ~a~a~a Argument~a, aber ~a~a gefunden"
+          (or name "") (if name ":" "")
           (if at-least "mindestens " "")
           (if (or (= arity:n 0) fn-is-large) "" "nur ")
           (if (= arity:n 0) "kein" arity:n) (plural-e arity:n)
