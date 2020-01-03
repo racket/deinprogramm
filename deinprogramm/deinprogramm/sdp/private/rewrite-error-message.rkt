@@ -77,7 +77,7 @@
 	  (else
            (define str (symbol->string s))
 	   (substring str 0 (sub1 (string-length str)))))]
-       [(null? s) "einen unmöglicher Wert"]
+       [(null? s) "einen unmöglichen Wert"]
        [(not (list? s)) ctc] ;; ???
        [(eq? 'or/c (car s))
         (format-enum "oder" (map loop (cdr s)))]
