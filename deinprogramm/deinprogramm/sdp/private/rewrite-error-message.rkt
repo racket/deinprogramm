@@ -139,7 +139,9 @@
                 (lambda (all one two three) (argcount-error-message one two three #t)))
           (list #px"([^\n]*): arity mismatch;\n[^\n]*\n  expected[^:]*: (\\d+)\n  given[^:]*: (\\d+)(?:\n  arguments[.][.][.]:(?:\n   [^\n]*)*)?"
                 (lambda (all one two three) (argcount-error-message one two three)))
-          (list #px"contract violation\n  expected: (.*?)\n  given: ([^\n]*)(?:\n  argument position: ([^\n]*))?"
+	  (list #px"([^\n]*): expects( at least)? (\\d+) arguments, but found( only)? (\\d+)"
+                (lambda (all one two three four five) (argcount-error-message one three five two)))
+	  (list #px"contract violation\n  expected: (.*?)\n  given: ([^\n]*)(?:\n  argument position: ([^\n]*))?"
                 (lambda (all ctc given pos) (contract-error-message ctc given pos)))
           (list #rx"^procedure "
                 (lambda (all) ""))
