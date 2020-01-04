@@ -10,6 +10,6 @@
                "srfi-lib"
                "string-constants-lib"))
 
-(define pkg-desc "Signature support for teaching languages for _Die Macht der Abstraktion_")
+(define pkg-desc "Signature support for teaching languages")
 
 (define pkg-authors '(sperber))
