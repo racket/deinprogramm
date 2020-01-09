@@ -72,7 +72,7 @@ Signaturen @racket[signature] der Felder verwendet werden.
 @defform/none[(expr expr ...)]{
 Dies ist eine Funktionsanwendung oder -applikation.
 Alle @racket[expr]s werden ausgewertet:
-Der Operator (also der erste Ausdruck) muß eine
+Der Operator (also der erste Ausdruck) muss eine
 Funktion ergeben, die genauso viele Argumente
 akzeptieren kann, wie es Operanden, also weitere @racket[expr]s gibt.
 Die Anwendung wird dann ausgewertet, indem der Rumpf
@@ -104,7 +104,7 @@ Ein Lambda-Ausdruck ergibt bei der Auswertung eine Funktion.}
 @defform/none[id]{
 Eine Variable bezieht sich auf die, von innen nach
 außen suchend, nächstgelegene Bindung durch @racket[lambda], @racket[let], @racket[letrec], oder
-@racket[let*]. Falls es keine solche lokale Bindung gibt, muß es eine
+@racket[let*]. Falls es keine solche lokale Bindung gibt, muss es eine
 Definition oder eine eingebaute Bindung mit dem entsprechenden Namen
 geben. Die Auswertung des Namens ergibt dann den entsprechenden
 Wert. }
@@ -125,7 +125,7 @@ Programm mit einer Fehlermeldung abgebrochen.
 @defform/none[#:literals (cond else)
               (cond (expr expr) ... (else expr))]{
  Die Form des @racket[cond]-Ausdrucks ist ähnlich zur vorigen, mit der
- Ausnahme, daß in dem Fall, in dem kein Test @racket[#t] ergibt, der Wert des
+ Ausnahme, dass in dem Fall, in dem kein Test @racket[#t] ergibt, der Wert des
  letzten Ausdruck zum Wert der @racket[cond]-Form wird.
 }
 
@@ -140,7 +140,7 @@ Das Schlüsselwort @racket[else] kann nur in @racket[cond] benutzt werden.}
 @defform[(if expr expr expr)]{
 Eine @racket[if]-Form ist eine binäre Verzweigung. Bei der Auswertung wird
 zunächst der erste Operand ausgewertet (der Test), der einen
-booleschen Wert ergeben muß. Ergibt er @racket[#t], wird der Wert des zweiten
+booleschen Wert ergeben muss. Ergibt er @racket[#t], wird der Wert des zweiten
 Operanden (die Konsequente) zum Wert der @racket[if]-Form, bei @racket[#f] der Wert des
 dritten Operanden (die Alternative).
 }
@@ -233,7 +233,7 @@ Signatur für Eigenschaften.}
 
 @subsection{@racket[predicate]}
 @defform[(predicate expr)]{
-Bei dieser Signatur muß @racket[expr] als Wert ein Prädikat haben, also
+Bei dieser Signatur muss @racket[expr] als Wert ein Prädikat haben, also
 eine Funktion, die einen beliebigen Wert akzeptiert und entweder @racket[#t]
 oder @racket[#f] zurückgibt.
 Die Signatur ist dann für einen Wert gültig, wenn das Prädikat, darauf angewendet,
@@ -256,7 +256,7 @@ Diese Signatur ist für einen Wert gültig, wenn er für eine der Signaturen
 @defidform[->]{
 @defform/none[(sig ... -> sig)]{
 Diese Signatur ist dann für einen Wert gültig, wenn dieser eine
-Funktion ist.  Er erklärt außerdem, daß die Signaturen vor dem @racket[->]
+Funktion ist.  Er erklärt außerdem, dass die Signaturen vor dem @racket[->]
 für die Argumente der Funktion gelten und die Signatur nach dem @racket[->]
 für den Rückgabewert.
 }}
@@ -287,19 +287,19 @@ meist ein Literal ist.}
 @defform[(check-within expr expr expr)]{
 
 Wie @racket[check-expect], aber mit einem weiteren Ausdruck, 
-der als Wert eine Zahl @racket[_delta] hat. Der Testfall überprüft, daß jede Zahl im Resultat
+der als Wert eine Zahl @racket[_delta] hat. Der Testfall überprüft, dass jede Zahl im Resultat
 des ersten @racket[expr] maximal um @racket[_delta] 
 von der entsprechenden Zahl im zweiten @racket[expr] abweicht.}
 
 @defform[(check-member-of expr expr ...)]{
 
-Ähnlich wie @racket[check-expect]: Der Testfall überprüft, daß das Resultat
+Ähnlich wie @racket[check-expect]: Der Testfall überprüft, dass das Resultat
 des ersten Operanden gleich dem Wert eines der folgenden Operanden ist.}
 
 @defform[(check-satisfied expr pred)]{
 Ähnlich wie @racket[check-expect]: Der Testfall überprüft, ob der Wert
 des Ausdrucks @racket[expr] vom Prädikat @racket[pred] erfüllt wird -
-das bedeutet, daß die Funktion @racket[pred] den Wert @racket[#t]
+das bedeutet, dass die Funktion @racket[pred] den Wert @racket[#t]
 liefert, wenn sie auf den Wert von @racket[expr] angewendet wird.
 
 Der folgende Test wird also bestanden:
@@ -350,28 +350,28 @@ Fall, aber nicht für solche mit Signaturvariablen.}
 wie @racket[cond].  Dazu wertet match zunächst einmal den Ausdruck
 @racket[expr] nach dem match zum Wert @italic{v} aus.  Es prüft dann
 nacheinander jeden Zweig der Form @racket[(pattern expr)] dahingehend,
-ob das Pattern @racket[pattern] darin auf den Wert @italic{v} paßt
+ob das Pattern @racket[pattern] darin auf den Wert @italic{v} passt
 (``matcht'').  Beim ersten passenden Zweig @racket[(pattern expr)]
 macht @racket[match] dann mit der Auswertung voh @racket[expr] weiter.
 
-Ob ein Wert @italic{v} paßt, hängt von @racket[pattern] ab:
+Ob ein Wert @italic{v} passt, hängt von @racket[pattern] ab:
 
 @itemlist[
 @item{Ein Pattern, das ein Literal ist (@racket[#t], @racket[#f],
-Zeichenketten @racket[string], Zahlen @racket[number]) paßt nur dann,
+Zeichenketten @racket[string], Zahlen @racket[number]) passt nur dann,
 wenn der Wert @italic{v} gleich dem Pattern ist.}
 
-@item{Ein Pattern, das ein Bezeichner @racket[id] ist, paßt auf
+@item{Ein Pattern, das ein Bezeichner @racket[id] ist, passt auf
 @emph{jeden} Wert.  Der Bezeichner wird dann an diesen Wert gebunden
 und kann in dem Ausdruck des Zweigs benutzt werden.
 }
 
-@item{Das Pattern @racketkeywordfont{...} paßt auf jeden Wert, ohne daß ein
+@item{Das Pattern @racketkeywordfont{...} passt auf jeden Wert, ohne dass ein
 Bezeichner gebunden wird.}
 
 @item{Ein Pattern @racket[(constructor pattern @#,racketmetafont{...})], bei dem
 @racket[constructor] ein Record-Konstruktor ist (ein
-@italic{Konstruktor-Pattern}), paßt auf @italic{v}, falls @italic{v}
+@italic{Konstruktor-Pattern}), passt auf @italic{v}, falls @italic{v}
 ein passender Record ist, und dessen Felder auf die entsprechenden
 Patterns passen, die noch im Konstruktor-Pattern stehen.}
 ]
@@ -434,7 +434,7 @@ folgende Eigenschaft gilt immer:
 
 Es ist auch möglich, in einer Eigenschaft Variablen zu verwenden, für
 die verschiedene Werte eingesetzt werden.  Dafür müssen die Variablen
-gebunden und @deftech{quantifiziert} werden, d.h. es muß festgelegt
+gebunden und @deftech{quantifiziert} werden, d.h. es muss festgelegt
 werden, welche Signatur die Werte der Variable erfüllen sollen.
 Eigenschaften mit Variablen werden mit der @racket[for-all]-Form erzeugt:
 
@@ -442,7 +442,7 @@ Eigenschaften mit Variablen werden mit der @racket[for-all]-Form erzeugt:
 Dies bindet die Variablen @racket[id] in der Eigenschaft
 @racket[expr].  Zu jeder Variable gehört eine Signatur
 @racket[sig], der von den Werten der Variable erfüllt werden
-muß.
+muss.
 
 Beispiel:
 
@@ -483,8 +483,8 @@ zwischen der zweiten und dritten Zahl liegt (inklusive).}
 
 @defform[(==> expr expr)]{
 Der erste Operand ist ein boolescher Ausdruck, der zweite Operand eine
-Eigenschaft: @racket[(==> c p)] legt fest, daß die Eigenschaft
-@racket[p] nur erfüllt sein muß, wenn @racket[c] (die
+Eigenschaft: @racket[(==> c p)] legt fest, dass die Eigenschaft
+@racket[p] nur erfüllt sein muss, wenn @racket[c] (die
 @emph{Bedingung}) @racket[#t] ergibt, also erfüllt ist.}
  
 @racketblock[

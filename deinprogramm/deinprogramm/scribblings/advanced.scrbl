@@ -71,7 +71,7 @@ Signatur für Symbole.
 Zu den Patterns kommt noch eins hinzu:
 
 @itemlist[
-@item{Das Pattern @racketvalfont{'}@racket[quoted] paßt auf genau auf Werte, welche
+@item{Das Pattern @racketvalfont{'}@racket[quoted] passt auf genau auf Werte, welche
 die gleiche externe Repräsentation wie @racket[quoted] haben.}
 ]
 }

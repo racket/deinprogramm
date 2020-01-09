@@ -310,7 +310,7 @@ kann eine Signaturvariable (@racket[%a], @racket[%b], ...) sein, falls
 die Funktion unabhängig von der Signatur der Listenelemente ist.
 
 Füllen Sie in der Schablone zuerst den @racket[empty?]-Zweig aus.
-Vervollständigen Sie dann den anderen Zweig unter der Annahme, daß
+Vervollständigen Sie dann den anderen Zweig unter der Annahme, dass
 der rekursive Aufruf @racket[(func (rest lis))] das gewünschte
 Ergebnis für den Rest der Liste liefert.
 
@@ -344,7 +344,7 @@ Schablone:
 ]
 
 Füllen Sie in der Schablone zuerst den 0-Zweig aus.  Vervollständigen
-Sie dann den anderen Zweig unter der Annahme, daß der rekursive Aufruf
+Sie dann den anderen Zweig unter der Annahme, dass der rekursive Aufruf
 @racket[(func (- n 1))] das gewünschte Ergebnis für @racket[n]-1
 liefert.
 
@@ -429,7 +429,7 @@ folgende Schablone:
 ]
 
 Dabei ist @racket[z] das gewünschte Ergebnis für @racket[n] = 0.  Der
-Ausdruck @racket[(... acc ...)] muß den neuen Wert für den
+Ausdruck @racket[(... acc ...)] muss den neuen Wert für den
 Akkumulator berechnen.
 
 Beispiel:
