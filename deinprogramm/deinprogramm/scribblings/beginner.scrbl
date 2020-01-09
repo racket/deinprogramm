@@ -30,17 +30,42 @@ globalen Namen an den Wert von @racket[expr].}
 
 @section{Record-Typ-Definitionen}
 
-@defform*[((define-record-functions t c p (sel sig) ...)
-           (define-record-functions t c (sel sig) ...))]{
+@defform*[((define-record-functions type
+             constructor
+	     (selector signature) ...)
+           (define-record-functions type
+	     constructor
+	     predicate?
+	     (selector signature) ...))]{
 
 Die @racket[define-record-functions]-Form ist eine Definition
-für einen neuen Record-Typ.  Dabei ist @racket[t] der Name der Record-Signatur,
-@racket[c] der Name des Konstruktors und @racket[p]
+für einen neuen Record-Typ.  Dabei ist @racket[type] der Name der Record-Signatur,
+@racket[constructor] der Name des Konstruktors und @racket[predicate?]
 der (optionale) Name des Prädikats.
 
-Jedes @racket[(sel sig)] beschreibt ein @italic{Feld} des
-Record-Typs, wobei  @racket[sel]
-der Name des Selektors für das Feld und @racket[sig] die Signatur des Feldes ist.
+Jedes @racket[(selector signature)] beschreibt ein @italic{Feld} des
+Record-Typs, wobei  @racket[selector]
+der Name des Selektors für das Feld und @racket[signature] die Signatur des Feldes ist.
+}
+
+@section[#:tag "define-record-functions-with-parameters"]{Record-Typ-Definitionen mit Signatur-Parametern}
+
+@defform*[#:link-target? #f
+          ((define-record-functions (type-constructor signature-parameter ...)
+              constructor
+	      (selector signature) ...)
+           (define-record-functions (type-constructor signature-parameter ...)
+	      constructor
+	      predicate?
+	      (selector signature) ...))]{
+	   
+Diese Variante von @racket[define-record-functions] erlaubt die
+Verwendung von Signatur-Parametern: Statt einer konkreten Signatur
+@racket[type] wie oben definiert die Form einen Signatur-Konstruktor
+@racket[type-constructor], also eine Funktion, die Signaturen als
+Argumente akzeptiert, entsprechend den Signatur-Parametern
+@racket[signature-parameter].  Diese Signatur-Parameter können in den
+Signaturen @racket[signature] der Felder verwendet werden.
 }
 
 @section[#:tag "application"]{Prozedurapplikation}

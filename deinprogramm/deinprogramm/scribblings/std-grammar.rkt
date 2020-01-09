@@ -17,7 +17,7 @@
 		     (signature-rule ...)
 		     (pattern-rule ...))
   (racketgrammar*
-   #:literals (define define-record-procedures lambda cond if and or let letrec let* begin match
+   #:literals (define define-record-functions lambda cond if and or let letrec let* begin match
 		#;require lib planet
 		check-expect check-within check-error check-satisfied
 		signature :
@@ -29,9 +29,9 @@
      test-case
      #;library-require]
    [definition @#,racket[(define id expr)]
-     @#,racket[(define-record-procedures id id id (field (... ...)))]
-     @#,racket[(define-record-procedures id id (field (... ...)))]
-     @#,racket[(define-record-procedures-parametric (id id (... ...)) id id (id (... ...)))]
+     @#,racket[(define-record-functions id id (id id) (... ...))]
+     @#,racket[(define-record-functions id id id (id id) (... ...))]
+     @#,racket[(define-record-functions (id id (... ...)) id id (id id) (... ...))]
      @#,racket[(: id sig)]
      def-rule ...]
    prod ...
@@ -53,7 +53,6 @@
 	 @#,racket[(for-all ((id sig) (... ...)) expr)]
 	 @#,racket[(==> expr expr)]
 	 expr-rule ...]
-   [field id (id id)]
    [sig  id
 	      @#,racket[(predicate expr)]
 	      @#,racket[(enum expr (... ...))]
