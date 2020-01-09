@@ -58,7 +58,6 @@ der Name des Selektors für das Feld und @racket[signature] die Signatur des Fel
 	      constructor
 	      predicate?
 	      (selector signature) ...))]{
-	   
 Diese Variante von @racket[define-record-functions] erlaubt die
 Verwendung von Signatur-Parametern: Statt einer konkreten Signatur
 @racket[type] wie oben definiert die Form einen Signatur-Konstruktor
@@ -68,22 +67,22 @@ Argumente akzeptiert, entsprechend den Signatur-Parametern
 Signaturen @racket[signature] der Felder verwendet werden.
 }
 
-@section[#:tag "application"]{Prozedurapplikation}
+@section[#:tag "application"]{Funktionsapplikation}
 
 @defform/none[(expr expr ...)]{
-Dies ist eine Prozeduranwendung oder Applikation.
+Dies ist eine Funktionsanwendung oder -applikation.
 Alle @racket[expr]s werden ausgewertet:
 Der Operator (also der erste Ausdruck) muß eine
-Prozedur ergeben, die genauso viele Argumente
+Funktion ergeben, die genauso viele Argumente
 akzeptieren kann, wie es Operanden, also weitere @racket[expr]s gibt.
 Die Anwendung wird dann ausgewertet, indem der Rumpf
 der Applikation ausgewertet wird, nachdem die Parameter
-der Prozedur durch die Argumente, also die Werte der
+der Funktion durch die Argumente, also die Werte der
 Operanden ersetzt wurden.}
 
 @; @defform[(#%app id expr expr ...)]{
 @; 
-@; Eine Prozedurapplikation kann auch mit @racket[#%app] geschrieben
+@; Eine Funktionsapplikation kann auch mit @racket[#%app] geschrieben
 @; werden, aber das macht eigentlich niemand.}
 
 @section{@racket[#t] and @racket[#f]}
@@ -94,7 +93,7 @@ Operanden ersetzt wurden.}
 @section{@racket[lambda] / @racket[λ]}
 
 @defform[(lambda (id ...) expr)]{
-Ein Lambda-Ausdruck ergibt bei der Auswertung eine neue Prozedur.}
+Ein Lambda-Ausdruck ergibt bei der Auswertung eine Funktion.}
 
 @defform[(λ (id ...) expr)]{
 @racket[λ] ist ein anderer Name für @racket[lambda].
@@ -235,7 +234,7 @@ Signatur für Eigenschaften.}
 @subsection{@racket[predicate]}
 @defform[(predicate expr)]{
 Bei dieser Signatur muß @racket[expr] als Wert ein Prädikat haben, also
-eine Prozedur, die einen beliebigen Wert akzeptiert und entweder @racket[#t]
+eine Funktion, die einen beliebigen Wert akzeptiert und entweder @racket[#t]
 oder @racket[#f] zurückgibt.
 Die Signatur ist dann für einen Wert gültig, wenn das Prädikat, darauf angewendet,
 @racket[#t] ergibt.
@@ -253,12 +252,12 @@ Diese Signatur ist für einen Wert gültig, wenn er für eine der Signaturen
 @racket[sig] gültig ist.
 }
 
-@subsection[#:tag "proc-signature"]{Prozedur-Signatur}
+@subsection[#:tag "proc-signature"]{Funktions-Signatur}
 @defidform[->]{
 @defform/none[(sig ... -> sig)]{
 Diese Signatur ist dann für einen Wert gültig, wenn dieser eine
-Prozedur ist.  Er erklärt außerdem, daß die Signaturen vor dem @racket[->]
-für die Argumente der Prozedur gelten und die Signatur nach dem @racket[->]
+Funktion ist.  Er erklärt außerdem, daß die Signaturen vor dem @racket[->]
+für die Argumente der Funktion gelten und die Signatur nach dem @racket[->]
 für den Rückgabewert.
 }}
 }
@@ -300,7 +299,7 @@ des ersten Operanden gleich dem Wert eines der folgenden Operanden ist.}
 @defform[(check-satisfied expr pred)]{
 Ähnlich wie @racket[check-expect]: Der Testfall überprüft, ob der Wert
 des Ausdrucks @racket[expr] vom Prädikat @racket[pred] erfüllt wird -
-das bedeutet, daß die Prozedur @racket[pred] den Wert @racket[#t]
+das bedeutet, daß die Funktion @racket[pred] den Wert @racket[#t]
 liefert, wenn sie auf den Wert von @racket[expr] angewendet wird.
 
 Der folgende Test wird also bestanden:

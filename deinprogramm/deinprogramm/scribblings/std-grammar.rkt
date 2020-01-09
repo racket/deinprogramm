@@ -35,7 +35,7 @@
      @#,racket[(: id sig)]
      def-rule ...]
    prod ...
-   [expr @#,racket[(code:line (expr expr (... ...)) (code:comment @#,seclink["application"]{Prozedurapplikation}))]
+   [expr @#,racket[(code:line (expr expr (... ...)) (code:comment @#,seclink["application"]{Funktionsapplikation}))]
 	 @#,racket[#t]
 	 @#,racket[#f]
 	 @#,racket[number]
@@ -57,7 +57,7 @@
 	      @#,racket[(predicate expr)]
 	      @#,racket[(enum expr (... ...))]
 	      @#,racket[(mixed sig (... ...))]
-	      @#,racket[(code:line (sig (... ...) -> sig) (code:comment @#,seclink["proc-signature"]{Prozedur-Signatur}))]
+	      @#,racket[(code:line (sig (... ...) -> sig) (code:comment @#,seclink["proc-signature"]{Funktions-Signatur}))]
 	      @#,racket[(list-of sig)]
 	      @#,racket[(nonempty-list-of sig)]
 	      @#,racket[(code:line %a %b %c (code:comment @#,seclink["signature-variable"]{Signatur-Variable}))]
