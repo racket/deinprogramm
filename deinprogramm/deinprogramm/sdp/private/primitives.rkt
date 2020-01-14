@@ -326,6 +326,8 @@
 		  "Zeichenkette in Symbol umwandeln"))
  
  ("Verschiedenes"
+  (signature? (any -> boolean)
+	      "feststellen, ob ein Wert eine Signatur ist")
   (equal? (%a %b -> boolean)
 	  "zwei Werte auf Gleichheit testen")
   (eq? (%a %b -> boolean)
