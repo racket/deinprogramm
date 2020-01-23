@@ -34,7 +34,7 @@
          deinprogramm/sdp/private/rewrite-error-message
 	 
 	 (only-in test-engine/scheme-gui make-formatter)
-	 test-engine/scheme-tests
+	 test-engine/racket-tests
 	 lang/private/tp-dialog
 	 (lib "test-display.scm" "test-engine")
 	 deinprogramm/signature/signature
@@ -175,7 +175,7 @@
           (define/override (on-execute settings run-in-user-thread)
             (let ([drs-namespace (current-namespace)]
                   [scheme-test-module-name
-                   ((current-module-name-resolver) '(lib "test-engine/scheme-tests.rkt") #f #f #t)]
+                   ((current-module-name-resolver) '(lib "test-engine/racket-tests.rkt") #f #f #t)]
                   [scheme-signature-module-name
                    ((current-module-name-resolver) '(lib "deinprogramm/signature/signature-german.rkt") #f #f #t)]
                   [tests-on? (preferences:get 'test-engine:enable?)])
