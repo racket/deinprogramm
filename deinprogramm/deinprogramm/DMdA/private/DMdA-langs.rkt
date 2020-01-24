@@ -33,7 +33,7 @@
 	 lang/private/continuation-mark-key
          lang/private/rewrite-error-message
 	 
-	 (only-in test-engine/scheme-gui make-formatter)
+	 (only-in test-engine/racket-gui make-formatter)
 	 test-engine/racket-tests
 	 lang/private/tp-dialog
 	 (lib "test-display.scm" "test-engine")
