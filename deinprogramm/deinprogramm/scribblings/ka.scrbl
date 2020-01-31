@@ -334,30 +334,93 @@ Eine Funktion, die natürliche Zahlen konsumiert, hat die folgende
 Schablone:
 
 @racketblock[
-(: func (natural -> ...))
-
-(define func
-  (lambda (n)
-    (if (= n 0)
-        ...
-        ... (func (- n 1)) ...)))
+(define f
+  (lambda (... n ...)
+    (cond
+      ((zero? n) ...)
+      ((positive? n)
+       ...
+       (f ... (- n 1) ...)
+       ...))))
 ]
-
-Füllen Sie in der Schablone zuerst den 0-Zweig aus.  Vervollständigen
-Sie dann den anderen Zweig unter der Annahme, dass der rekursive Aufruf
-@racket[(func (- n 1))] das gewünschte Ergebnis für @racket[n]-1
-liefert.
 
 Beispiel:
 
 @racketblock[
-(: factorial (natural -> natural))
+; Potenz einer Zahl berechnen
+(: power (number natural -> number))
 
-(define factorial
-  (lambda (n)
-    (if (= n 0)
-        1
-        (* n (factorial (- n 1))))))
+(define power
+  (lambda (base exponent)
+    (cond
+      ((zero? exponent) 1)
+      ((positive? base)
+       (* base
+          (power base (predecessor exponent)))))))
+]
+
+@section{Abstraktion}
+
+Wenn Du zwei Definitionen geschrieben hast, die inhaltlich verwandt
+sind und viele Ähnlichkeiten aufweisen, abstrahiere wie folgt:
+
+
+@itemlist[#:style 'ordered
+@item{Kopiere eine der beiden Definitionen und gib ihr einen neuen
+  Namen.}
+@item{Ersetze die Stellen, bei denen sich die beiden Definitionen
+  unterscheiden, jeweils durch eine neue Variable.}
+@item{Füge die neuen Variablen als Parameter zum @racket[lambda]
+  der Definition hinzu oder füge ein neues @racket[lambda] mit
+  diesen Parametern ein.}
+@item{Schreibe eine Signatur für die neue Funktion.}
+@item{Ersetze die beiden alten Definitionen durch Aufrufe der neuen
+  Definition.}
+]
+
+Beispiel:
+
+@racketblock[
+(code:comment @#,t{Definition 1})
+(define home-points
+  (lambda (game)
+    (define goals1 (game-home-goals game))
+    (define goals2 (game-guest-goals game))
+    (cond
+      ((> goals1 goals2) 3)
+      ((< goals1 goals2) 0)
+      ((= goals1 goals2) 1))))
+      
+(code:comment @#,t{Definition 2})
+(define guest-points
+  (lambda (game)
+    (define goals1 (game-guest-goals game))
+    (define goals2 (game-home-goals game))
+    (cond
+      ((> goals1 goals2) 3)
+      ((< goals1 goals2) 0)
+      ((= goals1 goals2) 1))))
+
+(code:comment @#,t{Abstraktion 1})
+(define compute-points
+  (lambda (game)
+    (define goals1 (game-guest-goals game))
+    (define goals2 (game-home-goals game))
+    (cond
+      ((> goals1 goals2) 3)
+      ((< goals1 goals2) 0)
+      ((= goals1 goals2) 1))))
+
+(code:comment @#,t{Abstraktion 2})
+(define make-compute-points
+  (lambda (get-goals-1 get-goals-2)
+    (lambda (game)
+      (define goals1 (get-goals-1 game))
+      (define goals2 (get-goals-2 game))
+      (cond
+        ((> goals1 goals2) 3)
+        ((< goals1 goals2) 0)
+        ((= goals1 goals2) 1)))))
 ]
 
 @section{Funktionen mit Akkumulatoren: Schablone}
