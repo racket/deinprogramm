@@ -372,7 +372,8 @@ sind und viele Ähnlichkeiten aufweisen, abstrahiere wie folgt:
   unterscheiden, jeweils durch eine neue Variable.}
 @item{Füge die neuen Variablen als Parameter zum @racket[lambda]
   der Definition hinzu oder füge ein neues @racket[lambda] mit
-  diesen Parametern ein.}
+  diesen Parametern ein.  Du muss gegebenenfalls rekursive Aufrufe
+    der Funktion anpassen.}
 @item{Schreibe eine Signatur für die neue Funktion.}
 @item{Ersetze die beiden alten Definitionen durch Aufrufe der neuen
   Definition.}
