@@ -36,7 +36,7 @@
 	 (only-in test-engine/racket-gui make-formatter)
 	 test-engine/racket-tests
 	 lang/private/tp-dialog
-	 test-engine/test-display
+	 (lib "test-display.scm" "test-engine")
 	 deinprogramm/signature/signature
          lang/htdp-langs-interface
 	 )
@@ -198,7 +198,8 @@
                  (namespace-attach-module drs-namespace scheme-signature-module-name)
                  (namespace-require scheme-signature-module-name)
 
-		 (reset-tests)
+		 ;; hack: the test-engine code knows about the test~object name; we do, too
+		 (namespace-set-variable-value! 'test~object (build-test-engine))
 		 ;; record signature violations with the test engine
 		 (signature-violation-proc
 		  (lambda (obj signature message blame)
