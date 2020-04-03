@@ -1085,7 +1085,7 @@
 				     (and mark
 					  (or (and (path? (car mark))
 						   ;; exclude paths that result from macro expansion,
-						   ;; specifically define-record-functions
+						   ;; specifically define-record
 						   ;; see racket/drracket#157
 						   (not (deinprogramm-path? (car mark))))
 					      (symbol? (car mark)))))

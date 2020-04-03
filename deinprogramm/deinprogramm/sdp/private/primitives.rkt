@@ -32,6 +32,7 @@
 (provide provide lib planet rename-out require #%datum #%module-begin #%top-interaction) ; so we can use this as a language
 
 (provide (all-from-out deinprogramm/sdp/record))
+(provide (rename-out (define-record define-record-functions)))
 (provide (all-from-out test-engine/racket-tests))
 (provide signature define-contract :
 	 contract ; legacy

@@ -195,7 +195,7 @@ jedes Feld solltest Du außerdem die dazu passende Signatur
 folgende Form:
 
 @racketblock[
-(define-record-functions T
+(define-record T
   make-T
   (#,(elem @racket[T-f]@subscript{1}) #,(elem @racket[sig]@subscript{1}))
   ...
