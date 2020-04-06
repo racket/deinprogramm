@@ -290,28 +290,28 @@ Daten akzeptiert, kannst Du folgendermaßen konstruieren:
 
 @section{Listen als Eingabe: Schablone}
 
-Eine Funktion, die eine Liste konsumiert, hat die folgende
+Eine Funktion, die eine Liste akzeptiert, hat folgende
 Schablone:
   
 @racketblock[
-(: func ((list-of elem) -> ...))
+(: f (... (list-of elem) ... -> ...))
 
-(define func
-  (lambda (lis)
+(define f
+  (lambda (... list ...)
     (cond
-      ((empty? lis) ...)
-      ((cons? lis)
-       ... (first lis)
-       ... (func (rest lis)) ...))))
+      ((empty? list) ...)
+      ((cons? list)
+       ... (first list)
+       ... (f ... (rest list) ...) ...))))
 ]
 
 Dabei ist @racket[elem] die Signatur für die Elemente der Liste.  Dies
 kann eine Signaturvariable (@racket[%a], @racket[%b], ...) sein, falls
 die Funktion unabhängig von der Signatur der Listenelemente ist.
 
-Füllen Sie in der Schablone zuerst den @racket[empty?]-Zweig aus.
-Vervollständigen Sie dann den anderen Zweig unter der Annahme, dass
-der rekursive Aufruf @racket[(func (rest lis))] das gewünschte
+Fülle in der Schablone den @racket[empty]-Zweig aus.
+Vervollständige den @racket[cons]- Zweig unter der Annahme, dass
+der rekursive Aufruf @racket[(f (rest lis))] das gewünschte
 Ergebnis für den Rest der Liste liefert.
 
 Beispiel:
@@ -320,20 +320,22 @@ Beispiel:
 (: list-sum ((list-of number) -> number))
 
 (define list-sum
-  (lambda (lis)
+  (lambda (list)
     (cond
-      ((empty? lis) 0)
-      ((cons? lis)
-       (+ (first lis)
-          (list-sum (rest lis)))))))
+      ((empty? list) 0)
+      ((cons? list)
+       (+ (first list)
+          (list-sum (rest list)))))))
 ]
 
 @section{Natürliche Zahlen als Eingabe: Schablone}
 
-Eine Funktion, die natürliche Zahlen konsumiert, hat die folgende
+Eine Funktion, die natürliche Zahlen akzeptiert, hat folgende
 Schablone:
 
 @racketblock[
+(: f (... natural ... -> ...))
+
 (define f
   (lambda (... n ...)
     (cond
@@ -424,91 +426,99 @@ Beispiel:
         ((= goals1 goals2) 1)))))
 ]
 
-@section{Funktionen mit Akkumulatoren: Schablone}
+@section{Listen als Eingabe, mit Akkumulator: Schablone}
 
-Eine Funktion mit Akkumulator, die Listen konsumiert, hat die
-folgende Schablone:
+Wenn Du eine Funktion schreibst, die eine Liste akzeptiert und
+einen Akkumulator   benutzen soll, gehe folgendermaßen vor:
+
+@itemlist[#:style 'ordered
+@item{Überlege Dir, was für Information der Akkumulator
+    repräsentieren soll. Das ist typischerweise ein
+    Zwischenergebnis - also ein vorläufiger Wert für das Endergebnis.}
+@item{Konstruiere die Schablone wie folgt:
 
 @racketblock[
-(: func ((list-of elem) -> ...))
+(: f (... (list-of elem) ... -> ...))
 
-(define func
-  (lambda (lis)
-    (func-helper lis z)))
-
-(: func ((list-of elem) sig -> ...))
-
-(define func-helper
-  (lambda (lis acc)
-    (cond
-      ((empty? lis) acc)
-      ((cons? lis)
-       (func-helper (rest lis)
-                    (... (first lis) ... acc ...))))))
+(define f
+  (lambda (list0)
+    (define accumulate
+      (code:comment @#,t{Invariante})
+      (lambda (list acc)
+        (cond
+          ((empty? list) acc)
+          ((cons? list)
+           (accumulate (rest list) (... (first list) ... acc))))))
+    (accumulate list0 ...)))]
+}
+@item{Formuliere eine möglichst konkrete Invariante zwischen
+      @racket[list0], @racket[list] und @racket[acc] und
+      schreibe sie als Kommentar zu @racket[accumulate].}
+@item{Fülle mit Hilfe der Invariante die Ellipsen in der Funktion aus.}
 ]
-
-Hier ist @racket[func] der Name der zu definierenden Funktion und
-@racket[func-helper] der Name der Hilfsfunktion mit Akkumulator.  Der
-Anfangswert für den Akkumulator ist der Wert von @racket[z].  Die Signatur @racket[sig]
-ist die Signatur für den Akkumulator.  Der
-Ausdruck @racket[(... (first lis) ... acc ...)] 
-macht aus dem alten Zwischenergebnis @racket[acc] das neue
-Zwischenergebnis.
 
 Beispiel:
 
 @racketblock[
-(: invert ((list-of %a) -> (list-of %a)))
+(: list-sum ((list-of number) -> number))
 
-(define invert
-  (lambda (lis)
-    (invert-helper lis empty)))
+(define list-sum
+  (lambda (list0)
+    (define accumulate
+      (code:comment @#,t{sum ist die Summer aller Elemente in list0 vor list})
+      (lambda (list sum)
+        (cond
+          ((empty? list) sum)
+          ((cons? list)
+           (accumulate (rest list) (+ (first list) sum))))))
+    (accumulate list0 0)))]
 
-(: invert ((list-of %a) (list-of %a) -> (list-of %a)))
+@section{Natürliche Zahlen als Eingabe, mit Akkumulator: Schablone}
 
-(define invert-helper
-  (lambda (lis acc)
-    (cond
-      ((empty? lis) acc)
-      ((cons? lis)
-       (invert-helper (rest lis)
-                      (cons? (first lis) acc))))))
-]
+Wenn Du eine Funktion schreibst, die eine Liste akzeptiert und
+einen Akkumulator   benutzen soll, gehe folgendermaßen vor:
 
-Eine Funktion mit Akkumulator, die natürliche Zahlen konsumiert, hat die
-folgende Schablone:
+@itemlist[#:style 'ordered
+@item{Überlege Dir, was für Information der Akkumulator
+    repräsentieren soll. Das ist typischerweise ein
+    Zwischenergebnis - also ein vorläufiger Wert für das Endergebnis.}
+@item{Konstruiere die Schablone wie folgt:
 
 @racketblock[
-(: func (natural -> ...))
+(: f (... natural ... -> ...))
 
-(define func
-  (lambda (n)
-    (func-helper n z)))
-
-(define func-helper
-  (lambda (n acc)
-    (if (= n 0)
-        acc
-        (func-helper (- n 1) (... acc ...)))))
+(define f
+  (lambda (... n0 ...)
+    (define accumulate
+      (code:comment @#,t{Invariante})
+      (lambda (n acc)
+        (cond
+          ((zero? n) ... acc ...)
+          ((positive? n)
+           (accumulate (- n 1) (... n ... acc ...))))))
+    (accumulate n0 ...)))]
+}
+@item{Formuliere eine möglichst konkrete Invariante zwischen
+      @racket[n0], @racket[n] und @racket[acc] und
+      schreibe sie als Kommentar zu @racket[accumulate].}
+@item{Fülle mit Hilfe der Invariante die Ellipsen in der Funktion aus.}
 ]
-
-Dabei ist @racket[z] das gewünschte Ergebnis für @racket[n] = 0.  Der
-Ausdruck @racket[(... acc ...)] muss den neuen Wert für den
-Akkumulator berechnen.
 
 Beispiel:
 
+
 @racketblock[
-(: ! (natural -> natural))
+(: factorial (natural -> natural))
 
-(define !
-  (lambda (n)
-    (!-helper n 1)))
-
-(define !-helper
-  (lambda (n acc)
-    (if (= n 0)
-        acc
-        (!-helper (- n 1) (* n acc)))))
+(define factorial
+  (lambda (n0)
+    (define accumulate
+      (code:comment @#,t{acc ist das Produkt aller Zahlen von (+ n 1) bis n0})
+      (lambda (n acc)
+        (cond
+          ((zero? n) acc)
+          ((positive? n)
+           (accumulate (- n 1) (* n acc))))))
+    (accumulate n0 1)))
 ]
 
