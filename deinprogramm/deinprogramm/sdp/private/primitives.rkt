@@ -307,10 +307,10 @@
   (string-append (string string ... -> string)
 		 "Hängt Zeichenketten zu einer Zeichenkette zusammen")
 
-  (strings-list->string ((list string) -> string)
+  (strings-list->string ((list-of string) -> string)
 			"Eine Liste von Zeichenketten in eine Zeichenkette umwandeln")
 
-  (string->strings-list (string -> (list string))
+  (string->strings-list (string -> (list-of string))
 			"Eine Zeichenkette in eine Liste von Zeichenketten mit einzelnen Zeichen umwandeln")
 
   (string-length (string -> natural)
@@ -340,11 +340,11 @@
   (violation (string -> unspecific)
 	     "Programmm mit Fehlermeldung abbrechen")
 
-  (map ((%a -> %b) (list %a) -> (list %b))
+  (map ((%a -> %b) (list-of %a) -> (list-of %b))
        "Funktion auf alle Elemente einer Liste anwenden, Liste der Resultate berechnen")
-  (for-each ((%a -> %b) (list %a) -> unspecific)
+  (for-each ((%a -> %b) (list-of %a) -> unspecific)
 	    "Funktion von vorn nach hinten auf alle Elemente einer Liste anwenden")
-  (apply (function (list %a) -> %b)
+  (apply (function (list-of %a) -> %b)
 	 "Funktion auf Liste ihrer Argumente anwenden")
   (read (-> any)
 	"Externe Repräsentation eines Werts in der REPL einlesen und den zugehörigen Wert liefern")))
