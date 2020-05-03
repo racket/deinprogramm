@@ -3,8 +3,6 @@
 (require syntax/docprovide)
 
 (require test-engine/racket-tests
-	 (lib "test-info.scm" "test-engine")
-	 test-engine/racket-tests
 	 scheme/class)
 
 (require deinprogramm/signature/module-begin

@@ -141,7 +141,10 @@
 	  ;; requires, etc.:
 	  #`(#%plain-module-begin
 	     (module-continue (e1 ...) () ())
-              (module+ test (test))))))
+             (module configure-runtime racket/base
+                (require deinprogramm/private/runtime)
+                (configure '())) ; FIXME: level-specific options
+             (module+ test (test))))))
 
      ;; module-continue
      (lambda (stx)

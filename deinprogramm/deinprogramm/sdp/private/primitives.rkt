@@ -2,9 +2,11 @@
 
 (require syntax/docprovide)
 
-(require test-engine/racket-tests
-	 (lib "test-info.scm" "test-engine")
+(require (only-in test-engine/test-engine
+                  add-failed-check! failed-check
+                  property-error property-fail)
 	 test-engine/racket-tests
+         test-engine/srcloc
 	 scheme/class)
 
 (require deinprogramm/signature/module-begin
@@ -1151,33 +1153,31 @@
     (_ (raise-sdp-syntax-error #f "`check-property' erwartet einen einzelnen Operanden"
 			       stx))))
 
-(define (check-property-error test src-info test-info)
-  (let ((info (send test-info get-info)))
-    (send info add-check)
-    (with-handlers ((exn:fail?
-		     (lambda (e)
-		       (send info property-error e src-info)
-		       (raise e))))
-      (call-with-values
-	  (lambda ()
-	    (with-handlers
-		((exn:assertion-violation?
-		  (lambda (e)
-		    ;; minor kludge to produce comprehensible error message
-		    (if (eq? (exn:assertion-violation-who e) 'coerce->result-generator)
-			(raise (make-exn:fail (string-append "Wert muß Eigenschaft oder boolesch sein: "
-							     ((error-value->string-handler)
-							      (car (exn:assertion-violation-irritants e))
-							      100))
-					      (exn-continuation-marks e)))
-			(raise e)))))
-	      (quickcheck-results (test))))
-	(lambda (ntest stamps result)
-	  (if (check-result? result)
-	      (begin
-		(send info property-failed result src-info)
-		#f)
-	      #t))))))
+(define (check-property-error test srcloc)
+  (with-handlers ((exn:fail?
+                   (lambda (e)
+                     (add-failed-check! (failed-check (property-error srcloc e)
+                                                      (exn-srcloc e))))))
+    (call-with-values
+     (lambda ()
+       (with-handlers
+           ((exn:assertion-violation?
+             (lambda (e)
+               ;; minor kludge to produce comprehensible error message
+               (if (eq? (exn:assertion-violation-who e) 'coerce->result-generator)
+                   (raise (make-exn:fail (string-append "Wert muß Eigenschaft oder boolesch sein: "
+                                                        ((error-value->string-handler)
+                                                         (car (exn:assertion-violation-irritants e))
+                                                         100))
+                                         (exn-continuation-marks e)))
+                   (raise e)))))
+         (quickcheck-results (test))))
+     (lambda (ntest stamps result)
+       (if (check-result? result)
+           (begin
+             (add-failed-check! (failed-check (property-fail srcloc result) #f))
+             #f)
+           #t)))))
 
 (define (expect v1 v2)
   (quickcheck:property () (teach-equal? v1 v2)))
