@@ -34,9 +34,10 @@
          deinprogramm/sdp/private/rewrite-error-message
 	 
 	 (only-in test-engine/racket-gui make-formatter)
-	 test-engine/racket-tests
 	 lang/private/tp-dialog
-	 test-engine/test-display
+	 test-engine/racket-tests
+         test-engine/render-value
+	 test-engine/test-display-gui
 	 deinprogramm/signature/signature
          lang/htdp-langs-interface
 	 )
@@ -213,11 +214,13 @@
 		  (if (preferences:default-set? 'signatures:enable-checking?) ; Signatures tool not present
 		      (preferences:get 'signatures:enable-checking?)
 		      #t))
-                 (test-format (make-formatter (lambda (v o)
-						(render-value/format (if (procedure? v)
+                 (render-value-parameter (λ (v)
+                                           (let ([o (open-output-string)])
+                                             (render-value/format (if (procedure? v)
 									 generic-proc
 									 v)
-								     settings o 40))))
+								     settings o 40)
+                                             (get-output-string o))))
 		 )))
             (super on-execute settings run-in-user-thread)
 
