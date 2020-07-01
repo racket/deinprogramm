@@ -38,6 +38,7 @@
 	 test-engine/racket-tests
          test-engine/render-value
 	 test-engine/test-display-gui
+         test-engine/test-display
 	 deinprogramm/signature/signature
          lang/htdp-langs-interface
 	 )
@@ -208,7 +209,11 @@
 		      => (lambda (engine)
 			   (send (send engine get-info) signature-failed
 				 obj signature message blame))))))
-                 (scheme-test-data (list (drscheme:rep:current-rep) drs-eventspace test-display%))
+                 (display-test-results-parameter
+                  (lambda (test-object)
+                    (test-display-results/gui! (drscheme:rep:current-rep)
+                                               drs-eventspace
+                                               test-object)))
                  (test-execute tests-on?)
 		 (signature-checking-enabled?
 		  (if (preferences:default-set? 'signatures:enable-checking?) ; Signatures tool not present
