@@ -118,7 +118,7 @@ und Information beschreibt.
 
 @section{Fallunterscheidung: Datenanalyse} Versuche, für die
   Datendefinition eine Formulierung “...  ist eins der
-  folgenden” zu finden. Wenn da möglich ist, beschreibt Deine
+  folgenden” zu finden. Wenn das möglich ist, beschreibt Deine
   Datendefinition eine @italic{Fallunterscheidung}.  Schreibe dann
   eine Auflistung aller Fälle, jeder Fall auf eine separate Zeile:
   
