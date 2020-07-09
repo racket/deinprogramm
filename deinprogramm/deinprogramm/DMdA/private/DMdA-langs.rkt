@@ -33,7 +33,6 @@
 	 lang/private/continuation-mark-key
          lang/private/rewrite-error-message
 	 
-	 (only-in test-engine/racket-gui make-formatter)
 	 lang/private/tp-dialog
 	 test-engine/test-engine
          test-engine/render-value
