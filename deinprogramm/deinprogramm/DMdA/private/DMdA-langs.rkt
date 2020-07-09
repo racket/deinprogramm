@@ -211,9 +211,9 @@
 				 obj signature message blame))))))
                  (display-test-results-parameter
                   (lambda (test-object)
-                    (test-display-results/gui! (drscheme:rep:current-rep)
-                                               drs-eventspace
-                                               test-object)))
+                    (test-display-results! (drscheme:rep:current-rep)
+                                           drs-eventspace
+                                           test-object)))
                  (test-execute tests-on?)
 		 (signature-checking-enabled?
 		  (if (preferences:default-set? 'signatures:enable-checking?) ; Signatures tool not present
