@@ -35,7 +35,7 @@
 	 
 	 (only-in test-engine/racket-gui make-formatter)
 	 lang/private/tp-dialog
-	 test-engine/racket-tests
+	 test-engine/test-engine
          test-engine/render-value
 	 test-engine/test-display-gui
 	 test-engine/test-display
@@ -200,7 +200,7 @@
                  (namespace-attach-module drs-namespace scheme-signature-module-name)
                  (namespace-require scheme-signature-module-name)
 
-		 (reset-tests)
+                 (initialize-test-object)
 		 ;; record signature violations with the test engine
 		 (signature-violation-proc
 		  (lambda (obj signature message blame)
