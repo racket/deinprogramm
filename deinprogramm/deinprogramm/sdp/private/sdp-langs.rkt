@@ -35,9 +35,9 @@
 	 
 	 lang/private/tp-dialog
 	 test-engine/test-engine
-         test-engine/render-value
+	 test-engine/test-markup
+	 test-engine/test-markup
 	 test-engine/test-display-gui
-         test-engine/test-display
 	 deinprogramm/signature/signature
          lang/htdp-langs-interface
 	 )
