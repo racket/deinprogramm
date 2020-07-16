@@ -34,6 +34,7 @@
          lang/private/rewrite-error-message
 	 
 	 lang/private/tp-dialog
+         (only-in test-engine/racket-tests report-signature-violation!)
 	 test-engine/test-engine
 	 test-engine/test-markup
 	 test-engine/test-display-gui
@@ -202,11 +203,7 @@
 		 ;; record signature violations with the test engine
 		 (signature-violation-proc
 		  (lambda (obj signature message blame)
-		    (cond
-		     ((namespace-variable-value 'test~object #f (lambda () #f))
-		      => (lambda (engine)
-			   (send (send engine get-info) signature-failed
-				 obj signature message blame))))))
+                    (report-signature-violation! obj signature message blame)))
                  (display-test-results-parameter
                   (lambda (test-object)
                     (test-display-results! (drscheme:rep:current-rep)
