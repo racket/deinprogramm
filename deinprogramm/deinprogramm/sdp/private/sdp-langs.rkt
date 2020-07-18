@@ -210,6 +210,7 @@
                     (test-display-results! (drscheme:rep:current-rep)
                                            drs-eventspace
                                            test-object)))
+                 (get-rewritten-error-message-parameter get-rewriten-error-message)
                  (test-execute tests-on?)
 		 (signature-checking-enabled?
 		  (if (preferences:default-set? 'signatures:enable-checking?) ; Signatures tool not present
@@ -795,7 +796,7 @@
                 (cond
 		  [start?
 		   (set! start? #f)
-		   #'(#%plain-app reset-tests)]
+		   #'(#%plain-app initialize-test-object)]
                   [done? eof]
                   [else
                    (let ([ans (reader (object-name port) port)])
