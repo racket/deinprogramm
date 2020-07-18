@@ -200,7 +200,7 @@
 
                  (namespace-attach-module drs-namespace scheme-signature-module-name)
                  (namespace-require scheme-signature-module-name)
-		 (initialize-test-object)
+		 (initialize-test-object!)
 		 ;; record signature violations with the test engine
 		 (signature-violation-proc
 		  (lambda (obj signature message blame)
@@ -796,7 +796,7 @@
                 (cond
 		  [start?
 		   (set! start? #f)
-		   #'(#%plain-app initialize-test-object)]
+		   #'(#%plain-app initialize-test-object!)]
                   [done? eof]
                   [else
                    (let ([ans (reader (object-name port) port)])
