@@ -6,6 +6,7 @@
          mrlib/image-core
          racket/snip
          racket/class
+         (only-in test-engine/test-markup get-rewritten-error-message-parameter)
          (only-in test-engine/racket-tests report-signature-violation!)
          (only-in deinprogramm/signature/signature signature-violation-proc)
          htdp/bsl/print-width) ; FIXME: might want to have our own
@@ -61,6 +62,7 @@
                             (string-length img-str)
                             (oh val display? port))))])
       (thunk)))
+  (get-rewritten-error-message-parameter get-rewriten-error-message)
   (error-display-handler
    (let ([o-d-h (error-display-handler)])
      (λ (msg exn)
