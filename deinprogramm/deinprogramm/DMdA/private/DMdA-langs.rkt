@@ -34,7 +34,8 @@
          lang/private/rewrite-error-message
 	 
 	 lang/private/tp-dialog
-         (only-in test-engine/racket-tests report-signature-violation!)
+         (only-in test-engine/racket-tests
+                  report-signature-violation! test-execute)
 	 test-engine/test-engine
 	 test-engine/test-markup
 	 test-engine/test-display-gui
