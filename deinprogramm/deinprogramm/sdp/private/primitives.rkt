@@ -2,8 +2,9 @@
 
 (require syntax/docprovide)
 
-(require (only-in test-engine/test-engine add-failed-check!)
-	 test-engine/test-info
+(require (only-in test-engine/test-engine
+                  add-failed-check! failed-check
+                  property-error property-fail)
 	 test-engine/racket-tests
          test-engine/srcloc
 	 scheme/class)

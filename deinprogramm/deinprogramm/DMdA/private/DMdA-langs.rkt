@@ -36,7 +36,7 @@
 	 lang/private/tp-dialog
          (only-in test-engine/racket-tests
                   report-signature-violation! test-execute)
-	 test-engine/test-engine
+	 (except-in test-engine/test-engine signature-violation)
 	 test-engine/test-markup
 	 test-engine/test-display-gui
 	 deinprogramm/signature/signature
