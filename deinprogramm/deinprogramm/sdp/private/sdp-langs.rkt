@@ -35,7 +35,7 @@
 	 
 	 lang/private/tp-dialog
          (only-in test-engine/racket-tests
-                  report-signature-violation! test-execute)
+                  report-signature-violation! test-execute test)
 	 (except-in test-engine/test-engine signature-violation)
 	 test-engine/test-markup
 	 test-engine/test-display-gui
@@ -787,25 +787,25 @@
 
           (define/override (front-end/interaction port settings)
             (let ([reader (get-reader)] ;; DeinProgramm addition:
-					;; needed for test boxes; see
-					;; the code in
-					;; collects/drracket/private/language.rkt
-		  [start? #t]
-                  [done? #f])
+                  ;; needed for test boxes; see
+                  ;; the code in
+                  ;; collects/drracket/private/language.rkt
+                  [done? #f]
+                  [test-object (test-object-copy (current-test-object))])
               (λ ()
                 (cond
-		  [start?
-		   (set! start? #f)
-		   #'(#%plain-app initialize-test-object!)]
                   [done? eof]
                   [else
                    (let ([ans (reader (object-name port) port)])
                      (cond
                        [(eof-object? ans)
-                        (set! done? #t)
-                        #`(test)]
-                       [else
-                        ans]))]))))
+                        (if (test-object=? test-object (current-test-object))
+                            eof
+                            (begin
+                              ; only retest if something has changed
+                              (set! done? #t)
+                              #`(test)))]
+                       [else ans]))]))))
 
           (define/augment (capability-value key)
             (case key
