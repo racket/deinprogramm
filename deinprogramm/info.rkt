@@ -23,7 +23,7 @@
                      "rackunit-lib"
                      "scribble-lib"))
 
-(define pkg-desc "Teaching languages for _Die Macht der Abstraktion_")
+(define pkg-desc "Teaching languages for _Schreibe Dein Programm!_")
 
 (define implies '("deinprogramm-signature"))
 
