@@ -13,7 +13,8 @@
                "scheme-lib"
                "string-constants-lib"
                "trace"
-               "wxme-lib"))
+               "wxme-lib"
+               "snip-lib"))
 
 (define build-deps '("at-exp-lib"
                      "htdp-doc"
