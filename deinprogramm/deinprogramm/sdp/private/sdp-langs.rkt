@@ -206,10 +206,10 @@
 		  (lambda (obj signature message blame)
                     (report-signature-violation! obj signature message blame)))
                  (display-test-results-parameter
-                  (lambda (test-object)
+                  (lambda (markup)
                     (test-display-results! (drscheme:rep:current-rep)
                                            drs-eventspace
-                                           test-object)))
+                                           markup)))
                  (get-rewritten-error-message-parameter get-rewriten-error-message)
                  (test-execute tests-on?)
 		 (signature-checking-enabled?
