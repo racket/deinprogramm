@@ -18,7 +18,6 @@
 	 mzlib/compile
 	 drscheme/tool
 	 mred
-	 framework/private/bday
 	 syntax/moddep
 	 mrlib/cache-image-snip
 	 compiler/embed
