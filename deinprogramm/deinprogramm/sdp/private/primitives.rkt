@@ -1018,7 +1018,7 @@
 (define (false? x)
   (eq? x #f))
 
-(define true (signature truen (enum #t)))
+(define true (signature true (enum #t)))
 (define false (signature false (enum #f)))
 
 (define string (signature/arbitrary arbitrary-printable-ascii-string string (predicate string?)))
