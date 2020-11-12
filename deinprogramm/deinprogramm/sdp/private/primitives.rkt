@@ -6,6 +6,7 @@
                   add-failed-check! failed-check
                   property-error property-fail)
 	 test-engine/racket-tests
+	 test-engine/syntax
          test-engine/srcloc
 	 scheme/class)
 

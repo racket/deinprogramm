@@ -3,6 +3,7 @@
 (require syntax/docprovide)
 
 (require test-engine/racket-tests
+         test-engine/syntax
 	 scheme/class)
 
 (require deinprogramm/signature/module-begin

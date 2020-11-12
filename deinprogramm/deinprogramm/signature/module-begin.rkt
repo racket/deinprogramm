@@ -13,7 +13,7 @@
 	 (for-syntax syntax/kerncase)
 	 (for-syntax racket/struct-info))
 
-(require (only-in test-engine/racket-tests test))
+(require (only-in test-engine/syntax test))
 
 (define-syntax (print-results stx)
   (syntax-case stx ()
