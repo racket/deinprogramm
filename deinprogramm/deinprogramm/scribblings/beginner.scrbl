@@ -210,6 +210,10 @@ Signatur für rationale Zahlen.
 Signatur für ganze Zahlen.
 }
 
+@defproc[(integer-from-to [low integer?] [high integer?]) signature?]{
+Signatur für ganze Zahlen zwischen @racket[low] und @racket[high].
+}
+
 @defidform[natural]{
 Signatur für ganze, nichtnegative Zahlen.
 }

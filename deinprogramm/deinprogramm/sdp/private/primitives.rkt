@@ -42,7 +42,7 @@
 	 one-of ; deprecated
 	 -> mixed predicate enum combined list-of nonempty-list-of)
 
-(provide number real rational integer natural
+(provide number real rational integer integer-from-to natural
 	 boolean true false
 	 string symbol
 	 empty-list
@@ -1001,6 +1001,17 @@
       (string-append (car l) (strings-list->string (cdr l)))))
 
 (define integer (signature/arbitrary arbitrary-integer integer (predicate integer?)))
+(define (integer-from-to lo hi)
+  (unless (integer? lo)
+    (error "Erstes Argument von integer-from-to ist keine ganze Zahl."))
+  (unless (integer? hi)
+    (error "Zweites Argument von integer-from-to ist keine ganze Zahl."))
+  (unless (<= lo hi)
+    (error "Das erste Argument von integer-from-to ist größer als das zweite."))
+  (signature/arbitrary (arbitrary-integer-from-to lo hi) integer-from-to
+                       (predicate (lambda (n)
+                                    (and (integer? n)
+                                         (<= lo n hi))))))
 (define number (signature/arbitrary arbitrary-real number (predicate number?)))
 (define rational (signature/arbitrary arbitrary-rational rational (predicate rational?)))
 (define real (signature/arbitrary arbitrary-real real (predicate real?)))
