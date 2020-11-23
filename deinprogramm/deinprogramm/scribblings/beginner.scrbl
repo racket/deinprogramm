@@ -223,11 +223,11 @@ Signatur für boolesche Werte.
 }
 
 @defidform[true]{
-Signatur für \scheme[#t].
+Signatur für @racket[#t].
 }
 
 @defidform[false]{
-Signatur für \scheme[#f].
+Signatur für @racket[#f].
 }
 
 @defidform[string]{
