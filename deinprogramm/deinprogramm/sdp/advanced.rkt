@@ -1,7 +1,8 @@
 #lang deinprogramm/sdp
 
-(require syntax/docprovide "deflam.rkt")
-(provide #%app #%top (rename-out (sdp-module-begin #%module-begin)) #%datum #%top-interaction 
+(require syntax/docprovide "deflam.rkt"
+         deinprogramm/sdp/private/module-begin)
+(provide #%app #%top (rename-out (advanced-module-begin #%module-begin)) #%datum #%top-interaction 
 	 require lib planet provide
          let let* letrec lambda λ define
 	 cond if else and or quote

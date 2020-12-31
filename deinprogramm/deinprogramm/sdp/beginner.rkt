@@ -1,7 +1,8 @@
 #lang deinprogramm/sdp
 
-(require syntax/docprovide)
-(provide #%app #%top (rename-out (sdp-module-begin #%module-begin)) #%datum #%top-interaction
+(require syntax/docprovide
+         deinprogramm/sdp/private/module-begin)
+(provide #%app #%top (rename-out (beginner-module-begin #%module-begin)) #%datum #%top-interaction
 	 require lib planet provide
          define lambda λ cond if else and or
          define-record define-record-functions

@@ -142,7 +142,7 @@
 	  #`(#%plain-module-begin
 	     (module-continue (e1 ...) () ())
              (module configure-runtime racket/base
-                (require deinprogramm/private/runtime)
+                (require deinprogramm/DMdA/private/runtime)
                 (configure '())) ; FIXME: level-specific options
              (module+ test (test))))))
 

@@ -10,7 +10,7 @@
          test-engine/srcloc
 	 scheme/class)
 
-(require deinprogramm/signature/module-begin
+(require deinprogramm/sdp/private/module-begin
 	 (except-in deinprogramm/signature/signature signature-violation)
 	 (except-in deinprogramm/signature/signature-syntax property))
 
@@ -78,8 +78,7 @@
  (sdp-dots ......)
  (sdp-app #%app)
  (sdp-top #%top)
- (sdp-set! set!)
- (module-begin sdp-module-begin))
+ (sdp-set! set!))
 
 (provide sdp-advanced-lambda
 	 sdp-advanced-define)
