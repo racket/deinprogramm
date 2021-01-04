@@ -1,7 +1,8 @@
-#lang deinprogramm/sdp
+#lang racket/base
 
 (require syntax/docprovide
-         deinprogramm/sdp/private/module-begin)
+         deinprogramm/sdp/private/module-begin
+         deinprogramm/sdp/private/primitives)
 (provide #%app #%top (rename-out (beginner-module-begin #%module-begin)) #%datum #%top-interaction
 	 require lib planet provide
          define lambda λ cond if else and or

@@ -1,7 +1,8 @@
-#lang deinprogramm/sdp
+#lang racket/base
 
 (require syntax/docprovide "deflam.rkt"
-         deinprogramm/sdp/private/module-begin)
+         deinprogramm/sdp/private/module-begin
+         (except-in deinprogramm/sdp/private/primitives lambda λ define))
 (provide #%app #%top (rename-out (advanced-module-begin #%module-begin)) #%datum #%top-interaction 
 	 require lib planet provide
          let let* letrec lambda λ define
