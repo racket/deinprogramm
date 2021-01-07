@@ -5,6 +5,7 @@
 (require (only-in test-engine/test-engine
                   add-failed-check! failed-check
                   property-error property-fail)
+         (rename-in scheme/base (cons racket-cons))
 	 test-engine/racket-tests
 	 test-engine/syntax
          test-engine/srcloc
@@ -351,18 +352,16 @@
   (read (-> any)
 	"Externe Repräsentation eines Werts in der REPL einlesen und den zugehörigen Wert liefern")))
 
-(define real-cons
-  (procedure-rename
-   (lambda (f r)
-     (when (and (not (null? r))
-                (not (pair? r)))
-       (raise
-        (make-exn:fail:contract
-         (string->immutable-string
-          (format "Zweites Argument zu cons ist keine Liste, sondern ~e" r))
-         (current-continuation-marks))))
-     (cons f r))
-   'cons))
+(define cons
+  (lambda (f r)
+    (when (and (not (null? r))
+               (not (pair? r)))
+      (raise
+       (make-exn:fail:contract
+        (string->immutable-string
+         (format "Zweites Argument zu cons ist keine Liste, sondern ~e" r))
+        (current-continuation-marks))))
+    (racket-cons f r)))
 
 (define-syntax sdp-cons
   (let ()
@@ -373,11 +372,11 @@
       prop:procedure
       (lambda (_ stx)
 	(syntax-case stx ()
-	  ((self . args) (syntax/loc stx (real-cons . args)))
-	  (else (syntax/loc stx real-cons)))))
+	  ((self . args) (syntax/loc stx (cons . args)))
+	  (else (syntax/loc stx cons)))))
     (make-cons-info (lambda ()
 		      (list #f
-			    #'real-cons
+			    #'cons
 			    #'cons?
 			    (list #'cdr #'car)
 			    '(#f #f)
@@ -430,7 +429,7 @@
 					   (cdr args))))))
 	      (current-continuation-marks))))
 	  (loop (cdr args)
-		(cons arg seen-rev)))))
+		(racket-cons arg seen-rev)))))
   
 
     (apply append args)))
@@ -463,8 +462,8 @@
      ((empty? lis) '())
      ((pair? lis)
       (if (p? (first lis))
-	  (cons (first lis)
-		(filter p? (rest lis)))
+	  (racket-cons (first lis)
+                       (filter p? (rest lis)))
 	  (filter p? (rest lis))))
      (else
       (raise
