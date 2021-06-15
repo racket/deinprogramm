@@ -413,9 +413,9 @@
                           (lambda (value display? port)
                             (cond
 			      [(signature? value)
-			       (write-special (signature-output value) port)]
+			       (display (signature-output value) port)]
 			      [(procedure? value)
-			       (write-special (procedure-output value) port)]
+			       (display (procedure-output value) port)]
                               [(is-a? value snip%)
                                (write-special value port)
                                1]
