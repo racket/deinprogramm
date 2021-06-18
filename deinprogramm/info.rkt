@@ -11,6 +11,7 @@
                "htdp-lib"
                "pconvert-lib"
                "scheme-lib"
+               "simple-tree-text-markup-lib"
                "string-constants-lib"
                "trace"
                "wxme-lib"
