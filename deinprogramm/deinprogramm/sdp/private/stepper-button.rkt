@@ -15,7 +15,9 @@
          deinprogramm/sdp/private/runtime)
 
 (define (sdp-stepper-drracket-button level)
-  (stepper-drracket-button (new sdp-stepper-language%) (level->sdp-runtime-settings level)))
+  (let ((settings (level->sdp-runtime-settings level)))
+    (stepper-drracket-button (new sdp-stepper-language%) settings
+                             (lambda () (configure/settings settings)))))
 
 (define-logger stepper)
 
