@@ -1134,7 +1134,7 @@
 				   (or (signature-arbitrary (signature ?signature))
 				       ?error-call))))
 			     (_
-			      (raise-sdp-syntax-error #f "inkorrekte `for-all'-Klausel - sollte die Form (id contr) haben"
+			      (raise-sdp-syntax-error #f "inkorrekte `for-all'-Klausel - sollte die Form (id signature) haben"
 						      pr))))
 			 (syntax->list #'(?clause ...)))))
 
