@@ -5,6 +5,7 @@
          (except-in deinprogramm/sdp/private/primitives lambda λ define))
 (provide #%app #%top (rename-out (advanced-module-begin #%module-begin)) #%datum #%top-interaction 
 	 require lib planet provide
+         only-in except-in prefix-in rename-in combine-in relative-in only-meta-in for-syntax for-template for-label for-meta
          let let* letrec lambda λ define
 	 cond if else and or quote
          define-record define-record-functions
