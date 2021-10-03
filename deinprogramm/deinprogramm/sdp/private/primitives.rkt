@@ -42,6 +42,7 @@
 	 contract ; legacy
 	 one-of ; deprecated
 	 -> mixed predicate enum combined list-of nonempty-list-of)
+(provide (rename-out (nonempty-list-of cons-list-of)))
 
 (provide number real rational integer integer-from-to natural
 	 boolean true false
