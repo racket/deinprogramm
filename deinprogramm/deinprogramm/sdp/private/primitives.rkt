@@ -1340,7 +1340,7 @@
 		    (selectors (reverse rev-selectors))
 		    (field-ids (generate-temporaries pats)))
 	       (unless (= (length rev-selectors) (length pats))
-		 (raise-sdp-syntax-error #f "Die Anzahl der Felder im match stimmt nicht" stx))
+		 (raise-sdp-syntax-error #f "Die Anzahl der Felder im match stimmt nicht" #'?pattern0))
 	       #`(if (#,pred ?id)
 		     #,(let recur ((pats pats)
 				   (selectors selectors)
