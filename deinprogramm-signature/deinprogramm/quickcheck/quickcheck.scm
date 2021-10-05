@@ -175,7 +175,7 @@
   (let ((k (caar lis)))
     (if (<= n k)
 	(cdar lis)
-	(pick (- n k) lis))))
+	(pick (- n k) (cdr lis)))))
 
 (define-record-type :arbitrary
   (make-arbitrary generator transformer)
