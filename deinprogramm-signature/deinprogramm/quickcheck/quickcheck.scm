@@ -265,10 +265,18 @@
 			(+ (abs c) 1)))))
 
 (define arbitrary-real
-  (make-arbitrary (lift->generator fraction
-				   (arbitrary-generator arbitrary-integer)
-				   (arbitrary-generator arbitrary-integer)
-				   (arbitrary-generator arbitrary-integer))
+  (make-arbitrary (choose-with-frequencies
+		   (list
+		    (cons 5 (sized
+			     (lambda (n)
+			       (choose-integer (- n) n))))
+		    (cons 4 (lift->generator make-rational
+					     (arbitrary-generator arbitrary-integer)
+					     (arbitrary-generator arbitrary-natural)))
+		    (cons 1 (lift->generator fraction
+						(arbitrary-generator arbitrary-integer)
+						(arbitrary-generator arbitrary-integer)
+						(arbitrary-generator arbitrary-integer)))))
 		  (lambda (r gen)
 		    (let ((fr (rationalize (inexact->exact r) 1/1000)))
 		      (coarbitrary arbitrary-integer
