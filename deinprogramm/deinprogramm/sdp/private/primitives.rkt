@@ -1164,6 +1164,13 @@
     (_ (raise-sdp-syntax-error #f "`check-property' erwartet einen einzelnen Operanden"
 			       stx))))
 
+(define quickcheck-config
+  (make-config 500
+               2000
+               (lambda (n)
+                 (+ 3 (quotient n 2)))
+               values))
+
 (define (check-property-error test srcloc)
   (with-handlers ((exn:fail?
                    (lambda (e)
@@ -1176,13 +1183,13 @@
              (lambda (e)
                ;; minor kludge to produce comprehensible error message
                (if (eq? (exn:assertion-violation-who e) 'coerce->result-generator)
-                   (raise (make-exn:fail (string-append "Wert muß Eigenschaft oder boolesch sein: "
+                   (raise (make-exn:fail (string-append "Wert muss Eigenschaft oder boolesch sein: "
                                                         ((error-value->string-handler)
                                                          (car (exn:assertion-violation-irritants e))
                                                          100))
                                          (exn-continuation-marks e)))
                    (raise e)))))
-         (quickcheck-results (test))))
+         (check-results quickcheck-config (test))))
      (lambda (ntest stamps result)
        (if (check-result? result)
            (begin
