@@ -443,6 +443,9 @@
 (define nothing
   (make-result '() '() '()))
 
+(define exception-result
+  (make-result #f '() '()))
+
 ; A testable value is one of the following:
 ; - a :property object
 ; - a boolean
@@ -474,7 +477,10 @@
 (define (for-all proc . args)
   (>>= (sequence (map coerce->generator args))
        (lambda (args)
-	 (>>= (coerce->result-generator (apply proc args))
+	 (>>= (with-handlers ((exn:fail?
+			       (lambda (_)
+				 (return exception-result))))
+                (coerce->result-generator (apply proc args)))
 	      (lambda (res)
 		(return (result-add-arguments res
 					      (map (lambda (arg) (cons #f arg)) args))))))))
@@ -482,7 +488,10 @@
 (define (for-all/names proc arg-names args)
   (>>= (sequence (map coerce->generator args))
        (lambda (args)
-	 (>>= (coerce->result-generator (apply proc args))
+	 (>>= (with-handlers ((exn:fail?
+			       (lambda (_)
+				 (return exception-result))))
+                (coerce->result-generator (apply proc args)))
 	      (lambda (res)
 		(return (result-add-arguments res (map cons arg-names args))))))))
 
