@@ -245,20 +245,21 @@
 		  (lambda (ch gen)
 		    (variant (char->integer ch) gen))))
 
-(define (make-rational a b)
-  (/ a
-     (+ 1 b)))
+(define (make-rational a b c)
+  (+ a
+     (/ a
+	(+ (abs c) 1))))
 
 (define arbitrary-rational
   (make-arbitrary (lift->generator make-rational
 				   (arbitrary-generator arbitrary-integer)
-				   (arbitrary-generator arbitrary-natural))
+				   (arbitrary-generator arbitrary-integer)
+				   (arbitrary-generator arbitrary-integer))
 		  (lambda (r gen)
 		    (coarbitrary arbitrary-integer
 				 (numerator r)
 				 (coarbitrary arbitrary-integer
 					      (denominator r) gen)))))
-
 (define (fraction a b c)
   (+ a
      (exact->inexact (/ b
@@ -272,11 +273,12 @@
 			       (choose-integer (- n) n))))
 		    (cons 4 (lift->generator make-rational
 					     (arbitrary-generator arbitrary-integer)
-					     (arbitrary-generator arbitrary-natural)))
+					     (arbitrary-generator arbitrary-integer)
+					     (arbitrary-generator arbitrary-integer)))
 		    (cons 1 (lift->generator fraction
-						(arbitrary-generator arbitrary-integer)
-						(arbitrary-generator arbitrary-integer)
-						(arbitrary-generator arbitrary-integer)))))
+					     (arbitrary-generator arbitrary-integer)
+					     (arbitrary-generator arbitrary-integer)
+					     (arbitrary-generator arbitrary-integer)))))
 		  (lambda (r gen)
 		    (let ((fr (rationalize (inexact->exact r) 1/1000)))
 		      (coarbitrary arbitrary-integer
