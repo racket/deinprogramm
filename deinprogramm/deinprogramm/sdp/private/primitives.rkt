@@ -1123,7 +1123,7 @@
 
 (define-syntax (for-all stx)
   (syntax-case stx ()
-    ((_ (?clause ...) ?body)
+    ((_ (?clause ...) ?body0 ?body ...)
      (with-syntax ((((?id ?arb) ...)
 		    (map (lambda (pr)
 			   (syntax-case pr ()
@@ -1140,15 +1140,15 @@
 			 (syntax->list #'(?clause ...)))))
 
        (stepper-syntax-property #'(quickcheck:property 
-				   ((?id ?arb) ...) ?body)
+				   ((?id ?arb) ...) ?body0 ?body ...)
 				'stepper-skip-completely
 				#t)))
-    ((_ ?something ?body)
+    ((_ ?something ?body0 ?body ...)
      (raise-sdp-syntax-error #f "keine Klauseln der Form (id contr)"
 			     stx))
-    ((_ ?thing1 ?thing2 ?thing3 ?things ...)
-     (raise-sdp-syntax-error #f "zuviele Operanden"
-			     stx))))
+    ((_ ?something)
+     (raise-sdp-syntax-error #f "Rumpf fehlt" stx))))
+
 
 (define-syntax (check-property stx)
   (unless (memq (syntax-local-context) '(module top-level))
