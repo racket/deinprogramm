@@ -1165,10 +1165,10 @@
 			       stx))))
 
 (define quickcheck-config
-  (make-config 500
+  (make-config 100
                2000
                (lambda (n)
-                 (+ 3 (quotient n 2)))
+                 (+ 3 (* n 2)))
                values))
 
 (define (check-property-error test srcloc)
