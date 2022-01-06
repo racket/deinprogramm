@@ -1,12 +1,14 @@
 #lang racket/base
 (provide (all-from-out teachpack/2htdp/image)
 	 (all-from-out lang/posn)
+         image=?
 	 image mode image-color color y-place x-place
 	 pulled-point angle side-count step-count
 	 posn real-valued-posn
 	 pen pen-style pen-cap pen-join)
 
 (require teachpack/2htdp/image)
+(require (only-in lang/imageeq image=?))
 (require lang/posn)
 (require deinprogramm/signature/signature)
 (require deinprogramm/signature/signature-syntax)
