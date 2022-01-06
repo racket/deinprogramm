@@ -15,7 +15,8 @@
                "string-constants-lib"
                "trace"
                "wxme-lib"
-               "snip-lib"))
+               "snip-lib"
+               "draw-lib"))
 
 (define build-deps '("at-exp-lib"
                      "htdp-doc"
