@@ -67,14 +67,6 @@ Argumente akzeptiert, entsprechend den Signatur-Parametern
 Signaturen @racket[signature] der Felder verwendet werden.
 }
 
-@section{Record-Typ-Definition, alte Form}
-
-@defform[(define-record-functions ...)]{ Dies ist ein Synonym für
-@racket[define-record] und existiert nur zur Erhaltung der
-Kompatibilität mit älteren Versionen des Buchs.
-}
-
-
 @section[#:tag "application"]{Funktionsapplikation}
 
 @defform/none[(expr expr ...)]{
