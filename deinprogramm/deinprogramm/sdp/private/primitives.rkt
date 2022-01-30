@@ -1233,7 +1233,7 @@
 
 (define-syntax (match stx)
   (syntax-parse stx
-    ((_ ?case:expr (?pattern0 ?body0:expr) (?pattern ?body:expr) ...)
+    ((_ ?case:expr (?pattern0 ?def0 ... ?body0:expr) (?pattern ?def ... ?body:expr) ...)
      (let ()
        (define (pattern-variables pat)
 	 (syntax-case pat (empty sdp-cons list quote ...)
@@ -1266,8 +1266,8 @@
 	       (loop (cdr vars))))))
        (for-each check (syntax->list #'(?pattern0 ?pattern ...)))
        #'(let* ((val ?case)
-		(nomatch (lambda () (match val (?pattern ?body) ...))))
-	   (match-helper val ?pattern0 ?body0 (nomatch)))))
+		(nomatch (lambda () (match val (?pattern ?def ... ?body) ...))))
+	   (match-helper val ?pattern0 (let () ?def0 ... ?body0) (nomatch)))))
     ((_ ?case:expr)
      (syntax/loc stx (error 'match "keiner der Zweige passte")))))
 
