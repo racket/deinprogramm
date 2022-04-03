@@ -97,7 +97,7 @@
   (number? (any -> boolean)
 	   "feststellen, ob ein Wert eine Zahl ist")
 
-  (= (number number number ... -> boolean)
+  ((sdp-= =) (number number number ... -> boolean)
      "Zahlen auf Gleichheit testen")
   (< (real real real ... -> boolean)
      "Zahlen auf kleiner-als testen")
@@ -297,7 +297,7 @@
   (string? (any -> boolean)
 	   "feststellen, ob ein Wert eine Zeichenkette ist")
 
-  (string=? (string string string ... -> boolean)
+  ((sdp-string=? string=?) (string string string ... -> boolean)
 	    "Zeichenketten auf Gleichheit testen")
   (string<? (string string string ... -> boolean)
 	    "Zeichenketten lexikografisch auf kleiner-als testen")
@@ -917,10 +917,18 @@
 	 (format "~a: Wert ist kein Symbol: ~e" where b))
 	(current-continuation-marks)))))
 
+(define-teach sdp string=?
+  (lambda (a b . args)
+    (apply string=? a b args)))
+
 (define (symbol=? a b)
   (verify-symbol a 'symbol=?)
   (verify-symbol b 'symbol=?)
   (eq? a b))
+
+(define-teach sdp =
+  (lambda (a b . args)
+    (apply = a b args)))
 
 (define-syntax (sdp-app stx)
   (define (raise-operator-error no-op expr)
