@@ -253,7 +253,10 @@
   (true? (any -> boolean)
 	 "feststellen, ob ein Wert #t ist")
   (false? (any -> boolean)
-	  "feststellen, ob ein Wert #f ist"))
+	  "feststellen, ob ein Wert #f ist")
+
+  ((sdp-equal? equal?) (any any -> boolean)
+          "feststellen, ob zwei Werte gleich sind"))
 
  ("Listen"
   (empty list "die leere Liste")
@@ -333,8 +336,6 @@
  ("Verschiedenes"
   (signature? (any -> boolean)
 	      "feststellen, ob ein Wert eine Signatur ist")
-  (equal? (%a %b -> boolean)
-	  "zwei Werte auf Gleichheit testen")
   (eq? (%a %b -> boolean)
        "zwei Werte auf Selbheit testen")
   ((sdp-write-string write-string) (string -> unspecific)
@@ -902,6 +903,11 @@
   (lambda (b)
     (verify-boolean b 'not)
     (not b)))
+
+; accepts only two arguments instead of arbitrarily many
+(define-teach sdp equal?
+  (lambda (a b)
+    (equal? a b)))
 
 (define (boolean=? a b)
   (verify-boolean a 'boolean=?)
