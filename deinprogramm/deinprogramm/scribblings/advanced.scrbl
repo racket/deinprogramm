@@ -28,7 +28,6 @@ This is documentation for the language level @italic{Schreibe Dein Programm
   @#,racket[(let ((id expr) (... ...)) expr)]
   @#,racket[(letrec ((id expr) (... ...)) expr)]
   @#,racket[(let* ((id expr) (... ...)) expr) ]
-  quoted
   (code:line @#,elem{@racketvalfont{'}@racket[quoted]} (code:comment @#,seclink["advanced-quote"]{Quote-Literal}))
   @#,racket[(begin expr ... expr)]
 )
