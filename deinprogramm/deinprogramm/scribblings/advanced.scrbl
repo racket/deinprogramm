@@ -30,6 +30,7 @@ This is documentation for the language level @italic{Schreibe Dein Programm
   @#,racket[(let* ((id expr) (... ...)) expr) ]
   quoted
   (code:line @#,elem{@racketvalfont{'}@racket[quoted]} (code:comment @#,seclink["advanced-quote"]{Quote-Literal}))
+  @#,racket[(begin expr ... expr)]
 )
 (
   @#,racket[(list-of sig)]
@@ -98,6 +99,12 @@ gebunden.}
 @racket[λ] ist ein anderer Name für @racket[lambda].
 }
 
+@section{@racket[begin]}
+
+@defform[(begin expr ... expr)]{
+Ein @racket[begin]-Ausdruck wertet die @racket[expr]s nacheinander aus
+und liefert das Ergebnis des letzten @racket[expr].
+}
 @section[#:tag "advanced-prim-op"]{Primitive Operationen}
 
 @prim-op-defns['(lib "advanced.rkt" "deinprogramm" "sdp") #'here '()]
