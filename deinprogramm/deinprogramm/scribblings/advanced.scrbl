@@ -36,7 +36,7 @@ This is documentation for the language level @italic{Schreibe Dein Programm
   @#,racket[(cons-list-of sig)]
 )
 (
- @#,racket[(make-pair pattern pattern)]
+ @#,racket[(cons pattern pattern)]
  @#,racket[(list pattern ...)]
  @#,elem{@racketvalfont{'}@racket[quoted]}
 )
