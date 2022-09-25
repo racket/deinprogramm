@@ -4,6 +4,7 @@
 
 (require rackunit
 	 deinprogramm/sdp/record
+         deinprogramm/sdp/singleton
 	 deinprogramm/signature/signature-syntax
 	 (only-in deinprogramm/sdp/private/primitives match empty cons))
 
@@ -18,6 +19,9 @@
   gons bare?
   (gar any)
   (gdr any))
+
+(define-singleton foo-sig foo foo?)
+(define-singleton bar-bar bar bar?)
 
 (define-record nullary
   make-nullary nullary?)
@@ -139,4 +143,16 @@
     (check-equal? (foo (cons foo empty)) 'pairfoo)
     (check-equal? (foo (make-nullary)) 'nullary)
     (check-equal? (foo (kons 1 2)) '(kons 1 2))
-    (check-equal? (foo (gons 1 2)) '(gons 1 2)))))
+    (check-equal? (foo (gons 1 2)) '(gons 1 2)))
+
+   (test-case
+       "singletons"
+     (define f
+       (lambda (x)
+         (match x
+           (foo 'foo)
+           (bar 'bar)
+           (baz baz))))
+     (check-equal? (f foo) 'foo)
+     (check-equal? (f bar) 'bar)
+     (check-equal? (f 'baz) 'baz))))

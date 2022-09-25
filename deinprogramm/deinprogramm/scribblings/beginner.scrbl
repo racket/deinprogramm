@@ -72,6 +72,15 @@ Argumente akzeptiert, entsprechend den Signatur-Parametern
 Signaturen @racket[signature] der Felder verwendet werden.
 }
 
+@section{Singleton-Definitionen}
+
+@defform[(define-singleton signature name predicate?)]{
+Diese Form definiert ein Singleton, also einen einzelnen Wert namens
+@racket[name], der mit Hilfe von @racket[predicate?] von allen anderen
+Werten unterschieden werden kann.  Die dazu passende Signatur ist
+@racket[signature].
+}
+
 @section[#:tag "application"]{Funktionsapplikation}
 
 @defform/none[(expr expr ...)]{

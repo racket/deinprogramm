@@ -32,6 +32,7 @@
      @#,racket[(define-record id id (id id) (... ...))]
      @#,racket[(define-record id id id (id id) (... ...))]
      @#,racket[(define-record (id id (... ...)) id id (id id) (... ...))]
+     @#,racket[(define-singleton id id id)]
      @#,racket[(: id sig)]
      def-rule ...]
    prod ...

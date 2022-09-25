@@ -21,7 +21,8 @@
 	 (for-syntax racket/struct-info)
 	 syntax/parse)
 
-(require deinprogramm/sdp/record)
+(require deinprogramm/sdp/record
+         deinprogramm/sdp/singleton)
 
 (require (only-in lang/private/teachprims define-teach teach-equal? beginner-equal~?))
 
@@ -36,6 +37,7 @@
 (provide provide lib planet rename-out require #%datum #%module-begin #%top-interaction) ; so we can use this as a language
 
 (provide (all-from-out deinprogramm/sdp/record))
+(provide (all-from-out deinprogramm/sdp/singleton))
 (provide (rename-out (define-record define-record-functions)))
 (provide (all-from-out test-engine/racket-tests))
 (provide signature define-contract :
@@ -1303,8 +1305,16 @@
        (?var (identifier? #'?var)
 	     (if (eq? (syntax->datum #'?var) '_) ; _ is magic
 		 #'?body0
-		 #'(let ((?var ?id))
-		     ?body0)))
+                 (let ((v (syntax-local-value #'?var (lambda () #f))))
+                   (if (singleton-info? v)
+                       (apply
+                        (lambda (_ cons pred selectors _mutators ?)
+                          #`(if (#,pred ?id)
+                                ?body0
+                                ?nomatch))
+                        (extract-struct-info v))
+                       #'(let ((?var ?id))
+                           ?body0)))))
        (?lit (let ((d (syntax->datum #'?lit)))
 	       (or (string? d) (number? d) (boolean? d)))
 	     #'(if (equal? ?id ?lit)

@@ -9,7 +9,7 @@
          let let* letrec lambda λ define
 	 cond if else and or quote
          begin
-         define-record define-record-functions
+         define-record define-record-functions define-singleton
 	 match
          .. ... .... ..... ......
 	 check-expect check-within check-error check-member-of check-range check-satisfied
