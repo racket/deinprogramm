@@ -1252,10 +1252,14 @@
 	 (syntax-case pat (empty sdp-cons list quote ...)
 	   ((... ...) '())
 	   (empty '())
-	   (?var (identifier? #'?var)
-	     (if (eq? (syntax->datum #'?var) '_)
-		 '()
-		 (list #'?var)))
+	   (?var
+            (identifier? #'?var)
+            (if (or (eq? (syntax->datum #'?var) '_)
+                    (let ((v (syntax-local-value #'?var (lambda () #f))))
+                      (singleton-info? v)))
+                
+                '()
+                (list #'?var)))
 	   (?lit (let ((d (syntax->datum #'?lit)))
 		   (or (string? d) (number? d) (boolean? d)))
 		 '())

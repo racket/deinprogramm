@@ -152,7 +152,11 @@
          (match x
            (foo 'foo)
            (bar 'bar)
+           ((kons foo bar) 'foobar)
+           ((kons (kons foo bar) bar) 'foobarbar)
            (baz baz))))
      (check-equal? (f foo) 'foo)
      (check-equal? (f bar) 'bar)
+     (check-equal? (f (kons foo bar)) 'foobar)
+     (check-equal? (f (kons (kons foo bar) bar)) 'foobarbar)
      (check-equal? (f 'baz) 'baz))))
