@@ -44,7 +44,7 @@
                (apply quickcheck:arbitrary-one-of equal? (map color-name->color (send the-color-database get-names)))
                color (predicate color?)))
 (define y-place (signature/arbitrary
-                 (quickcheck:arbitrary-one-of string=? "top" "bottom" "middle" "center" "baselien" "pinhole")
+                 (quickcheck:arbitrary-one-of string=? "top" "bottom" "middle" "center" "baseline" "pinhole")
                  y-place (predicate y-place?)))
 (define x-place (signature/arbitrary
                  (quickcheck:arbitrary-one-of string=? "left" "right" "middle" "center" "pinhole")
