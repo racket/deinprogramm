@@ -815,7 +815,7 @@
 	'else
 	expr
 	#f
-	"hier nicht erlaubt, weil kein Bedingung in `cond'-Zweig"))
+	"hier nicht erlaubt, weil keine Bedingung in `cond'-Zweig"))
      (syntax-case stx (set! x)
        [(set! e expr) (bad #'e)]
        [(e . expr) (bad #'e)]
