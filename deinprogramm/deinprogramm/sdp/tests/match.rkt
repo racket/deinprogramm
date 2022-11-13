@@ -21,7 +21,7 @@
   (gdr any))
 
 (define-singleton foo-sig foo foo?)
-(define-singleton bar-bar bar bar?)
+(define-singleton bar-bar bar)
 
 (define-record nullary
   make-nullary nullary?)

@@ -74,7 +74,8 @@ Signaturen @racket[signature] der Felder verwendet werden.
 
 @section{Singleton-Definitionen}
 
-@defform[(define-singleton signature name predicate?)]{
+@defform*[((define-singleton signature name?)
+           (define-singleton signature name predicate?))]{
 Diese Form definiert ein Singleton, also einen einzelnen Wert namens
 @racket[name], der mit Hilfe von @racket[predicate?] von allen anderen
 Werten unterschieden werden kann.  Die dazu passende Signatur ist

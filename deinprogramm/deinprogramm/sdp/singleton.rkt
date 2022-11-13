@@ -50,6 +50,8 @@
 (define-syntax define-singleton
   (lambda (x)
     (syntax-case x ()
+      ((define-singleton ?signature ?name)
+       #'(define-singleton ?signature ?name dummy-predicate))
       ((define-singleton ?signature ?name ?predicate)
        (begin
          (check-for-id! #'?signature
