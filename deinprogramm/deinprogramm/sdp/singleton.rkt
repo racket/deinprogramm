@@ -79,7 +79,7 @@
                                        "Um ein Singleton gehören keine Klammern"
                                        (current-continuation-marks)
                                        (list stx)))]
-                              [else #'#,val-name])))
+                              [else #'(#%expression #,val-name)])))
                         (make-info (lambda ()
                                      (list #f
                                            #f

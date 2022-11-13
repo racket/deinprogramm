@@ -176,7 +176,7 @@
 					 (lambda (_ stx)
 					   (syntax-case stx ()
 					     [(self . args) (syntax/loc stx (real-constructor . args))]
-					     [else (syntax/loc stx real-constructor)])))
+					     [else (syntax/loc stx (#%expression real-constructor))])))
 				       (make-info (lambda ()
 						    (list #f
 							  #'real-constructor
