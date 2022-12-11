@@ -42,6 +42,7 @@
          
 ; level is beginner, vanilla, advanced
 (define (configure/settings settings)
+  (read-decimal-as-inexact #f)
   ;; Set print-convert options:
   (booleans-as-true/false #f)
   (print-boolean-long-form #f)
