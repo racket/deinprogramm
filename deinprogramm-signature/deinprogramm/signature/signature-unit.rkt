@@ -403,7 +403,7 @@
 	   (signature-violation proc self #f #f)
 	   thing)
 	  ((not (procedure-arity-includes? proc arg-count)) ; #### variable arity
-	   (signature-violation proc self parameter-count-mismatch-message #f)
+	   (signature-violation proc self parameter-count-mismatch-message blame-syntax)
 	   thing)
 	  (else
 	   (attach-name
