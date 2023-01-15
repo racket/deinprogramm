@@ -393,17 +393,17 @@
     (make-signature
      name
      (lambda (self thing)
-       (let-values (((proc blame-syntax)
+       (let-values (((proc blame-srcloc)
 		     (if (procedure-to-blame? thing)
 			 (values (procedure-to-blame-proc thing)
-				 (procedure-to-blame-syntax thing))
+				 (procedure-to-blame-srcloc thing))
 			 (values thing #f))))
 	 (cond
 	  ((not (procedure? proc))
 	   (signature-violation proc self #f #f)
 	   thing)
 	  ((not (procedure-arity-includes? proc arg-count)) ; #### variable arity
-	   (signature-violation proc self parameter-count-mismatch-message blame-syntax)
+	   (signature-violation proc self parameter-count-mismatch-message blame-srcloc)
 	   thing)
 	  (else
 	   (attach-name
@@ -437,7 +437,7 @@
 				  (call-with-signature-violation-proc
 				   (lambda (obj signature message _)
 				     ;; blame the procedure
-				     (old-violation-proc obj signature message blame-syntax))
+				     (old-violation-proc obj signature message blame-srcloc))
 				   (lambda ()
 				     (apply-signature return-signature retval)))))))))))
 	     (procedure-arity proc)))))))
