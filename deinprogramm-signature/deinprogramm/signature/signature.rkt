@@ -13,7 +13,7 @@
 	 signature=? signature<=?
 	 make-procedure-to-blame
 	 procedure-to-blame?
-	 procedure-to-blame-proc procedure-to-blame-syntax
+	 procedure-to-blame-proc procedure-to-blame-srcloc
 	 make-type-variable-info type-variable-info?
 	 signature-checking-enabled?
 	 (struct-out exn:fail:contract:signature))
@@ -90,17 +90,17 @@
 (define (signature-update-info-promise sig inf)
   (struct-copy signature sig (info-promise inf)))
 
-(define-struct (exn:fail:contract:signature exn:fail:contract) (obj signature blame)
+(define-struct (exn:fail:contract:signature exn:fail:contract) (obj signature blame-srcloc)
   #:transparent)
 
 ; message may be #f
 (define signature-violation-proc
   (make-parameter
-   (lambda (obj signature message blame)
+   (lambda (obj signature message blame-srcloc)
      (raise (make-exn:fail:contract:signature (or message
 						  (format "got ~e" obj))
 					      (current-continuation-marks)
-					      obj signature blame)))))
+					      obj signature blame-srcloc)))))
 
 (define (signature-violation obj signature msg blame)
   ((signature-violation-proc) obj signature msg blame))
@@ -123,9 +123,17 @@
   (lambda (val)
     (check-signature sig val (lambda (_) #t) (lambda () #f))))
 
-(define-struct procedure-to-blame (proc syntax)
+(define-struct procedure-to-blame (proc srcloc)
   #:property prop:procedure 0)
-	     
+
+
+(define-for-syntax (syntax->srcloc-code expr)
+  #`(srcloc '#,(syntax-source expr)
+            '#,(syntax-line expr)
+            '#,(syntax-column expr)
+            '#,(syntax-position expr)
+            '#,(syntax-span expr)))
+  
 ; like apply-signature, but can track more precise blame into the signature itself
 (define-syntax apply-signature/blame
   (lambda (stx)
@@ -134,20 +142,22 @@
        (syntax-case (local-expand #'?val-exp 'expression #f) (lambda #%plain-lambda)
 	 ((lambda ?params ?body0 ?body1 ...)
 	  (stepper-syntax-property
-	   ;; remember there's an implicit #%app
-	   (syntax/loc #'?val-exp
-		       (apply-signature ?cnt-exp
-					(make-procedure-to-blame ?val-exp
-								 #'?val-exp)))
+           ; sanitize the expression as DrRackets binding arrows get confused otherwise
+           (with-syntax ((?srcloc (syntax->srcloc-code #'?val-exp)))
+             ;; remember there's an implicit #%app
+             (syntax/loc #'?val-exp
+               (apply-signature ?cnt-exp
+                                (make-procedure-to-blame ?val-exp ?srcloc))))
 	   'stepper-skipto/discard
 	   '(syntax-e cdr syntax-e cdr cdr car
 		      syntax-e cdr syntax-e cdr car)))
 	 ((#%plain-lambda ?params ?body0 ?body1 ...)
 	  (stepper-syntax-property
-	   (syntax/loc #'?val-exp
-		       (apply-signature ?cnt-exp
-					(make-procedure-to-blame ?val-exp
-								 #'?val-exp)))
+           ; sanitize the expression as DrRackets binding arrows get confused otherwise
+           (with-syntax ((?srcloc (syntax->srcloc-code #'?val-exp)))
+             (syntax/loc #'?val-exp
+               (apply-signature ?cnt-exp
+                                (make-procedure-to-blame ?val-exp ?srcloc))))
 	   'stepper-skipto/discard
 	   '(syntax-e cdr syntax-e cdr cdr car
 		      syntax-e cdr syntax-e cdr car)))
