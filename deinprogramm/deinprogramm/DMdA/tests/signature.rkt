@@ -217,7 +217,7 @@
     (let ((proc (say-no (apply-signature/blame int->bool (lambda (x) x)))))
       (call-with-signature-violation-proc
        (lambda (obj signature message blame)
-	 (check-true (syntax? blame)))
+	 (check-true (srcloc? blame)))
        (lambda ()
 	 (proc 5)))))
    ))
