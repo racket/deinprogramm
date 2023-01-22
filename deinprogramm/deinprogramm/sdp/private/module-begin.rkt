@@ -44,6 +44,7 @@
     (define extract-signatures
       (lambda (lostx) 
 	(let* ((table (make-free-id-table)) ; bound doesn't work as we need to match signature declarations and definitions
+               (ids '())
 	       (non-signatures
 		(filter-map (lambda (maybe)
 			      (syntax-case maybe (:)
@@ -73,6 +74,7 @@
                                               (identifier? #'?real-id)
                                               (free-id-table-set! table #'?real-id #'?sig)))
                                            (free-id-table-set! table #'?id #'?sig)))))
+                                   (set! ids (cons #'?id ids))
 				   #f))
 				((: ?id)
 				 (raise-syntax-error #f "Bei dieser Signaturdeklaration fehlt die Signatur" maybe))
@@ -82,61 +84,69 @@
 								 (?stuff0 ?stuff1 ...))))
 				(_ maybe)))
 			lostx)))
-	  (values table non-signatures))))
+	  (values table ids non-signatures))))
 
     (define local-expand-stop-list 
       (append (list #': #'define-contract)
 	      (kernel-form-identifier-list)))
 	
     (define (expand-signature-expressions signature-table expressions)
+      (let ((signature-table signature-table))
 
-      (let loop ((exprs expressions))
+        (let loop ((exprs expressions))
 
-	(cond
-	 ((null? exprs)
-	  ; check for orphaned signatures
-	  (free-id-table-for-each signature-table
-				  (lambda (id thing)
-				    (if (identifier-binding id)
-					(raise-syntax-error #f "Zu einer eingebauten Form kann keine Signatur deklariert werden" id)
-					(raise-syntax-error #f "Zu dieser Signatur gibt es keine Definition" id))))
-	  #'(begin))
-	 (else
-	  (let ((expanded (car exprs)))
+          (cond
+            ((null? exprs)
+             ; check for orphaned signatures
+             (free-id-table-for-each signature-table
+                                     (lambda (id thing)
+                                       (if (identifier-binding id)
+                                           (raise-syntax-error #f "Zu einer eingebauten Form kann keine Signatur deklariert werden" id)
+                                           (raise-syntax-error #f "Zu dieser Signatur gibt es keine Definition" id))))
+             #'(begin))
+            (else
+             (let ((expanded (car exprs)))
 
-	    (syntax-case expanded (begin define-values)
-	      ((define-values (?id ...) ?e1)
-	       (with-syntax (((?enforced ...)
-			      (map (lambda (id)
-				     (cond
-				      ((free-id-table-ref signature-table id #f)
-				       => (lambda (sig)
-					    (free-id-table-remove! signature-table id) ; enables the check for orphaned signatures
-					    (with-syntax ((?id id)
-							  (?sig sig))
-					      #'(?id (signature ?sig)))))
-				      (else id)))
-				   (syntax->list #'(?id ...))))
-			     (?rest (loop (cdr exprs))))
-		 (with-syntax ((?defn
-				(syntax-track-origin
-				 #'(define-values/signature (?enforced ...)
-				     ?e1)
-				 (car exprs)
-				 (car (syntax-e expanded)))))
+               (syntax-case expanded (begin define-values)
+                 ((define-values (?id ...) ?e1)
+                  (with-syntax (((?enforced ...)
+                                 (map (lambda (id)
+                                        (cond
+                                          ((free-id-table-ref signature-table id #f)
+                                           => (lambda (sig)
+                                                (free-id-table-remove! signature-table id) ; enables the check for orphaned signatures
+                                                (with-syntax ((?id id)
+                                                              (?sig sig))
+                                                  #'(?id (signature ?sig)))))
+                                          (else id)))
+                                      (syntax->list #'(?id ...))))
+                                (?rest (loop (cdr exprs))))
+                    (with-syntax ((?defn
+                                   (syntax-track-origin
+                                    #'(define-values/signature (?enforced ...)
+                                        ?e1)
+                                    (car exprs)
+                                    (car (syntax-e expanded)))))
 
-		   (syntax/loc (car exprs)
-			       (begin
-				 ?defn
-				 ?rest)))))
-	      ((begin e1 ...)
-	       (loop (append (syntax-e (syntax (e1 ...))) (cdr exprs))))
-	      (else 
-	       (with-syntax ((?first expanded)
-			     (?rest (loop (cdr exprs))))
-		 (syntax/loc (car exprs)
-			     (begin
-			       ?first ?rest))))))))))
+                      (syntax/loc (car exprs)
+                        (begin
+                          ?defn
+                          ?rest)))))
+                 ((begin e1 ...)
+                  (loop (append (syntax-e (syntax (e1 ...))) (cdr exprs))))
+                 (else 
+                  (with-syntax ((?first expanded)
+                                (?rest (loop (cdr exprs))))
+                    (syntax/loc (car exprs)
+                      (begin
+                        ?first ?rest)))))))))))
+
+    ; these dummy uses are so that DrRacket can display binding arrows correctly
+    (define (signature-id-dummy-uses ids)
+      #`(begin
+          #,@(map (lambda (id)
+                    #`(begin #,id (void)))
+                  ids)))
 
     (define (mk-module-begin options)
       (lambda (stx)
@@ -189,9 +199,11 @@
 			(reverse (syntax->list #'(defined-id ...)))))
 	    ;; Now handle signatures:
 	    (let ((top-level (reverse (syntax->list (syntax (e1 ...))))))
-	      (let-values (((sig-table expr-list)
+	      (let-values (((sig-table ids expr-list)
 			    (extract-signatures top-level)))
-		(expand-signature-expressions sig-table expr-list)))))
+                #`(begin
+                    #,(expand-signature-expressions sig-table expr-list)
+                    #,(signature-id-dummy-uses ids))))))
 	 ((frm e3s e1s def-ids)
 	  (let loop ((e3s #'e3s)
 		     (e1s #'e1s)
