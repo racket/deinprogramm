@@ -145,7 +145,9 @@
     (define (signature-id-dummy-uses ids)
       #`(begin
           #,@(map (lambda (id)
-                    #`(begin #,id (void)))
+                    (stepper-syntax-property #`(begin #,id (void))
+                                             'stepper-skip-completely 
+                                             #t))
                   ids)))
 
     (define (mk-module-begin options)
