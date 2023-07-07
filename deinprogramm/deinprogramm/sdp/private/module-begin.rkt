@@ -160,18 +160,28 @@
            ;; requires, etc.:
            #`(#%plain-module-begin
               #,(stepper-syntax-property
-                 #`(let ((handle (uncaught-exception-handler)))
-                     (uncaught-exception-handler
-                      (lambda (exn)
-                        (test-display-results!)
-                        (handle exn))))
+                 #`(begin
+                     (define repl? #f) ; whether we're in the REPL now
+                     (let ((handle (uncaught-exception-handler)))
+                       (uncaught-exception-handler
+                        (lambda (exn)
+                          (begin
+                            (unless repl? ; the REPL takes care of printing the results itself
+                              (test-display-results!))
+                            (set! repl? #t)
+                            (handle exn))))))
                  'stepper-skip-completely 
                  #t)
               (module-continue (e1 ...) () ())
               (module configure-runtime racket/base
                 (require deinprogramm/sdp/private/runtime)
                 (configure '#,options))
-              (module+ test (test)))))))
+              (module+ test
+                (test))
+              #,(stepper-syntax-property
+                 #`(set! repl? #t)
+                 'stepper-skip-completely 
+                 #t))))))
     
     (values
      (mk-module-begin 'beginner)
