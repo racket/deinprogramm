@@ -29,7 +29,8 @@
 (define sample-images
   (list (circle 20 "solid" "red")
         (rectangle 20 10 "solid" "blue")
-        (rectangle 10 20 "solid" "green")))
+        (rectangle 10 20 "solid" "green")
+        (right-triangle 36 48 "solid" "black")))
 
 (define image (signature/arbitrary
                (apply quickcheck:arbitrary-one-of image=? sample-images)
