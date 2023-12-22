@@ -290,7 +290,8 @@
 
 ;; Matthew has promised a better way of doing this in the future.
 (define (attach-name name thing)
-  (if (procedure? thing)
+  (if (and (procedure? thing)
+           (not (signature? thing))) ; kludge: signatures are also procedures that output an error message
       (procedure-rename thing name)
       thing))
 
