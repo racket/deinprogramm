@@ -477,12 +477,6 @@
 		 lis))
 	(current-continuation-marks)))))))
 
-;; This is copied from collects/lang/private/beginner-funs.rkt
-;; Test-suite support (require is really an effect
-;;  to make sure that it's loaded)
-(require deinprogramm/test-suite)
-
-
 (define-for-syntax (raise-sdp-syntax-error form msg . exprs)
 
   (define (expr->form expr)

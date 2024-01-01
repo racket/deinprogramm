@@ -2,17 +2,14 @@
 
 (define name "DeinProgramm")
 
-(define tools '("sdp/private/sdp-langs.rkt" "DMdA/private/DMdA-langs.rkt"))
+(define tools '("sdp/private/sdp-langs.rkt"))
 
-(define tool-icons '(("logo-small.png" "deinprogramm") ("dmda-logo.png" "deinprogramm")))
-(define tool-names '("DeinProgramm SDP" "DeinProgramm DMdA"))
-(define tool-urls '("http://www.deinprogramm.de/" "http://www.deinprogramm.de/dmda/"))
+(define tool-icons '(("logo-small.png" "deinprogramm")))
+(define tool-names '("DeinProgramm SDP"))
+(define tool-urls '("http://www.deinprogramm.de/"))
 
 (define compile-omit-paths
-  '("DMdA/define-record-procedures.scm"
-    "DMdA/private/convert-explicit.scm"
-    "DMdA/teachpack/line3d.scm"
-    "sdp/record.scm"
+  '("sdp/record.scm"
     "sdp/private/convert-explicit.scm"))
 (define test-omit-paths compile-omit-paths)
 

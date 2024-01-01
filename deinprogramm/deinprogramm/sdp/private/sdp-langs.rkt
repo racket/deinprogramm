@@ -719,8 +719,7 @@
                         '(wxtext
                           (lib "comment-snip.ss" "framework")
                           (lib "xml-snipclass.ss" "xml")
-                          (lib "scheme-snipclass.ss" "xml")
-			  (lib "test-case-box-snipclass.ss" "test-suite")))])
+                          (lib "scheme-snipclass.ss" "xml")))])
               (and (is-wxme-stream? port)
                    (let-values ([(snip-class-names data-class-names)
                                  (extract-used-classes port)])
