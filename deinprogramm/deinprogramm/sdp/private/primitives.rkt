@@ -485,7 +485,8 @@
        ((identifier? expr) sexpr)
        ((syntax->list expr)
 	=> (lambda (lis)
-	     (expr->form (car lis))))
+             (and (pair? lis)
+                  (expr->form (car lis)))))
        (else #f))))
   
   (let ((form
