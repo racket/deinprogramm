@@ -1183,7 +1183,8 @@
   (with-handlers ((exn:fail?
                    (lambda (e)
                      (add-failed-check! (failed-check (property-error srcloc e)
-                                                      (exn-srcloc e))))))
+                                                      (exn-srcloc e)))
+                     #f)))
     (call-with-values
      (lambda ()
        (with-handlers
