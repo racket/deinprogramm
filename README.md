@@ -1,6 +1,10 @@
-# deinprogramm
+# DeinProgramm
 
-This the source for the Racket packages: "deinprogramm", "deinprogramm-signature".
+This the source for the Racket packages: 
+
+"deinprogramm", "deinprogramm-lib", "deinprogramm-doc",
+"deinprogramm-test", "deinprogramm-tool", and
+"deinprogramm-signature".
 
 ### Contributing
 
