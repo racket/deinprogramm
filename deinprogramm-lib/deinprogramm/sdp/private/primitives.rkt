@@ -9,7 +9,8 @@
 	 test-engine/racket-tests
 	 test-engine/syntax
          test-engine/srcloc
-	 scheme/class)
+	 scheme/class
+         racket/promise)
 
 (require deinprogramm/sdp/private/module-begin
 	 (except-in deinprogramm/signature/signature signature-violation)
@@ -1045,7 +1046,23 @@
 (define empty-list (signature empty-list (enum empty)))
 
 (define unspecific (signature unspecific %unspecific))
-(define any (signature any %any))
+
+(define arbitrary-any
+  (arbitrary-mixed (list
+                    (racket-cons integer? (delay arbitrary-integer))
+                    (racket-cons number? (delay arbitrary-real))
+                    (racket-cons boolean? (delay arbitrary-boolean))
+                    (racket-cons string? (delay arbitrary-printable-ascii-string))
+                    (racket-cons list?
+                                 (delay
+                                   (arbitrary-mixed
+                                    (list
+                                     (racket-cons list? (delay (arbitrary-list arbitrary-integer)))
+                                     (racket-cons list? (delay (arbitrary-list arbitrary-real)))
+                                     (racket-cons list? (delay (arbitrary-list arbitrary-boolean)))
+                                     (racket-cons list? (delay (arbitrary-list arbitrary-printable-ascii-string))))))))))
+
+(define any (signature/arbitrary arbitrary-any any %any))
 
 ;; aus collects/lang/private/teach.rkt
 

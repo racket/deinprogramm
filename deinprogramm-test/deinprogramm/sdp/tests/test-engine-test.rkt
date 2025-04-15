@@ -2,7 +2,7 @@
 
 (require (only-in deinprogramm/sdp/private/primitives
                   check-property for-all ==>
-                  integer)
+                  integer any)
          (except-in rackunit check-within)
          test-engine/racket-tests
          test-engine/test-engine)
@@ -72,6 +72,10 @@
  (for-all ((minutes)) #t))
 (check-failure property-error?)
 
-
-
-        
+; test for any generator
+(check-property
+ (for-all ((a any)
+           (b any))
+          (or (equal? a b)
+              (not (equal? a b)))))
+(check-success)
