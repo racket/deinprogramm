@@ -424,37 +424,34 @@
 		      ?body0 ?body1 ...)
 		    '(?id ...)
 		    (list ?gen ...)))))
-
-(define-record-type :result
-  (make-result ok stamp arguments-list)
-  check-result?
-  ;; () = unknown, #t, #f
-  (ok result-ok)
-  (stamp result-stamp) 
-  ;; (list (list (pair (union #f symbol) value)))
-  (arguments-list result-arguments-list))
+(struct result
+  (ok stamp arguments-list)
+  #:transparent)
+; backwards compatbility
+(define check-result? result?)
+(define make-result result)
 
 (define (result-with-ok res ok)
-  (make-result ok
-	       (result-stamp res)
-	       (result-arguments-list res)))
+  (result ok
+	  (result-stamp res)
+	  (result-arguments-list res)))
 
 (define (result-add-stamp res stamp)
-  (make-result (result-ok res)
-	       (cons stamp (result-stamp res))
-	       (result-arguments-list res)))
+  (result (result-ok res)
+	  (cons stamp (result-stamp res))
+	  (result-arguments-list res)))
 
 ; result (list (pair (union #f symbol) value)) -> result
 (define (result-add-arguments res args)
-  (make-result (result-ok res)
-	       (result-stamp res)
-	       (cons args (result-arguments-list res))))
+  (result (result-ok res)
+	  (result-stamp res)
+	  (cons args (result-arguments-list res))))
 
 (define nothing
-  (make-result '() '() '()))
+  (result '() '() '()))
 
 (define exception-result
-  (make-result #f '() '()))
+  (result #f '() '()))
 
 ; A testable value is one of the following:
 ; - a :property object

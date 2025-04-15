@@ -1,4 +1,4 @@
-#lang scheme/base
+#lang racket/base
 (provide check check-results make-config
 	 quickcheck quickcheck-results
          make-result
