@@ -8,7 +8,8 @@
 (define build-deps '("at-exp-lib"
                      "racket-index"
                      "rackunit-lib"
-                     "scheme-lib"))
+                     "scheme-lib"
+                     "htdp-lib"))
 
 (define update-implies '("deinprogramm-lib"))
 
