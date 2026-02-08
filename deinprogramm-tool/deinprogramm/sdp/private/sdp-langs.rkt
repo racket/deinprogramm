@@ -736,6 +736,25 @@
               (init-field stepper:supported)
               (define/override (stepper:supported?) stepper:supported)
               (define/override (stepper:print-boolean-long-form?) #f)
+              (define/override (stepper:pretty-print-hooks settings previous-size-hook previous-print-hook)
+                ;; avoid mutating the parameters in the current thread
+                ;; (the stepper will typically run in the same thread on subsequent invocations)
+                (thread-wait
+                  (thread
+                   (lambda ()
+                     (parameterize ((pretty-print-size-hook previous-size-hook)
+                                    (pretty-print-print-hook previous-print-hook))
+                       (configure/settings
+                        (sdp-runtime-settings (drscheme:language:simple-settings-printing-style settings)
+                                              (deinprogramm-lang-settings-writing-style settings)
+                                              (drscheme:language:simple-settings-fraction-style settings)
+                                              (drscheme:language:simple-settings-show-sharing settings)
+                                              (drscheme:language:simple-settings-insert-newlines settings)
+                                              (deinprogramm-lang-settings-tracing? settings)))
+                       (values (pretty-print-size-hook)
+                               (pretty-print-print-hook))))
+                   #:keep 'results)))
+
               (super-new))
             (class* % ()
               (init stepper:supported)
