@@ -39,7 +39,7 @@
               (list name '()))))
      (make-inspector)))
 
-  (values (raw-constructor) raw-predicate))
+  (values raw-constructor raw-predicate))
 
 (begin-for-syntax
   (define-struct singleton-info ()
@@ -63,8 +63,20 @@
          ;; new name that the stepper will print as the old name
          (let ((val-name (datum->syntax #f (syntax->datum #'?name) #'?name)))
            #`(begin
+               ;; do the predicate & signature first so the user can declare a signature for the singleton
+               #,(skip
+                  #`(define-values (constructor ?predicate) (make-singleton '?name)))
+               #,(skip
+                  #'(define ?signature
+                      (let ((sig
+                             (make-predicate-signature '?name
+                                                       (delay ?predicate)
+                                                       #'?predicate)))
+                        (set-signature-arbitrary-promise! sig
+                                                          (delay (arbitrary-one-of eq? ?name)))
+                        sig)))
                #,(stepper-syntax-property
-                  (quasisyntax/loc x (define-values (#,val-name ?predicate) (make-singleton '?name)))
+                  (quasisyntax/loc x (define #,val-name (constructor)))
                   'stepper-black-box-expr x)
                #,(skip
                   #`(define-syntax ?name
@@ -88,13 +100,4 @@
                                            #'?predicate
                                            '()
                                            '()
-                                           #f))))))
-               #,(skip
-                  #'(define ?signature
-                      (let ((sig
-                             (make-predicate-signature '?name
-                                                       (delay ?predicate)
-                                                       #'?predicate)))
-                        (set-signature-arbitrary-promise! sig
-                                                          (arbitrary-one-of eq? ?name))
-                        sig))))))))))
+                                           #f)))))))))))))
