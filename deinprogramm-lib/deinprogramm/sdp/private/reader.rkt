@@ -34,6 +34,8 @@
 
     [(documentation-language-family) "DeinProgramm"]
 
+    [(drracket:default-instrumentation) 'test-coverage]
+
     [(drracket:show-big-defs/ints-labels) #t]
 
     [else (use-default key default)]))
