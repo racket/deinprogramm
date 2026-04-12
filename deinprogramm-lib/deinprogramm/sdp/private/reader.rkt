@@ -31,7 +31,9 @@
      ;; opt-out of all of the extra buttons b/c 
      ;; we don't want anything to confuse in the teaching languages.
      #f]
-    
+
+    [(documentation-language-family) "DeinProgramm"]
+
     [(drracket:show-big-defs/ints-labels) #t]
-    
+
     [else (use-default key default)]))
