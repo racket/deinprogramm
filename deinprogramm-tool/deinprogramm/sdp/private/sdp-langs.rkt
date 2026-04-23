@@ -29,8 +29,8 @@
 	 lang/stepper-language-interface
 	 lang/debugger-language-interface
 	 lang/run-teaching-program
-	 lang/private/continuation-mark-key
          deinprogramm/sdp/private/rewrite-error-message
+         errortrace/marks-to-context
 	 
 	 lang/private/tp-dialog
          (only-in test-engine/syntax test-execute test)
@@ -71,6 +71,8 @@
                                                  (andmap string? (cdr x))))
                                           x))))
 
+
+(define deinprogramm-continuation-mark-key (gensym 'deinprogramm-continuation-mark-key))
 
   (define tool@
     (unit
@@ -220,7 +222,13 @@
                                         (drscheme:language:simple-settings-fraction-style settings)
                                         (drscheme:language:simple-settings-show-sharing settings)
                                         (drscheme:language:simple-settings-insert-newlines settings)
-                                        (deinprogramm-lang-settings-tracing? settings)))))))
+                                        (deinprogramm-lang-settings-tracing? settings)))
+
+                 (errortrace-continuation-mark-set->context
+                  (lambda (cms)
+                    (map
+                     (lambda (list) (apply make-srcloc list))
+                     (continuation-mark-set->list cms deinprogramm-continuation-mark-key))))))))
 
           (define/private (teaching-languages-error-value->string settings v len)
             (let ([sp (open-output-string)])
@@ -843,7 +851,7 @@
                        [(exn:srclocs? exn) 
                         ((exn:srclocs-accessor exn) exn)]
                        [(exn? exn) 
-                        (let ([cms (continuation-mark-set->list (exn-continuation-marks exn) teaching-languages-continuation-mark-key)])
+                        (let ([cms (continuation-mark-set->list (exn-continuation-marks exn) deinprogramm-continuation-mark-key)])
 			  (cond
 			   ((not cms) '())
 			   ((findf (lambda (mark)
@@ -872,7 +880,7 @@
       ;; with-mark : syntax syntax exact-nonnegative-integer -> syntax
       ;; a member of stacktrace-imports^
       ;; guarantees that the continuation marks associated with
-      ;; teaching-languages-continuation-mark-key are members of the debug-source type
+      ;; deinprogramm-continuation-mark-key are members of the debug-source type
       (define (with-mark source-stx expr phase)
         (let ([source (syntax-source source-stx)]
               [line (syntax-line source-stx)]
@@ -884,12 +892,12 @@
                    (number? span))
               (with-syntax ([expr expr]
                             [mark (list source line col start-position span)]
-                            [teaching-languages-continuation-mark-key 
-                             teaching-languages-continuation-mark-key]
+                            [deinprogramm-continuation-mark-key 
+                             deinprogramm-continuation-mark-key]
                             [wcm (syntax-shift-phase-level #'with-continuation-mark 
                                                            (- phase base-phase))]
                             [quot (syntax-shift-phase-level #'quote (- phase base-phase))])
-                #`(wcm (quot teaching-languages-continuation-mark-key)
+                #`(wcm (quot deinprogramm-continuation-mark-key)
                     (quot mark)
                     expr))
               expr)))
