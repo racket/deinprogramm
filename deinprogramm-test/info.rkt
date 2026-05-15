@@ -2,6 +2,7 @@
 (define collection 'multi)
 
 (define deps '("base"
+               "htdp-test"
                "deinprogramm-lib"
                "deinprogramm-signature"))
 
