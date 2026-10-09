@@ -23,9 +23,12 @@
 
 (define ((make-info level) key default use-default)
   (case key
-    [(drscheme:toolbar-buttons)
-     (list ((dynamic-require 'deinprogramm/sdp/private/stepper-button 'sdp-stepper-drracket-button) level)
-           (dynamic-require 'drracket/syncheck-drracket-button 'syncheck-drracket-button))]
+    [(drracket:opt-in-toolbar-buttons)
+     (case level
+       [(vanilla) '(drracket:syncheck deinprogramm:stepper:vanilla)]
+       [(beginner) '(drracket:syncheck deinprogramm:stepper:beginner)]
+       [(advanced) '(drracket:syncheck deinprogramm:stepper:advanced)]
+       [else (error 'make-info "unknown level ~s" level)])]
 
     [(drscheme:opt-out-toolbar-buttons)
      ;; opt-out of all of the extra buttons b/c 

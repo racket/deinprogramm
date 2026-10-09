@@ -1,9 +1,10 @@
 #lang racket/base
 
-(require racket/file racket/class racket/unit racket/contract 
-	 drracket/tool 
-	 mred framework
-         string-constants)
+(require racket/file racket/class racket/unit racket/contract racket/match
+         drracket/tool
+         mred mrlib/switchable-button framework
+         string-constants
+         deinprogramm/sdp/private/stepper-button)
 (provide tool@)
 
 (preferences:set-default 'signatures:enable-checking? #t boolean?)
@@ -63,4 +64,17 @@
         ))
 
     (drracket:get/extend:extend-unit-frame signatures-frame-mixin)
+
+    (for ([lang (in-list '(vanilla beginner advanced))])
+      (match-define (list button-label button-image callback)
+        (sdp-stepper-drracket-button lang))
+      (drracket:module-language-tools:add-opt-in-toolbar-button
+       (λ (drr-frame parent)
+         (new switchable-button%
+              [parent parent]
+              [label button-label]
+              [bitmap button-image]
+              [callback (lambda (dont-care) (callback drr-frame))]))
+       (string->symbol (format "deinprogramm:stepper:~a" lang))
+       #:number 59)) ;; this should be the same as `stepper-button-number` in stepper/stepper-tool
     ))
